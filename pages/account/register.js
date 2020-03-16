@@ -4,8 +4,10 @@ import sendPayload from "../../utils/sendPayload";
 import $ from "../../components/Account/_Login";
 import Input from "../../components/_App/Input";
 import { useRouter } from "next/router";
+import { useStore } from "../../utils/contextStore";
 const Register = () => {
   const [status, setStatus] = useState("");
+  const [store, dispatch] = useStore();
   const router = useRouter();
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -46,7 +48,7 @@ const Register = () => {
             ref={nameRef}
             maxLength="40"
             minLength="2"
-            name="name"
+            name="fname"
             autocomplete="name"
           />
           <Input

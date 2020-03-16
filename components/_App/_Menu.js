@@ -1,5 +1,9 @@
 import styled from "styled-components";
-import { inlineFlexCenter, textCenter } from "../../styles/reusable";
+import {
+  inlineFlexCenter,
+  textCenter,
+  IconButton
+} from "../../styles/reusable";
 
 const Wrapper = styled.div`
   ${inlineFlexCenter}
@@ -77,5 +81,6 @@ export default {
   Wrapper,
   CartButton,
   DesktopLinks,
-  MobileLinks
+  MobileLinks,
+  IconButton
 };

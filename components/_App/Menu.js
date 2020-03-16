@@ -37,7 +37,10 @@ const Menu = ({ user }) => {
         <Link href="/contact">
           <a>Contact</a>
         </Link>
-        <AccountIcon />
+        <$.IconButton size={"25"}>
+          <AccountIcon loggedIn={!!store.auth} isLightTheme={isLightTheme} />
+        </$.IconButton>
+
         <Search isLightTheme={isLightTheme} />
         <$.CartButton
           data-size={9}

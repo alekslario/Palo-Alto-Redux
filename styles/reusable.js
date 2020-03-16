@@ -188,6 +188,10 @@ const SubmitButton = styled.button`
   border: 2px solid transparent;
 `;
 
+const IconButton = styled.button`
+  ${({ size }) =>
+    size ? `height: ${size}px;width: ${size}px;` : "height: 22px;width: 22px;"};
+`;
 export {
   flexCenter,
   absoluteCenter,
@@ -208,5 +212,6 @@ export {
   Error,
   SubmitButton,
   H2,
-  Input
+  Input,
+  IconButton
 };

@@ -3,7 +3,8 @@ import {
   inlineFlexCenter,
   textCenter,
   title,
-  flexCenter
+  flexCenter,
+  IconButton
 } from "../../styles/reusable";
 
 const fadeIn = keyframes`
@@ -14,10 +15,6 @@ const fadeIn = keyframes`
   100% {
     opacity:1;
   }
-`;
-const IconButton = styled.button`
-  ${({ size }) =>
-    size ? `height: ${size}px;width: ${size}px;` : "height: 22px;width: 22px;"};
 `;
 
 const Nav = styled.div`

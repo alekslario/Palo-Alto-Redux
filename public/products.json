@@ -1,0 +1,162 @@
+{
+  "breakpoints": {
+    "sm": [180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1950, 2048],
+    "lg": [295, 394, 590, 700, 800, 1000, 1200, 1500, 1800, 2000, 2048]
+  },
+  "mens": [
+    {
+      "name": "Breaker Shirt",
+      "price": {
+        "current": 12900,
+        "old": 7900
+      },
+      "desc": "Protective on the outside and soft on the inside, the updated Breaker Shirt Jacket is built with 4-way stretch nylon fabric for ease of movement and topped with a durable water repellent (DWR) finish to keep the elements at bay. It’s the perfect layering piece you never thought you needed during unpredictable shoulder season weather.",
+      "src": [
+        "https://cdn.shopify.com/s/files/1/1149/2354/products/b-3",
+        "https://cdn.shopify.com/s/files/1/1149/2354/products/b-2",
+        "https://cdn.shopify.com/s/files/1/1149/2354/products/b-1"
+      ]
+    },
+    {
+      "name": "Fleece Jacket",
+      "price": {
+        "current": 12900,
+        "old": 8900
+      },
+      "desc": "We know that you've been stealing your boyfriend's fleece, now you don't have to. The Topo Designs Mountain Fleece is sized for women with the simple styling we've seen growing up around mountain towns in the West. Great either as a layer or a jacket on its own.\nMade in USA from genuine Polartec® fleece.",
+      "src": [
+        "//cdn.shopify.com/s/files/1/1149/2354/products/f-1",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/f-2",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/f-3",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/f-4"
+      ]
+    },
+    {
+      "name": "Mountain Popover",
+      "price": {
+        "current": 12900,
+        "old": 0
+      },
+      "desc": "The Topo Designs Mountain Fleece. Growing up around mountain towns in the West, the ubiquitous fleece made an impression on us. It was great for the elements then and it's great now. Our version has the simple styling we remember with a trim fit. Great either as a layer or a jacket on its own.",
+      "src": [
+        "//cdn.shopify.com/s/files/1/1149/2354/products/mp-2",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/mp-1",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/mp-3"
+      ]
+    },
+    {
+      "name": "Mountain Tee",
+      "price": {
+        "current": 3200,
+        "old": 0
+      },
+      "desc": "Our Topo Mountain icon printed on the perfect soft cotton tee in unisex sizing for men and women.\nPrinted and Made in USA from 100% cotton. Fits true to size.",
+      "src": [
+        "//cdn.shopify.com/s/files/1/1149/2354/products/t-1",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/t-2"
+      ]
+    },
+    {
+      "name": "Topo Designs x TSPTR Tee",
+      "price": {
+        "current": 4000,
+        "old": 0
+      },
+      "desc": "A limited run of Snoopy tees made for us by our UK-based friends at TSPTR. Printed on a premium weight slub cotton jersey t-shirt with a water based ink front print. Fits true to size.",
+      "src": [
+        "//cdn.shopify.com/s/files/1/1149/2354/products/t3-1",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/t3-2"
+      ]
+    },
+    {
+      "name": "Wind Shirt",
+      "price": {
+        "current": 12900,
+        "old": 7900
+      },
+      "desc": "Protective on the outside and soft on the inside, the updated Breaker Shirt Jacket is built with 4-way stretch nylon fabric for ease of movement and topped with a durable water repellent (DWR) finish to keep the elements at bay. It’s the perfect layering piece you never thought you needed during unpredictable shoulder season weather.",
+      "src": [
+        "//cdn.shopify.com/s/files/1/1149/2354/products/wn-1",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/wn-2",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/wn-3"
+      ]
+    },
+    {
+      "name": "Work Shirt - Plaid",
+      "price": {
+        "current": 12900,
+        "old": 8900
+      },
+      "desc": "Your Grandfather's favorite heavyweight flannel shirt, complete with an oversized utility pocket, meets Topo Designs custom plaid. The Work Shirt Heavyweight flannel speaks to the past but is designed and fit for the future. We have taken our most desired items and have adjusted them to fit women's curves, offering a trim and tailored fit for use around town with just enough extra room for hitting the trail.",
+      "src": [
+        "//cdn.shopify.com/s/files/1/1149/2354/products/x-1",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/x-4"
+      ]
+    },
+    {
+      "name": "Work Shirt - Wool",
+      "price": {
+        "current": 19800,
+        "old": 12900
+      },
+      "desc": "Inspired by traditional military-style work wear, our rugged Field Shirt is made from 7 oz. twill cotton. Featuring oversized BDU buttons, large front utility chest pockets, and a top paracord loop and button finish—to keep you looking as sharp as possible, no matter what environment you're in.",
+      "src": [
+        "//cdn.shopify.com/s/files/1/1149/2354/products/w-1_c098edce-4b06-46b7-8ee5-dcb372245a0e",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/w-2_e99c09a5-fe4b-4940-8ef8-5ece7c127055",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/w-3_588672c2-1783-4432-b492-74fbb96f3415",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/w-4_c2999897-2cb5-4a21-b158-baeb7aa8892f"
+      ]
+    }
+  ],
+  "womens": [
+    {
+      "name": "Camp Shorts",
+      "price": {
+        "current": 3900,
+        "old": 0
+      },
+      "desc": "Our Camp Shorts are made with a lightweight cotton twill, that is soft to the touch but tough enough to withstand the outdoors. Designed with a trim fit they keep you looking good in town but still comfortable on the trail. Classic styling and added durability with reinforced stress point stitching.",
+      "src": [
+        "//cdn.shopify.com/s/files/1/1149/2354/products/apparel-women-s-camp-shorts-2_2048x2048_791ec8b2-75f3-481c-baf3-ac6c28633f6c",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/apparel-women-s-camp-shorts-4_2048x2048_5b3f4e9e-d687-4790-9a89-715ff3dbb857"
+      ]
+    },
+    {
+      "name": "Diamond Tee",
+      "price": {
+        "current": 1800,
+        "old": 3200
+      },
+      "desc": "Our Topo Designs Diamond logo printed on the perfect soft cotton tee in unisex sizes for both men and women.\nPrinted and Made in USA from 100% cotton. Fits true to size.",
+      "src": [
+        "//cdn.shopify.com/s/files/1/1149/2354/products/apparel-women-s-diamond-tee-1_2048x2048_af7dbc2c-6d8a-43e5-a31d-e50e3838b084",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/apparel-women-s-diamond-tee-2_2048x2048_09c04136-26da-4405-ba69-c56d0ed9f054"
+      ]
+    },
+    {
+      "name": "Westerlind Hat",
+      "price": {
+        "current": 11900,
+        "old": 0
+      },
+      "desc": "We teamed up with our friends at Westerlind to create a new take on the traditional ranger hat. We took Westerlind»s iconic wool felt profile, dyed it a forest tint and finished it with our classic red paracord and globe spring lock. The end result is a perfect piece of headwear that even Smokey would sport.",
+      "src": [
+        "//cdn.shopify.com/s/files/1/1149/2354/products/apparel-topo-designs-x-westerlind-hat-1_2048x2048_8c0d4bbf-f9f8-4461-ac75-beced1701fd9",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/apparel-topo-designs-x-westerlind-hat-4_2048x2048_7562c3fd-fed7-40c8-93a1-06dc71fb358c",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/apparel-topo-designs-x-westerlind-hat-3_2048x2048_77b98b4a-b192-4236-9a8e-f266d7c0c5d6"
+      ]
+    },
+    {
+      "name": "Work Shirt",
+      "price": {
+        "current": 12900,
+        "old": 0
+      },
+      "desc": "The Work Shirt is made for late summer nights around the campfire or early fall mornings working in the garage. It has a trim fit with subtle western styling on the front and back. Crafted from 100% cotton and made right here in the USA.",
+      "src": [
+        "//cdn.shopify.com/s/files/1/1149/2354/products/apparel-women-s-work-shirt-heavyweight-1_2048x2048_2048x2048_0907eade-347b-45d7-8292-f434f79bbc3f",
+        "//cdn.shopify.com/s/files/1/1149/2354/products/apparel-women-s-work-shirt-heavyweight-2_2048x2048_2048x2048_da7e1137-84de-44a8-b23b-62ca0a50ffaf"
+      ]
+    }
+  ]
+}

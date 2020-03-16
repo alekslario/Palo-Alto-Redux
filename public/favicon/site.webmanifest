@@ -1,0 +1,19 @@
+{
+  "name": "mern-stack-demo-store",
+  "short_name": "mern-stack-demo-store",
+  "icons": [
+    {
+      "src": "/public/favicon/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/public/favicon/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "${({ theme }) => theme.colors.primary}fff",
+  "background_color": "${({ theme }) => theme.colors.primary}fff",
+  "display": "standalone"
+}

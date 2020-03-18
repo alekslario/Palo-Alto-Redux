@@ -109,5 +109,12 @@ export default createGlobalStyle`
     .bagSvg{
       fill:${({ theme }) => theme.colors.secondary};
     }
+    #account-svg{
+      fill:${({ theme, loggedIn }) =>
+        loggedIn ? theme.colors.secondary : "none"};
+    }
+    #account-svg-g{
+      stroke:${({ theme }) => theme.colors.secondary};
+    }
   }
 `;

@@ -57,7 +57,7 @@ const Layout = ({ children, user }) => {
         <SideMenu />
       </div>
 
-      <GlobalStyle />
+      <GlobalStyle loggedIn={!!store.auth} />
     </>
   );
 };

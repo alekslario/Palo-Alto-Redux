@@ -3,11 +3,13 @@ export default ({ loggedIn = false, isLightTheme = true }) => (
     <g
       stroke="none"
       strokeWidth="3"
+      id="account-svg"
       fill={loggedIn ? (isLightTheme ? "#fff" : "#000") : "none"}
       fillRule="evenodd"
       strokeLinecap="round"
     >
       <g
+        id="account-svg-g"
         transform="translate(-1080.000000, -340.000000)"
         stroke={isLightTheme ? "#fff" : "#000"}
       >

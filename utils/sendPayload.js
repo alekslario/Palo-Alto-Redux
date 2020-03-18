@@ -7,7 +7,7 @@ export default async (data, route, setStatus) => {
     const url = `${baseUrl}/api/${route}`;
     const payload = { ...data };
     const response = await axios.post(url, payload);
-    if (response.status === 201) {
+    if (response.status === 200 || response.status === 201) {
       return response;
     }
   } catch (status) {

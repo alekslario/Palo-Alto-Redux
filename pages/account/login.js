@@ -1,14 +1,11 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import sendPayload from "../../utils/sendPayload";
-import $ from "../../components/Account/_Login";
+import $ from "../../components/Account/_Account";
 import Input from "../../components/_App/Input";
-import { useRouter } from "next/router";
-import { useStore } from "../../utils/contextStore";
+import { handleLogin } from "../../utils/auth";
 const Login = () => {
   const [status, setStatus] = useState("");
-  const [store, dispatch] = useStore();
-  const router = useRouter();
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
@@ -24,8 +21,7 @@ const Login = () => {
     );
     const token = response?.data?.token;
     if (token) {
-      dispatch({ type: "LOGIN", token });
-      router.push("/");
+      handleLogin(token);
     }
   };
 

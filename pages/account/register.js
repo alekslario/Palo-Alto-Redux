@@ -1,14 +1,11 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import sendPayload from "../../utils/sendPayload";
-import $ from "../../components/Account/_Login";
+import $ from "../../components/Account/_Account";
 import Input from "../../components/_App/Input";
-import { useRouter } from "next/router";
-import { useStore } from "../../utils/contextStore";
+import { handleLogin } from "../../utils/auth";
 const Register = () => {
   const [status, setStatus] = useState("");
-  const [store, dispatch] = useStore();
-  const router = useRouter();
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const nameRef = useRef(null);
@@ -27,9 +24,10 @@ const Register = () => {
       setStatus
     );
     const token = response?.data?.token;
+    console.log(token);
+
     if (token) {
-      dispatch({ type: "LOGIN", token });
-      router.push("/");
+      handleLogin(token);
     }
   };
 

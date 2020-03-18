@@ -15,7 +15,15 @@ const Wrapper = styled.div`
   }
 `;
 
-const DesktopLinks = styled(Wrapper)``;
+const DesktopLinks = styled(Wrapper)`
+  ul {
+    ${inlineFlexCenter}
+    align-items:flex-end;
+  }
+  li {
+    margin-left: 20px;
+  }
+`;
 
 const MobileLinks = styled(Wrapper)`
   flex-wrap: wrap;
@@ -58,7 +66,6 @@ const CartButton = styled.button`
   height: 27px;
   width: 22px;
   margin-bottom: 4px;
-  margin-left: 20px;
   ::after {
     ${textCenter};
     line-height: normal;

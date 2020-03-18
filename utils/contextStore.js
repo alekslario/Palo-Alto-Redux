@@ -30,9 +30,9 @@ const defaultState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case "LOGIN":
-      return { ...state, auth: action.token };
+      return { ...state, auth: true };
     case "LOGOUT":
-      return { ...state, auth: "" };
+      return { ...state, auth: false };
     case "ADD_FILTER":
       return {
         ...state,

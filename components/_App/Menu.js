@@ -37,20 +37,43 @@ const Menu = ({ user }) => {
         <Link href="/contact">
           <a>Contact</a>
         </Link>
-        <$.IconButton size={"25"}>
-          <AccountIcon loggedIn={!!store.auth} isLightTheme={isLightTheme} />
-        </$.IconButton>
-
-        <Search isLightTheme={isLightTheme} />
-        <$.CartButton
-          data-size={9}
-          id="cart"
-          onClick={() => {
-            dispatch({ type: "TOGGLE_MENU" });
-          }}
+        <ul
+          css={`
+            a {
+              margin-right: 0px;
+            }
+          `}
         >
-          <ShoppingBagIcon lightTheme={isLightTheme} />
-        </$.CartButton>
+          <li>
+            <Link href="/account">
+              <a
+                css={`
+                  height: 25px;
+                  width: 25px;
+                `}
+              >
+                <AccountIcon
+                  loggedIn={!!store.auth}
+                  isLightTheme={isLightTheme}
+                />
+              </a>
+            </Link>
+          </li>
+          <li>
+            <Search isLightTheme={isLightTheme} />
+          </li>
+          <li>
+            <$.CartButton
+              data-size={9}
+              id="cart"
+              onClick={() => {
+                dispatch({ type: "TOGGLE_MENU" });
+              }}
+            >
+              <ShoppingBagIcon lightTheme={isLightTheme} />
+            </$.CartButton>
+          </li>
+        </ul>
       </$.DesktopLinks>
       <$.MobileLinks lightTheme={isLightTheme}>
         <button>

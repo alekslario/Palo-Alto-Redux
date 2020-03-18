@@ -98,12 +98,12 @@ const Products = ({
       setShowLoader(false);
       return;
     }
-    const handler = setTimeout(() => {
+    const loadingHandler = setTimeout(() => {
       if (loading) {
         setShowLoader(true);
       }
     }, 500);
-    return () => clearTimeout(handler);
+    return () => clearTimeout(loadingHandler);
   }, [loading]);
 
   useEffect(() => {

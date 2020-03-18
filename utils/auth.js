@@ -1,6 +1,5 @@
 import cookie from "js-cookie";
 import Router from "next/router";
-
 const handleLogin = token => {
   cookie.set("token", token);
   Router.push("/account");
@@ -18,7 +17,7 @@ const redirectUser = (ctx, location) => {
 const handleLogout = () => {
   cookie.remove("token");
   window.localStorage.setItem("logout", Date.now());
-  Router.push("/login");
+  Router.push("/account/login");
 };
 
 export { handleLogin, redirectUser, handleLogout };

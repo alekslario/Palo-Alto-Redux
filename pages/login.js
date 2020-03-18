@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Form, Icon, Message, Segment } from "semantic-ui-react";
+// import { Button, Form, Icon, Message, Segment } from "semantic-ui-react";
 import Link from "next/link";
 import axios from "axios";
 import catchErrors from "../utils/catchErrors";
@@ -46,7 +46,7 @@ function Signup() {
 
   return (
     <>
-      <Message
+      {/* <Message
         attached
         icon="privacy"
         header="Welcome Back!"
@@ -94,7 +94,7 @@ function Signup() {
           <a>Sign up here</a>
         </Link>{" "}
         instead.
-      </Message>
+      </Message> */}
     </>
   );
 }

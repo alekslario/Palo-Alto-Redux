@@ -1,102 +1,80 @@
-import React from "react";
-// import { Button, Form, Icon, Message, Segment } from "semantic-ui-react";
+import { useState, useRef } from "react";
 import Link from "next/link";
-import axios from "axios";
-import catchErrors from "../utils/catchErrors";
-import baseUrl from "../utils/baseUrl";
+import sendPayload from "../utils/sendPayload";
+import $ from "../components/Account/_Account";
+import Input from "../components/_App/Input";
 import { handleLogin } from "../utils/auth";
+const Login = () => {
+  const [status, setStatus] = useState("");
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
 
-const INITIAL_USER = {
-  email: "",
-  password: ""
-};
-
-function Signup() {
-  const [user, setUser] = React.useState(INITIAL_USER);
-  const [disabled, setDisabled] = React.useState(true);
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState("");
-
-  React.useEffect(() => {
-    const isUser = Object.values(user).every(el => !!el);
-    isUser ? setDisabled(false) : setDisabled(true);
-  }, [user]);
-
-  const handleChange = event => {
-    const { name, value } = event.target;
-    setUser(prevState => ({ ...prevState, [name]: value }));
-  };
-
-  const handleSubmit = async event => {
-    event.preventDefault();
-
-    try {
-      setLoading(true);
-      setError("");
-      const url = `${baseUrl}/api/login`;
-      const payload = { ...user };
-      const response = await axios.post(url, payload);
-      handleLogin(response.data);
-    } catch (error) {
-      catchErrors(error, setError);
-    } finally {
-      setLoading(false);
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const response = await sendPayload(
+      {
+        email: emailRef.current.value,
+        password: passwordRef.current.value
+      },
+      "login",
+      setStatus
+    );
+    const token = response?.data?.token;
+    if (token) {
+      handleLogin(token);
     }
   };
 
   return (
-    <>
-      {/* <Message
-        attached
-        icon="privacy"
-        header="Welcome Back!"
-        content="Log in with email and password"
-        color="blue"
-      />
-      <Form error={Boolean(error)} loading={loading} onSubmit={handleSubmit}>
-        <Message error header="Oops!" content={error} />
-        <Segment>
-          <Form.Input
-            fluid
-            icon="envelope"
-            iconPosition="left"
-            label="Email"
+    <$.PageWrapper>
+      <$.Content>
+        {status && <$.Error>{status}</$.Error>}
+        <form onSubmit={handleSubmit}>
+          <$.Title>Login</$.Title>
+          <Input
             placeholder="Email"
-            name="email"
+            id="formEmail"
             type="email"
-            value={user.email}
-            onChange={handleChange}
+            required
+            labelText="Email"
+            ref={emailRef}
           />
-          <Form.Input
-            fluid
-            icon="lock"
-            iconPosition="left"
-            label="Password"
+          <Input
             placeholder="Password"
-            name="password"
+            id="formPassword"
             type="password"
-            value={user.password}
-            onChange={handleChange}
+            minLength="6"
+            maxLength="60"
+            required
+            labelText="Password"
+            ref={passwordRef}
           />
-          <Button
-            disabled={disabled || loading}
-            icon="sign in"
-            type="submit"
-            color="orange"
-            content="Login"
-          />
-        </Segment>
-      </Form>
-      <Message attached="bottom" warning>
-        <Icon name="help" />
-        New user?{" "}
-        <Link href="/signup">
-          <a>Sign up here</a>
-        </Link>{" "}
-        instead.
-      </Message> */}
-    </>
-  );
-}
+          <$.SubmitButton type="submit">Login</$.SubmitButton>
+        </form>
+        <Link href="/">
+          <a
+            css={`
+              color: ${({ theme }) => theme.colors.beta};
+              cursor: pointer;
+            `}
+          >
+            Forgot your password? •&nbsp;
+          </a>
+        </Link>
 
-export default Signup;
+        <Link href="/register">
+          <a
+            css={`
+              color: ${({ theme }) => theme.colors.beta};
+              cursor: pointer;
+            `}
+          >
+            Create account
+          </a>
+        </Link>
+      </$.Content>
+    </$.PageWrapper>
+  );
+};
+
+export default Login;

@@ -61,10 +61,8 @@ class MyApp extends App {
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx, token);
     }
-    console.log("ctx.pathname", ctx.pathname);
-
     if (!token && ctx.pathname === "/account") {
-      redirectUser(ctx, "/account/login");
+      redirectUser(ctx, "/login");
     } else if (token && ctx.pathname === "/account") {
       try {
         const payload = { headers: { Authorization: token } };
@@ -77,7 +75,7 @@ class MyApp extends App {
         // 1) Throw out invalid token
         destroyCookie(ctx, "token");
         // 2) Redirect to login
-        redirectUser(ctx, "/account/login");
+        redirectUser(ctx, "/login");
       }
     }
 
@@ -90,7 +88,7 @@ class MyApp extends App {
 
   syncLogout = event => {
     if (event.key === "logout") {
-      handleLogout();
+      Router.push("/login");
     }
   };
 

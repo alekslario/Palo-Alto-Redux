@@ -17,7 +17,7 @@ const redirectUser = (ctx, location) => {
 const handleLogout = () => {
   cookie.remove("token");
   window.localStorage.setItem("logout", Date.now());
-  Router.push("/account/login");
+  Router.push("/login");
 };
 
 export { handleLogin, redirectUser, handleLogout };

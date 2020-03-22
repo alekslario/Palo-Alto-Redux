@@ -39,7 +39,7 @@ const ContactForm = () => {
         frameBorder="0"
       ></iframe>
       <$.ContactPage>
-        {status && <$.Error>{status}</$.Error>}
+        {status && status.text && <$.Error>{status.text}</$.Error>}
         <form onSubmit={handleSubmit}>
           <$.Notice>Contact</$.Notice>
           <$.Wrapper>

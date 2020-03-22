@@ -4,7 +4,6 @@ import React, { createContext, useContext, useReducer } from "react";
 const StoreContext = createContext();
 
 const defaultState = {
-  auth: "",
   cart: [],
   menuOpen: false,
   product: {},
@@ -29,10 +28,6 @@ const defaultState = {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "LOGIN":
-      return { ...state, auth: true };
-    case "LOGOUT":
-      return { ...state, auth: false };
     case "ADD_FILTER":
       return {
         ...state,

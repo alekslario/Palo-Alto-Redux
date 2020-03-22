@@ -8,10 +8,9 @@ import Search from "./Search";
 import { useStore } from "../../utils/contextStore";
 import { handleLogout } from "../../utils/auth";
 import $ from "./_Menu";
-const Menu = ({ user }) => {
+const Menu = ({ hasToken }) => {
   const { pathname } = useRouter();
   const [store, dispatch] = useStore();
-  const isRootOrAdmin = user && (user.role === "root" || user.role === "admin");
   const isActive = route => route === pathname;
   const isLightTheme =
     pathname === "/" ||
@@ -50,12 +49,10 @@ const Menu = ({ user }) => {
                 css={`
                   height: 25px;
                   width: 25px;
+                  cursor: pointer;
                 `}
               >
-                <AccountIcon
-                  loggedIn={!!store.auth}
-                  isLightTheme={isLightTheme}
-                />
+                <AccountIcon loggedIn={hasToken} isLightTheme={isLightTheme} />
               </a>
             </Link>
           </li>

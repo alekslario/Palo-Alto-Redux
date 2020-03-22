@@ -3,9 +3,11 @@ import Link from "next/link";
 import sendPayload from "../utils/sendPayload";
 import $ from "../components/Account/_Account";
 import Input from "../components/_App/Input";
+import SubmitButton from "../components/_App/SubmitButton";
 import { handleLogin } from "../utils/auth";
 const Register = () => {
   const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState("");
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const nameRef = useRef(null);
@@ -13,6 +15,7 @@ const Register = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setLoading(true);
     const response = await sendPayload(
       {
         email: emailRef.current.value,
@@ -23,9 +26,8 @@ const Register = () => {
       "register",
       setStatus
     );
+    setLoading(false);
     const token = response?.data?.token;
-    console.log(token);
-
     if (token) {
       handleLogin(token);
     }
@@ -34,7 +36,10 @@ const Register = () => {
   return (
     <$.PageWrapper>
       <$.Content>
-        {status && <$.Error>{status}</$.Error>}
+        {status &&
+          status.text &&
+          status.status !== 200 &&
+          status.status !== 201 && <$.Error>{status.text}</$.Error>}
         <form onSubmit={handleSubmit}>
           <$.Title>Create Account</$.Title>
           <Input
@@ -77,16 +82,19 @@ const Register = () => {
             labelText="Password"
             ref={passwordRef}
           />
-          <$.SubmitButton type="submit">CREATE</$.SubmitButton>
+
+          <SubmitButton type="submit" loading={loading}>
+            CREATE
+          </SubmitButton>
         </form>
-        <Link href="/register">
+        <Link href="/">
           <a
             css={`
               color: ${({ theme }) => theme.colors.beta};
               cursor: pointer;
             `}
           >
-            Create account
+            Return to Store
           </a>
         </Link>
       </$.Content>

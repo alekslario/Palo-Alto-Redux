@@ -7,7 +7,7 @@ import SideMenu from "./SideMenu";
 import GlobalStyle from "../../styles/global";
 import { useStore } from "../../utils/contextStore";
 
-const Layout = ({ children, user }) => {
+const Layout = ({ children, hasToken }) => {
   const [store, dispatch] = useStore();
   const sideMenu = useRef(null);
   useEffect(() => {
@@ -47,7 +47,7 @@ const Layout = ({ children, user }) => {
             transition: transform 0.4s cubic-bezier(0.46, 0.01, 0.32, 1);
           `}
         >
-          <Menu user={user} />
+          <Menu hasToken={hasToken} />
           <div id="header-observer" />
           <div id="main" role="main">
             {children}
@@ -57,7 +57,7 @@ const Layout = ({ children, user }) => {
         <SideMenu />
       </div>
 
-      <GlobalStyle loggedIn={!!store.auth} />
+      <GlobalStyle loggedIn={hasToken} />
     </>
   );
 };

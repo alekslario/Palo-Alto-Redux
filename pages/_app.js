@@ -61,6 +61,7 @@ class MyApp extends App {
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx, token);
     }
+    pageProps.hasToken = !!token;
     if (!token && ctx.pathname === "/account") {
       redirectUser(ctx, "/login");
     } else if (token && ctx.pathname === "/account") {
@@ -81,16 +82,6 @@ class MyApp extends App {
 
     return { pageProps };
   }
-
-  componentDidMount() {
-    window.addEventListener("storage", this.syncLogout);
-  }
-
-  syncLogout = event => {
-    if (event.key === "logout") {
-      Router.push("/login");
-    }
-  };
 
   render() {
     const { Component, pageProps } = this.props;

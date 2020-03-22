@@ -1,6 +1,7 @@
 // import AccountHeader from "../components/Account/AccountHeader";
 // import AccountOrders from "../components/Account/AccountOrders";
 // import AccountPermissions from "../components/Account/AccountPermissions";
+import { useEffect } from "react";
 import baseUrl from "../utils/baseUrl";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -10,6 +11,18 @@ import { handleLogout } from "../utils/auth";
 function Account({ user, orders }) {
   const [store, dispatch] = useStore();
   const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handler = event => {
+      if (event.key === "logout") {
+        router.push("/login");
+      }
+    };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
+
   return (
     <$.PageWrapper>
       <h1

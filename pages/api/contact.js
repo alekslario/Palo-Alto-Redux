@@ -12,7 +12,6 @@ export default async function(req, res) {
     text: message,
     html: `<p>${message}</p>`
   };
-
   try {
     await sgMail.send(content);
     res.status(200).send("Message sent successfully.");

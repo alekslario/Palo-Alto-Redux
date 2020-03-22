@@ -3,11 +3,13 @@ import {
   Error,
   SubmitButton as DefaultButton,
   PageWrapper,
-  title
+  title,
+  H2
 } from "../../styles/reusable";
 
 const Content = styled.div`
   margin: 0 auto;
+  ${({ position }) => (position ? `position:${position};` : "")};
   @media (min-width: 481px) {
     width: 50%;
   }
@@ -15,20 +17,20 @@ const Content = styled.div`
     width: 33.333%;
   }
 `;
-const SubmitButton = styled(DefaultButton)`
-  @media (max-width: 480px) {
-    width: 100%;
-  }
-`;
 
 const Title = styled.h1`
   ${title}
   color:${({ theme }) => theme.colors.beta};
 `;
+
+const BiggerTittle = styled.div`
+  ${H2}
+  margin-bottom: -10px;
+`;
 export default {
   Error,
-  SubmitButton,
   PageWrapper,
   Content,
-  Title
+  Title,
+  BiggerTittle
 };

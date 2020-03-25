@@ -1,11 +1,7 @@
-import mongoose from "mongoose";
+import connectDb from "../../utils/connectDb";
 import jwt from "jsonwebtoken";
 import Cart from "../../models/Cart";
-import connectDb from "../../utils/connectDb";
-import Product from "../../models/Product";
 connectDb();
-
-const { ObjectId } = mongoose.Types;
 
 export default async (req, res) => {
   switch (req.method) {
@@ -33,11 +29,11 @@ async function handleGetRequest(req, res) {
       req.headers.authorization,
       process.env.JWT_SECRET
     );
-    const cart = await Cart.findOne({ user: userId }).populate({
-      path: "products.product",
-      model: Product
-    });
-    res.status(200).json(cart.products);
+    const cart = await Cart.findOne({ user: userId })
+      .populate("cartProducts")
+      .lean();
+
+    res.status(200).json(cart.cartProducts);
   } catch (error) {
     console.error(error);
     res.status(403).send("Please login again");
@@ -45,7 +41,7 @@ async function handleGetRequest(req, res) {
 }
 
 async function handlePutRequest(req, res) {
-  const { quantity, productId } = req.body;
+  const { payloadProducts } = req.body;
   if (!("authorization" in req.headers)) {
     return res.status(401).send("No authorization token");
   }
@@ -54,26 +50,25 @@ async function handlePutRequest(req, res) {
       req.headers.authorization,
       process.env.JWT_SECRET
     );
-    // Get user cart based on userId
+
     const cart = await Cart.findOne({ user: userId });
-    // Check if product already exists in cart
-    const productExists = cart.products.some(doc =>
-      ObjectId(productId).equals(doc.product)
-    );
-    // If so, increment quantity (by number provided to request)
-    if (productExists) {
-      await Cart.findOneAndUpdate(
-        { _id: cart._id, "products.product": productId },
-        { $inc: { "products.$.quantity": quantity } }
+    if (cart.products.length > 60 || Object.keys(payloadProducts).length > 60)
+      res.status(400).send("Maximum cart size reached");
+    cart.products = cart.products
+      .map(doc => {
+        if (payloadProducts[doc.product]) {
+          doc.quantity += payloadProducts[doc.product];
+          delete payloadProducts[doc.product];
+          return doc;
+        }
+      })
+      .concat(
+        Object.entries(payloadProducts).map(([key, value]) => ({
+          quantity: value,
+          product: key
+        }))
       );
-    } else {
-      // If not, add new product with given quantity
-      const newProduct = { quantity, product: productId };
-      await Cart.findOneAndUpdate(
-        { _id: cart._id },
-        { $addToSet: { products: newProduct } }
-      );
-    }
+    await cart.save();
     res.status(200).send("Cart updated");
   } catch (error) {
     console.error(error);
@@ -91,15 +86,11 @@ async function handleDeleteRequest(req, res) {
       req.headers.authorization,
       process.env.JWT_SECRET
     );
-    const cart = await Cart.findOneAndUpdate(
+    await Cart.findOneAndUpdate(
       { user: userId },
-      { $pull: { products: { product: productId } } },
-      { new: true }
-    ).populate({
-      path: "products.product",
-      model: Product
-    });
-    res.status(200).json(cart.products);
+      { $pull: { products: { product: productId } } }
+    );
+    res.status(200).send("Product deleted");
   } catch (error) {
     console.error(error);
     res.status(403).send("Please login again");

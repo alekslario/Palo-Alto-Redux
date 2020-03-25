@@ -5,11 +5,12 @@ const { Number, String } = mongoose.Schema.Types;
 const ProductSchema = new mongoose.Schema({
   productId: {
     type: String,
-    unique: true
+    unique: true,
+    required: true
   },
   contentId: {
     type: String,
-    unique: true
+    required: true
   },
   price: {
     type: Number,

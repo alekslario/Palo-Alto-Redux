@@ -18,11 +18,11 @@ const Challenge = () => {
       setStatus({ text: "Check the box first.", status: 0 });
     } else {
       setLoading(true);
-      await sendPayload(
-        { token, email: router.query.email },
-        "requestReset",
+      await sendPayload({
+        data: { token, email: router.query.email },
+        route: "requestReset",
         setStatus
-      );
+      });
       setLoading(false);
     }
   };

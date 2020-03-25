@@ -17,7 +17,7 @@ export default async (req, res) => {
     } else if (!isLength(surname, { min: 2, max: 40 })) {
       return res.status(422).send("Surname must be 2-40 characters long");
     } else if (!isLength(password, { min: 6, max: 60 })) {
-      return res.status(422).send("Password must be 6-60 characters");
+      return res.status(422).send("Password must be 6-60 characters long");
     } else if (!isEmail(email)) {
       return res.status(422).send("Email must be valid");
     }

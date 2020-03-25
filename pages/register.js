@@ -16,16 +16,16 @@ const Register = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
-    const response = await sendPayload(
-      {
+    const response = await sendPayload({
+      data: {
         email: emailRef.current.value,
         password: passwordRef.current.value,
         name: nameRef.current.value,
         surname: surnameRef.current.value
       },
-      "register",
+      route: "register",
       setStatus
-    );
+    });
     setLoading(false);
     const token = response?.data?.token;
     if (token) {

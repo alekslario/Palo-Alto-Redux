@@ -30,13 +30,47 @@ const UserSchema = new mongoose.Schema(
     },
     resetPasswordToken: {
       type: String,
-      required: false
+      required: false,
+      select: false
     },
 
     resetPasswordExpires: {
       type: Number,
-      required: false
-    }
+      required: false,
+      select: false
+    },
+    address: [
+      {
+        country: {
+          type: String,
+          required: true
+        },
+        city: {
+          type: String,
+          required: true
+        },
+        postcode: {
+          type: String,
+          required: true
+        },
+        address: {
+          type: String,
+          required: true
+        },
+        addressOptional: {
+          type: String,
+          required: false
+        },
+        province: {
+          type: String,
+          required: false
+        },
+        phone: {
+          type: String,
+          required: false
+        }
+      }
+    ]
   },
   {
     timestamps: true

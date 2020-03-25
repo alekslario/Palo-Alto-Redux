@@ -19,14 +19,14 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
-    const response = await sendPayload(
-      {
+    const response = await sendPayload({
+      data: {
         email: emailRef.current.value,
         password: passwordRef.current.value
       },
-      "login",
+      route: "login",
       setStatus
-    );
+    });
     setLoading(false);
     const token = response?.data?.token;
 

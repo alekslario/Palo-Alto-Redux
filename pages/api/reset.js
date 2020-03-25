@@ -26,7 +26,7 @@ export default async (req, res) => {
     // hash their new password
     const hash = await bcrypt.hash(password, 10);
     user.password = hash;
-    user.save();
+    await user.save();
 
     const nodemailer = require("nodemailer");
     const transporter = nodemailer.createTransport({

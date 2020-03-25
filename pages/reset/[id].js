@@ -19,14 +19,14 @@ const Reset = () => {
       setStatus({ text: "Password must be 6-60 characters", status: 0 });
     } else {
       setLoading(true);
-      await sendPayload(
-        {
+      await sendPayload({
+        data: {
           token: router.query.id,
           password: passwordRef.current.value
         },
-        "reset",
+        route: "reset",
         setStatus
-      );
+      });
       setLoading(false);
     }
   };

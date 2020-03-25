@@ -12,7 +12,11 @@ const ContactForm = () => {
   const [status, setStatus] = useState("");
   const handleSubmit = async e => {
     e.preventDefault();
-    sendPayload({ name, email, message }, "contact", setStatus);
+    sendPayload({
+      data: { name, email, message },
+      route: "contact",
+      setStatus
+    });
   };
 
   const handleChange = ({ target: { name, value } }) => {

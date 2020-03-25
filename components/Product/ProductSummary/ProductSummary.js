@@ -9,6 +9,7 @@ import createContentfulSrc from "../../../utils/createContentfulSrc";
 import LinksAccordion from "../../_App/LinksAccordion";
 import SocialShare from "../../_App/SocialShare";
 import formatMoney from "../../../utils/formatMoney";
+import AddToCart from "../AddToCart";
 
 const ProductSummary = ({ id, inStock = true }) => {
   const [option, setOption] = useState(0);
@@ -141,7 +142,9 @@ const ProductSummary = ({ id, inStock = true }) => {
             </p>
           )}
           {!inStock && <p>Out of stock</p>}
-          <$.Button>ADD TO CART</$.Button>
+          <AddToCart>
+            <$.Button>ADD TO CART</$.Button>
+          </AddToCart>
           <$.Button black={true}>BUY IT NOW</$.Button>
           <div
             css={`

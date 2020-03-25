@@ -1,7 +1,7 @@
 import baseUrl from "../utils/baseUrl";
 import axios from "axios";
 import catchErrors from "../utils/catchErrors";
-export default async (data, route, setStatus) => {
+export default async ({ data = {}, route, setStatus = () => {} }) => {
   try {
     setStatus("");
     const url = `${baseUrl}/api/${route}`;

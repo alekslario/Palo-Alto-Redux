@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
-import sendPayload from "../utils/sendPayload";
+import contactServer from "../utils/contactServer";
 import $ from "../components/Account/_Account";
 import Input from "../components/_App/Input";
 import SubmitButton from "../components/_App/SubmitButton";
@@ -16,7 +16,7 @@ const Register = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
-    const response = await sendPayload({
+    const response = await contactServer({
       data: {
         email: emailRef.current.value,
         password: passwordRef.current.value,

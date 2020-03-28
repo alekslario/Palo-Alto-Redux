@@ -1,17 +1,11 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useCallback,
-  useMemo
-} from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import Product from "../Product/Product";
 import $ from "./_Products";
 import { useStore } from "../../utils/contextStore";
 import { useFetchEntries } from "../../utils/useFetchEntries";
 import LoadingCircle from "../_App/LoadingCircle";
-import debounce from "lodash.debounce";
-import isScrolledIntoView from "../../utils/isScrolledIntoView";
+import { useLazyLoading } from "../../utils/useLazyLoading";
+import { useDelayedLoader } from "../../utils/useDelayedLoader";
 
 const Products = ({
   gender,
@@ -22,22 +16,14 @@ const Products = ({
   inputDependency
 }) => {
   const [store] = useStore();
-  const observeRef = useRef(null);
-  const oldTimeStamp = useRef(0);
-  const limitDefault = limitProducts || 20;
+  const limitDefault = limitProducts || 4;
+  const contentHeight = useRef(null);
   const [{ limit, skip }, setLimits] = useState({
     limit: limitDefault,
     skip: 0
   });
   const [fetchedProducts, setFetchedProducts] = useState([]);
-  const [showLoader, setShowLoader] = useState(false);
   const [showNotFound, setShowNotFound] = useState(false);
-
-  const node = useMemo(() => {
-    if (typeof window !== "undefined") {
-      return document.getElementById("portal") || window;
-    }
-  }, []);
 
   useEffect(() => {
     setFetchedProducts([]);
@@ -72,47 +58,20 @@ const Products = ({
     order: "sys.createdAt"
   });
 
-  const handler = useCallback(
-    debounce(() => {
-      if (
-        observeRef.current &&
-        isScrolledIntoView(observeRef.current) &&
-        oldTimeStamp.current < timeStamp
-      ) {
-        oldTimeStamp.current = timeStamp;
-        setLimits(prevState => ({
-          ...prevState,
-          skip: prevState.skip + limitDefault
-        }));
-      }
-    }, 100),
-    [timeStamp]
-  );
-
   useEffect(() => {
     setFetchedProducts(prevState => [...prevState, ...products]);
   }, [products]);
 
-  useEffect(() => {
-    if (!loading) {
-      setShowLoader(false);
-      return;
-    }
-    const loadingHandler = setTimeout(() => {
-      if (loading) {
-        setShowLoader(true);
-      }
-    }, 500);
-    return () => clearTimeout(loadingHandler);
-  }, [loading]);
+  const [observeRef] = useLazyLoading({
+    items: products,
+    timeStamp,
+    limitDefault,
+    setLimits,
+    disable: limitProducts,
+    scrollingNode: () => document.getElementById("portal") || window
+  });
 
-  useEffect(() => {
-    if (limitProducts) return;
-    if (products.length === limitDefault) {
-      node.addEventListener("scroll", handler);
-      return () => node.removeEventListener("scroll", handler);
-    }
-  }, [fetchedProducts]);
+  const [showLoader] = useDelayedLoader(loading);
 
   useEffect(() => {
     if (fetchedProducts.length > 0 || loading) {

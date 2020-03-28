@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/router";
-import sendPayload from "../../utils/sendPayload";
+import contactServer from "../../utils/contactServer";
 import $ from "../../components/Account/_Account";
 import SubmitButton from "../../components/_App/SubmitButton";
 import Input from "../../components/_App/Input";
@@ -19,7 +19,7 @@ const Reset = () => {
       setStatus({ text: "Password must be 6-60 characters", status: 0 });
     } else {
       setLoading(true);
-      await sendPayload({
+      await contactServer({
         data: {
           token: router.query.id,
           password: passwordRef.current.value

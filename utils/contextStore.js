@@ -5,6 +5,7 @@ const StoreContext = createContext();
 
 const defaultState = {
   cart: [],
+  cache: {},
   menuOpen: false,
   product: {},
   blogPost: {},
@@ -28,6 +29,64 @@ const defaultState = {
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case "ADD_TO_CART":
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          ...action.items.reduce((acc, product) => {
+            acc[product.productId] = {
+              contentId: [product.contentId],
+              quantity:
+                (state.cart[product.productId]?.quantity || 0) +
+                product.quantity
+            };
+            return acc;
+          }, {})
+        }
+      };
+    case "INCREMENT_CART":
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          [action.productId]: {
+            ...state.cart[action.productId],
+            quantity: state.cart[action.productId].quantity + 1
+          }
+        }
+      };
+    case "DECREMENT_CART":
+      if (state.cart[action.productId].quantity === 1) {
+        delete state.cart[action.productId];
+        return { ...state };
+      }
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          [action.productId]: {
+            ...state.cart[action.productId],
+            quantity: state.cart[action.productId].quantity - 1
+          }
+        }
+      };
+    case "REMOVE_FROM_CART":
+      delete state.cart[action.productId];
+      return {
+        ...state
+      };
+    case "ADD_TO_PRODUCT_CACHE":
+      return {
+        ...state,
+        cache: {
+          ...state.cache,
+          ...action.products.reduce((acc, ele) => {
+            acc[ele.sys.id] = ele;
+            return acc;
+          }, {})
+        }
+      };
     case "ADD_FILTER":
       return {
         ...state,

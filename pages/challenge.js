@@ -2,7 +2,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { useState, useEffect, useRef } from "react";
 import Loader from "../components/Icons/Loader";
 import $ from "../components/Account/_Account";
-import sendPayload from "../utils/sendPayload";
+import contactServer from "../utils/contactServer";
 import { useRouter } from "next/router";
 import SubmitButton from "../components/_App/SubmitButton";
 const Challenge = () => {
@@ -18,7 +18,7 @@ const Challenge = () => {
       setStatus({ text: "Check the box first.", status: 0 });
     } else {
       setLoading(true);
-      await sendPayload({
+      await contactServer({
         data: { token, email: router.query.email },
         route: "requestReset",
         setStatus

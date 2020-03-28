@@ -1,5 +1,5 @@
 import { useState } from "react";
-import sendPayload from "../../utils/sendPayload";
+import contactServer from "../../utils/contactServer";
 import $ from "./_ContactForm";
 import Input from "../_App/Input";
 
@@ -12,7 +12,7 @@ const ContactForm = () => {
   const [status, setStatus] = useState("");
   const handleSubmit = async e => {
     e.preventDefault();
-    sendPayload({
+    contactServer({
       data: { name, email, message },
       route: "contact",
       setStatus

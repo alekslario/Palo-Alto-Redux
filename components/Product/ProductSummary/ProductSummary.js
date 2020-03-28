@@ -17,7 +17,7 @@ const ProductSummary = ({ id, inStock = true }) => {
   const [thumbnailSwiper, getThumbnailSwiper] = useState(null);
 
   const [product, loading] = useFetchEntries({
-    type: "product",
+    content_type: "paloAltoProduct",
     "sys.id": id
   });
 
@@ -40,7 +40,6 @@ const ProductSummary = ({ id, inStock = true }) => {
       }
     }
   };
-
   const thumbnailSwiperParams = {
     getSwiper: getThumbnailSwiper,
     spaceBetween: 10,
@@ -142,9 +141,16 @@ const ProductSummary = ({ id, inStock = true }) => {
             </p>
           )}
           {!inStock && <p>Out of stock</p>}
-          <AddToCart>
-            <$.Button>ADD TO CART</$.Button>
-          </AddToCart>
+          {styles.length > 0 && (
+            <AddToCart
+              product={{
+                contentId: id,
+                productId: styles[option].sys.id
+              }}
+            >
+              <$.Button>ADD TO CART</$.Button>
+            </AddToCart>
+          )}
           <$.Button black={true}>BUY IT NOW</$.Button>
           <div
             css={`

@@ -61,7 +61,10 @@ const Menu = ({ hasToken }) => {
           </li>
           <li>
             <$.CartButton
-              data-size={9}
+              data-size={Object.values(store.cart).reduce((acc, ele) => {
+                acc += ele.quantity;
+                return acc;
+              }, 0)}
               id="cart"
               onClick={() => {
                 dispatch({ type: "TOGGLE_MENU" });

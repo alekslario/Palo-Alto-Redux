@@ -1,25 +1,54 @@
 import { useEffect, useRef } from "react";
+import cookie from "js-cookie";
 import Head from "next/head";
 import Menu from "./Menu";
 import HeadContent from "./HeadContent";
 import Footer from "./Footer";
-import SideMenu from "./SideMenu";
+import SideMenu from "../Cart/SideMenu";
 import GlobalStyle from "../../styles/global";
 import { useStore } from "../../utils/contextStore";
-
+import { CSSTransition } from "react-transition-group";
+import contactServer from "../../utils/contactServer";
+import Router from "next/router";
 const Layout = ({ children, hasToken }) => {
   const [store, dispatch] = useStore();
   const sideMenu = useRef(null);
+  // useEffect(() => {
+  //   if (typeof window === "undefined" || !store.menuOpen) return;
+  //   const handler = e => {
+  //     if (e.target !== sideMenu.current) {
+  //       dispatch({ type: "CLOSE_MENU" });
+  //     }
+  //   };
+  //   window.addEventListener("click", handler);
+  //   return () => window.removeEventListener("click", handler);
+  // }, [store.menuOpen]);
+
   useEffect(() => {
-    if (typeof window === "undefined" || !store.menuOpen) return;
-    const handler = e => {
-      if (e.target !== sideMenu.current) {
-        dispatch({ type: "CLOSE_MENU" });
+    const checkCartProduct = async () => {
+      let token = cookie.get("token");
+      if (token) {
+        const response = await contactServer({
+          route: "cart",
+          auth: token,
+          method: "GET"
+        });
+        if (response.status === 403) {
+          cookie.remove("token");
+          token = null;
+        }
+      }
+      if (!token) {
+        try {
+          const cart = JSON.parse(localStorage.getItem("cart")) || [];
+          dispatch({ type: "ADD_TO_CART", items: cart });
+        } catch (error) {
+          console.log(error);
+        }
       }
     };
-    window.addEventListener("click", handler);
-    return () => window.removeEventListener("click", handler);
-  }, [store.menuOpen]);
+    checkCartProduct();
+  }, []);
 
   return (
     <>
@@ -54,7 +83,14 @@ const Layout = ({ children, hasToken }) => {
           </div>
           <Footer />
         </div>
-        <SideMenu />
+        <CSSTransition
+          in={store.menuOpen}
+          timeout={400}
+          classNames="side-menu-transition"
+          unmountOnExit
+        >
+          {<SideMenu />}
+        </CSSTransition>
       </div>
 
       <GlobalStyle loggedIn={hasToken} />

@@ -1,5 +1,9 @@
 import styled from "styled-components";
-import { inlineFlexCenter, textCenter } from "../../styles/reusable";
+import {
+  inlineFlexCenter,
+  textCenter,
+  IconButton
+} from "../../styles/reusable";
 
 const SideMenu = styled.div`
   height: 100%;
@@ -12,7 +16,7 @@ const SideMenu = styled.div`
   border-left: 2px solid ${({ theme }) => theme.colors.secondary};
   transition: transform 0.4s cubic-bezier(0.46, 0.01, 0.32, 1);
   z-index: 900;
-  overflow-y: scroll;
+  overflow-y: auto;
   &.side-menu-transition-enter {
     display: block;
     transform: translateX(300px);
@@ -28,6 +32,33 @@ const SideMenu = styled.div`
   }
 `;
 
+const Grid = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ProductWrapper = styled.div`
+  color: ${({ theme }) => theme.colors.beta};
+  a {
+    color: ${({ theme }) => theme.colors.beta};
+  }
+  button {
+    color: ${({ theme }) => theme.colors.beta};
+  }
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-bottom: 50px;
+  button {
+    padding: 0 8px;
+  }
+  img {
+    width: 100%;
+  }
+`;
 export default {
-  SideMenu
+  IconButton,
+  SideMenu,
+  Grid,
+  ProductWrapper
 };

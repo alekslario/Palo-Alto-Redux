@@ -3,3 +3,4 @@ mongodump.txt
 now.json
 next.config.js
 .next/
+.vscode/

@@ -82,7 +82,7 @@ const ProductSummary = ({ id, inStock = true }) => {
     </Swiper>
   );
   console.log();
-
+  // fix buttons without click animation //todo
   return (
     <$.Wrapper>
       <BreadCrumbs parentPath={type} currentPath={name || ""} />

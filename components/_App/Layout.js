@@ -27,25 +27,31 @@ const Layout = ({ children, hasToken }) => {
   useEffect(() => {
     const checkCartProduct = async () => {
       let token = cookie.get("token");
+      let cart = [];
       if (token) {
         const response = await contactServer({
           route: "cart",
           auth: token,
           method: "GET"
         });
-        if (response.status === 403) {
+        //handle error better
+        console.log("response", response);
+
+        if (response?.response?.status === 403) {
           cookie.remove("token");
           token = null;
+        } else if (response.status === 201 || response.status === 200) {
+          cart = response.data.products;
         }
       }
       if (!token) {
         try {
-          const cart = JSON.parse(localStorage.getItem("cart")) || [];
-          dispatch({ type: "ADD_TO_CART", items: cart });
+          cart = JSON.parse(localStorage.getItem("cart")) || [];
         } catch (error) {
           console.log(error);
         }
       }
+      dispatch({ type: "ADD_TO_CART", items: cart });
     };
     checkCartProduct();
   }, []);

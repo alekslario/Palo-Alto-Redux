@@ -24,7 +24,8 @@ const Register = () => {
         surname: surnameRef.current.value
       },
       route: "register",
-      setStatus
+      setStatus,
+      method: "PUT"
     });
     setLoading(false);
     const token = response?.data?.token;

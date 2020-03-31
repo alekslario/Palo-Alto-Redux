@@ -1,52 +1,18 @@
 import React from "react";
 import { useStore } from "../../utils/contextStore";
-import contactServer from "../../utils/contactServer";
-import Router from "next/router";
-import cookie from "js-cookie";
+import { updateCartStorage } from "../../utils/updateCartStorage";
+
 const AddToCart = ({ product: { productId, contentId }, children }) => {
   // styles[0].fields.reducedPrice
   // styles[0].fields.reducedPriceExpiration
   const [store, dispatch] = useStore();
-  const handleClick = async () => {
+  const handleClick = () => {
     dispatch({
-      type: "ADD_TO_CART",
-      items: [{ productId, contentId, quantity: 1 }]
+      type: "UPDATE_CART_PRODUCT",
+      productId,
+      contentId,
+      modifier: 1
     });
-    let token = cookie.get("token");
-    if (token) {
-      const response = await contactServer({
-        data: { payloadProducts: { [productId]: count } },
-        route: "cart",
-        auth: token,
-        method: "PUT"
-      });
-      if (response.status === 403) {
-        cookie.remove("token");
-        token = null;
-      }
-    }
-    if (!token) {
-      try {
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        let productFound = false;
-        const updatedCart = cart.map(ele => {
-          if (ele.productId === productId) {
-            ele.quantity += 1;
-            productFound = true;
-            return ele;
-          } else {
-            return ele;
-          }
-        });
-        if (!productFound) {
-          updatedCart.push({ productId, contentId, quantity: 1 });
-        }
-        localStorage.setItem("cart", JSON.stringify(updatedCart));
-      } catch (error) {
-        console.log(error);
-        Router.push("/login");
-      }
-    }
     dispatch({ type: "OPEN_MENU" });
   };
 

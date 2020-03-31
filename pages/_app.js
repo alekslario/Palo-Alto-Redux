@@ -22,7 +22,7 @@ import {
   faPinterest
 } from "@fortawesome/free-brands-svg-icons";
 import { faPlayCircle, faComment } from "@fortawesome/free-regular-svg-icons";
-import { faBars, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faCheck, faPlus } from "@fortawesome/free-solid-svg-icons";
 library.add(
   faTwitter,
   faFacebookSquare,
@@ -31,7 +31,8 @@ library.add(
   faPlayCircle,
   faBars,
   faCheck,
-  faComment
+  faComment,
+  faPlus
 );
 
 if (

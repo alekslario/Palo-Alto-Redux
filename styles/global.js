@@ -27,7 +27,7 @@ export default createGlobalStyle`
   }
   a {
     text-decoration: none;
-    color:${({ theme }) => theme.colors.primary};
+    color:${({ theme }) => theme.colors.alpha};
   }
   ul{
     list-style-type: none;

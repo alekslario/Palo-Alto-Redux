@@ -25,7 +25,8 @@ const Login = () => {
         password: passwordRef.current.value
       },
       route: "login",
-      setStatus
+      setStatus,
+      method: "PUT"
     });
     setLoading(false);
     const token = response?.data?.token;

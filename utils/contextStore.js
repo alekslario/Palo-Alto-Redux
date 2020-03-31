@@ -1,7 +1,19 @@
 // store.js
 import React, { createContext, useContext, useReducer } from "react";
-
+import { updateCartStorage, removeFromCartStorage } from "./updateCartStorage";
 const StoreContext = createContext();
+
+const applyMiddleware = (dispatch, getState) => action => {
+  switch (action.type) {
+    case "UPDATE_CART_PRODUCT":
+      updateCartStorage({ ...action });
+      break;
+    case "REMOVE_FROM_CART":
+      removeFromCartStorage({ ...action });
+      break;
+  }
+  dispatch(action);
+};
 
 const defaultState = {
   cart: [],
@@ -45,19 +57,12 @@ const reducer = (state, action) => {
           }, {})
         }
       };
-    case "INCREMENT_CART":
-      return {
-        ...state,
-        cart: {
-          ...state.cart,
-          [action.productId]: {
-            ...state.cart[action.productId],
-            quantity: state.cart[action.productId].quantity + 1
-          }
-        }
-      };
-    case "DECREMENT_CART":
-      if (state.cart[action.productId].quantity === 1) {
+
+    case "UPDATE_CART_PRODUCT":
+      if (
+        state.cart[action.productId] &&
+        state.cart[action.productId].quantity + action.modifier === 0
+      ) {
         delete state.cart[action.productId];
         return { ...state };
       }
@@ -66,8 +71,9 @@ const reducer = (state, action) => {
         cart: {
           ...state.cart,
           [action.productId]: {
-            ...state.cart[action.productId],
-            quantity: state.cart[action.productId].quantity - 1
+            contentId: action.contentId,
+            quantity:
+              (state.cart[action.productId]?.quantity || 0) + action.modifier
           }
         }
       };
@@ -118,8 +124,12 @@ const reducer = (state, action) => {
 export const StoreProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, defaultState);
 
+  const getState = () => state;
+
+  const enhancedDispatch = applyMiddleware(dispatch, getState);
+
   return (
-    <StoreContext.Provider value={[state, dispatch]}>
+    <StoreContext.Provider value={[state, enhancedDispatch]}>
       {children}
     </StoreContext.Provider>
   );

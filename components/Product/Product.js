@@ -3,6 +3,7 @@ import Link from "next/link";
 import createContentfulSrc from "../../utils/createContentfulSrc";
 import { useStore } from "../../utils/contextStore";
 import $ from "./_Product";
+import Image from "../_App/Image";
 const Product = React.forwardRef(({ product }, ref) => {
   // styles[0].fields.reducedPrice
   // styles[0].fields.reducedPriceExpiration
@@ -20,7 +21,7 @@ const Product = React.forwardRef(({ product }, ref) => {
   ];
 
   const saveProduct = () => dispatch({ type: "ADD_PRODUCT", product });
-
+  //fix link down //todo
   return (
     <Link href={"/products/[id]"} as={`/products/${id}`}>
       <a onClick={saveProduct} ref={ref}>
@@ -35,14 +36,7 @@ const Product = React.forwardRef(({ product }, ref) => {
               backgroundImage: `${src[0] + "?w=180"}`
             }}
           >
-            <img
-              src={src[0] + "?w=180"}
-              alt=""
-              className="lazyload blur-up"
-              data-sizes="auto"
-              data-parent-fit="cover"
-              data-srcset={createContentfulSrc(src[0])}
-            />
+            <Image url={src[0]} />
             <button>ADD TO CART</button>
           </div>
           <$.Link href="#" size="16.8px">

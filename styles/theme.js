@@ -1,4 +1,25 @@
 export default {
+  checkout: {
+    colors: {
+      background: "#fff",
+      text: "#333",
+      attention: "#1990c6",
+      attentionSecondary: "#1579a6",
+      subText: "#545454",
+      smallText: "#737373",
+      border: "#d9d9d9"
+    },
+    sideColors: {
+      background: "#fafafa",
+      backgroundBorder: "#e1e1e1",
+      badge: "rgba(114,114,114,0.9)",
+      border: "rgba(0,0,0,0.1)",
+      text: "#323232",
+      smallText: "#717171",
+      subText: "#535353",
+      delta: "#d3d3d3"
+    }
+  },
   colors: {
     primary: "#fff",
     secondary: "#000",

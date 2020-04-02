@@ -1,10 +1,10 @@
 import User from "../../models/User";
 import jwt from "jsonwebtoken";
 import connectDb from "../../utils/connectDb";
-
+import withAuth from "../../utils/withAuth";
 connectDb();
 
-export default async (req, res) => {
+export default withAuth(async (req, res) => {
   switch (req.method) {
     case "GET":
       await handleGetRequest(req, res);
@@ -13,18 +13,11 @@ export default async (req, res) => {
       res.status(405).send(`Method ${req.method} not allowed`);
       break;
   }
-};
+});
 
 async function handleGetRequest(req, res) {
-  if (!("authorization" in req.headers)) {
-    return res.status(401).send("No authorization token");
-  }
-
+  const { userId } = req.user;
   try {
-    const { userId } = jwt.verify(
-      req.headers.authorization,
-      process.env.JWT_SECRET
-    );
     const user = await User.findOne({ _id: userId });
     if (user) {
       res.status(200).json(user);
@@ -32,6 +25,6 @@ async function handleGetRequest(req, res) {
       res.status(404).send("User not found");
     }
   } catch (error) {
-    res.status(403).send("Invalid token");
+    res.status(500).send("Server error");
   }
 }

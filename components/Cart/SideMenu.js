@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "../../utils/contextStore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import $ from "./_SideMenu";
-import { useFetchEntries } from "../../utils/useFetchEntries";
-import { useLazyLoading } from "../../utils/useLazyLoading";
+import useDeliverCart from "../../utils/useDeliverCart";
 import Link from "next/link";
 import CrossIcon from "../Icons/Cross";
 import formatMoney from "../../utils/formatMoney";
@@ -12,15 +11,7 @@ import Image from "../_App/Image";
 const SideMenu = () => {
   const [store, dispatch] = useStore();
   const sideMenu = useRef(null);
-  console.log(store.cart);
-  const [products, loading, timeStamp] = useFetchEntries({
-    "sys.id[in]": Object.values(store.cart)
-      .map(ele => ele.contentId)
-      .join(),
-    content_type: "paloAltoProduct",
-    order: "sys.createdAt",
-    dependency: [store.cart]
-  });
+  const [products] = useDeliverCart();
   // useEffect(() => {
   //   if (typeof window === "undefined" || !store.menuOpen) return;
   //   const handler = e => {
@@ -78,28 +69,19 @@ const SideMenu = () => {
 
         {products.length === 0 && <p>Your cart is currently empty.</p>}
         <$.Grid>
-          {products.map(({ sys, fields: { name, styles } }, index) => {
-            const {
-              sys: { id },
-              fields: {
-                style,
-                price,
-                reducedPrice,
-                reducedPriceExpiration,
-                inStock,
-                images
-              }
-            } = styles.find(style => store.cart[style.sys.id]);
-            const url = images[0].fields.file.url;
-            return (
+          {products.map(
+            (
+              { contentId, productId, name, style, price, quantity, image },
+              index
+            ) => (
               <$.ProductWrapper key={index}>
-                <Link href={`/products/${sys.id}`}>
+                <Link href={`/products/${contentId}`}>
                   <a
                     css={`
                       width: 33.333%;
                     `}
                   >
-                    <Image url={url} />
+                    <Image url={image} />
                   </a>
                 </Link>
                 <div
@@ -112,8 +94,8 @@ const SideMenu = () => {
                 >
                   <div>
                     <Link
-                      href={`/products/${sys.id}`}
-                      as={`/products/${sys.id}`}
+                      href={`/products/${contentId}`}
+                      as={`/products/${contentId}`}
                     >
                       <a
                         css={`
@@ -139,11 +121,7 @@ const SideMenu = () => {
                         font-size: 15px;
                       `}
                     >
-                      {formatMoney(
-                        new Date(reducedPriceExpiration).getTime() > Date.now()
-                          ? reducedPrice
-                          : price
-                      )}
+                      {formatMoney(price)}
                     </div>
                   </div>
 
@@ -158,7 +136,9 @@ const SideMenu = () => {
                       }
                     `}
                   >
-                    <button onClick={() => handlePlusMinus(id, sys.id, -1)}>
+                    <button
+                      onClick={() => handlePlusMinus(productId, contentId, -1)}
+                    >
                       &#8722;
                     </button>
                     <div
@@ -173,17 +153,19 @@ const SideMenu = () => {
                           padding: 0 3px;
                         `}
                       >
-                        {store.cart[id].quantity}
+                        {quantity}
                       </span>
                     </div>
-                    <button onClick={() => handlePlusMinus(id, sys.id, 1)}>
+                    <button
+                      onClick={() => handlePlusMinus(productId, contentId, 1)}
+                    >
                       +
                     </button>
                   </div>
                 </div>
               </$.ProductWrapper>
-            );
-          })}
+            )
+          )}
         </$.Grid>
       </$.SideMenu>
     </>

@@ -18,6 +18,16 @@ const inlineFlexCenter = css`
   display: inline-flex;
 `;
 
+const flexRow = css`
+  display: flex;
+  flex-direction: row;
+`;
+
+const flexColumn = css`
+  display: flex;
+  flex-direction: column;
+`;
+
 const backgroundCover = css`
   background-position: center;
   background-repeat: no-repeat;
@@ -108,20 +118,23 @@ const HeroTextBlock = styled.div`
   }
 `;
 
+const centerImg = css`
+  position: absolute;
+  left: -9999px;
+  right: -9999px;
+  margin: auto;
+  top: -9999px;
+  bottom: -9999px;
+`;
 const Hero = styled.div`
   overflow: hidden;
   height: 100vh;
   object-fit: cover;
   position: relative;
   img {
-    top: -9999px;
-    bottom: -9999px;
     min-width: 100%;
     min-height: 100%;
-    position: absolute;
-    left: -9999px;
-    right: -9999px;
-    margin: auto;
+    ${centerImg}
   }
   &::after {
     ${overlay}
@@ -192,6 +205,15 @@ const IconButton = styled.button`
   ${({ size }) =>
     size ? `height: ${size}px;width: ${size}px;` : "height: 22px;width: 22px;"};
 `;
+
+const Row = styled.div`
+  ${flexRow}
+`;
+
+const Column = styled.div`
+  ${flexColumn}
+`;
+
 export {
   flexCenter,
   absoluteCenter,
@@ -213,5 +235,10 @@ export {
   SubmitButton,
   H2,
   Input,
-  IconButton
+  IconButton,
+  flexColumn,
+  flexRow,
+  Row,
+  Column,
+  centerImg
 };

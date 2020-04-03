@@ -12,7 +12,7 @@ export default React.memo(function MyComponent({ url, thumb = false }) {
     />
   ) : (
     <img
-      src={url + "?w=64"}
+      src={url + "?w=100"}
       alt=""
       className="lazyload blur-up"
       data-sizes="auto"

@@ -10,6 +10,7 @@ export default {
       border: "#d9d9d9"
     },
     sideColors: {
+      primary: "#fff",
       background: "#fafafa",
       backgroundBorder: "#e1e1e1",
       badge: "rgba(114,114,114,0.9)",
@@ -17,7 +18,8 @@ export default {
       text: "#323232",
       smallText: "#717171",
       subText: "#535353",
-      delta: "#d3d3d3"
+      delta: "#d3d3d3",
+      gamma: "rgba(175, 175, 175, 0.34)"
     }
   },
   colors: {

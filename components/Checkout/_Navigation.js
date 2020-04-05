@@ -5,6 +5,8 @@ const Wrapper = styled.ul`
   grid-area: navigation;
   display: flex;
   flex-direction: row;
+  margin-top: 1em;
+  padding-bottom: 2em;
   span {
     margin: 0 0.64286em;
     display: block;

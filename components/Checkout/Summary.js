@@ -4,9 +4,12 @@ import formatMoney from "../../utils/formatMoney";
 import $ from "./_Summary";
 import Image from "../_App/Image";
 import calculateCartTotal from "../../utils/calculateCartTotal";
-const Summary = () => {
+const Summary = ({ shipping = 0 }) => {
   const [products] = useDeliverCart();
-  const { cartTotal } = useMemo(() => calculateCartTotal(products), [products]);
+  const { cartTotal } = useMemo(() => calculateCartTotal(products, shipping), [
+    products,
+    shipping
+  ]);
   return (
     <>
       <$.Products>
@@ -28,32 +31,10 @@ const Summary = () => {
                   <Image url={image} thumb={true} />
                 </$.ImageWrapper>
               </div>
-              <$.Column
-                css={`
-                  justify-content: center;
-                  padding-right: 0.85714em;
-                `}
-              >
-                <span
-                  css={`
-                    font-weight: 500;
-                    color: ${({ theme }) => theme.checkout.sideColors.text};
-                  `}
-                >
-                  {name}
-                </span>
-                {style !== "Default" && (
-                  <span
-                    css={`
-                      font-size: 0.85714em;
-                      color: ${({ theme }) =>
-                        theme.checkout.sideColors.smallText};
-                    `}
-                  >
-                    {style}
-                  </span>
-                )}
-              </$.Column>
+              <$.Name>
+                <span>{name}</span>
+                {style !== "Default" ? <span>{style}</span> : <span />}
+              </$.Name>
             </$.Row>
             <$.Money>{formatMoney(price)}</$.Money>
           </$.Row>
@@ -107,7 +88,7 @@ const Summary = () => {
               color: ${({ theme }) => theme.checkout.sideColors.smallText};
             `}
           >
-            Calculated at next step
+            {shipping ? formatMoney(shipping) : "Calculated at next step"}
           </span>
         </$.Row>
       </$.Column>

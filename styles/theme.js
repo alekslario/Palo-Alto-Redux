@@ -7,7 +7,8 @@ export default {
       attentionSecondary: "#1579a6",
       subText: "#545454",
       smallText: "#737373",
-      border: "#d9d9d9"
+      border: "#d9d9d9",
+      gamma: "#e6e6e6"
     },
     sideColors: {
       primary: "#fff",

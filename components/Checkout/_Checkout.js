@@ -58,10 +58,21 @@ const Main = styled.div`
   height: 100%;
   @media (min-width: 1000px) {
     width: 58%;
+    padding-top: 4em;
+    padding-right: 6%;
   }
+`;
+
+const Footer = styled.footer`
+  font-size: 0.85714em;
+  color: ${({ theme }) => theme.checkout.colors.smallText};
+  line-height: 1.5em;
+  padding: 1em 0;
+  border-top: 1px solid ${({ theme }) => theme.checkout.colors.gamma};
 `;
 export default {
   Wrapper,
   Side,
-  Main
+  Main,
+  Footer
 };

@@ -48,19 +48,19 @@ const Quantity = styled.span`
 const Money = styled.div`
   display: flex;
   align-items: center;
-  padding: 0 0 0 0.85714em;
+  padding-left: 1em;
   font-weight: 500;
   color: ${({ theme }) => theme.checkout.sideColors.text};
 `;
 
 const Name = styled(Column)`
   justify-content: center;
-  padding-left: 0.85714em;
-  &:first-child {
+  padding-left: 1em;
+  & > span:first-child {
     font-weight: 500;
     color: ${({ theme }) => theme.checkout.sideColors.text};
   }
-  &:last-child {
+  & > span:last-child {
     font-size: 0.85714em;
     color: ${({ theme }) => theme.checkout.sideColors.smallText};
   }

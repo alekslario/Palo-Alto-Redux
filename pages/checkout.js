@@ -23,6 +23,7 @@ const Checkout = ({ user }) => {
         <Header />
         <Navigation stepHandler={stepHandler} active={step} />
         <Information />
+        <$.Footer>All rights reserved Palo Alto Redux</$.Footer>
       </$.Main>
       <$.Side>
         <Summary />

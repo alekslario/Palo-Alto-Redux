@@ -1,6 +1,6 @@
 import Link from "next/link";
 const Header = () => (
-  <header>
+  <div>
     <Link href="/">
       <a
         css={`
@@ -14,7 +14,7 @@ const Header = () => (
         Palo Alto Redux
       </a>
     </Link>
-  </header>
+  </div>
 );
 
 export default Header;

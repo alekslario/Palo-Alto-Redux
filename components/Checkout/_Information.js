@@ -1,7 +1,14 @@
 import styled from "styled-components";
-import { title } from "../../styles/reusable";
+import { Row, Column } from "../../styles/reusable";
 
-const Wrapper = styled.aside``;
+const Wrapper = styled.form`
+  padding-bottom: 10px;
+`;
+
+const ShippingAddress = styled(Column)``;
 export default {
-  Wrapper
+  Wrapper,
+  Row,
+  Column,
+  ShippingAddress
 };

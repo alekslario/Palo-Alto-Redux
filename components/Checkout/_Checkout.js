@@ -10,8 +10,10 @@ const Wrapper = styled.div`
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
     sans-serif;
+`;
+const Content = styled.div`
   display: flex;
-  height: 100%;
+  min-height: 100%;
   width: 100%;
   margin: 0 auto;
   max-width: 40em;
@@ -26,7 +28,6 @@ const Wrapper = styled.div`
 
 const Side = styled.div`
   width: 100%;
-  height: 100%;
   @media (min-width: 1000px) {
     width: 42%;
     padding-top: 4em;
@@ -70,8 +71,10 @@ const Footer = styled.footer`
   padding: 1em 0;
   border-top: 1px solid ${({ theme }) => theme.checkout.colors.gamma};
 `;
+
 export default {
   Wrapper,
+  Content,
   Side,
   Main,
   Footer

@@ -1,6 +1,15 @@
 import styled from "styled-components";
 import { Row, Column, centerImg } from "../../styles/reusable";
 
+const Wrapper = styled.div`
+  max-height: ${({ collapsed, maxheight }) =>
+    collapsed ? "0" : `${maxheight}px`};
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+  @media (min-width: 1000px) {
+    max-height: 100%;
+  }
+`;
 const ImageWrapper = styled.div`
   width: 4.6em;
   height: 4.6em;
@@ -18,6 +27,9 @@ const Products = styled.div`
   margin-bottom: 1.5em;
   & > div {
     margin-top: 1em;
+  }
+  @media (max-width: 999px) {
+    padding-top: 3em;
   }
   @media (min-width: 1000px) {
     max-height: 52vh;
@@ -65,12 +77,28 @@ const Name = styled(Column)`
     color: ${({ theme }) => theme.checkout.sideColors.smallText};
   }
 `;
+
+const ShowMoreButton = styled.button`
+  background: red;
+  position: absolute;
+  border-top: 1px solid #e6e6e6;
+  border-bottom: 1px solid #e6e6e6;
+  height: 3em;
+  width: 300%;
+  left: -100%;
+  @media (min-width: 1000px) {
+    display: none;
+  }
+`;
+
 export default {
+  Wrapper,
   Products,
   Quantity,
   Row,
   Column,
   ImageWrapper,
   Money,
-  Name
+  Name,
+  ShowMoreButton
 };

@@ -1,17 +1,19 @@
-import { useMemo } from "react";
-import useDeliverCart from "../../utils/useDeliverCart";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import formatMoney from "../../utils/formatMoney";
 import $ from "./_Summary";
 import Image from "../_App/Image";
-import calculateCartTotal from "../../utils/calculateCartTotal";
-const Summary = ({ shipping = 0 }) => {
-  const [products] = useDeliverCart();
-  const { cartTotal } = useMemo(() => calculateCartTotal(products, shipping), [
-    products,
-    shipping
-  ]);
+import { useStore } from "../../utils/contextStore";
+import debounce from "lodash.debounce";
+const Summary = ({ shipping = 0, products, cartTotal }) => {
+  const [store, dispatch] = useStore();
+  const content = useRef(null);
   return (
-    <>
+    <$.Wrapper
+      id="sideCheckout"
+      collapsed={store.checkoutCollapsed}
+      ref={content}
+      maxheight={content.current?.scrollHeight || 0}
+    >
       <$.Products>
         {products.map(({ name, style, price, quantity, image }, index) => (
           <$.Row
@@ -132,7 +134,7 @@ const Summary = ({ shipping = 0 }) => {
           </span>
         </span>
       </$.Row>
-    </>
+    </$.Wrapper>
   );
 };
 

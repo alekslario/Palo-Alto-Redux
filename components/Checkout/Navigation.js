@@ -1,44 +1,39 @@
-import Link from "next/link";
 import $ from "./_Navigation";
+import Caret from "../Icons/Caret";
 
-const Caret = () => (
-  <svg viewBox="0 0 10 10">
-    <path d="M2 1l1-1 4 4 1 1-1 1-4 4-1-1 4-4"></path>
-  </svg>
-);
-const Navigation = ({ active, stepHandler }) => {
+const text = {
+  information: { back: "cart", forth: "shipping" },
+  shipping: { back: "information", forth: "payment" },
+  payment: { back: "shipping", forth: "Pay" }
+};
+const Navigation = ({ stepHandler, step = "information" }) => {
   return (
-    <$.Wrapper>
-      <$.BreadCrumb>
-        <Link href="/">
-          <a>Cart</a>
-        </Link>
-      </$.BreadCrumb>
-      <$.BreadCrumb>
-        <span>
+    <$.Navigation>
+      <$.ButtonBack onClick={() => stepHandler(text[step].back)}>
+        <span
+          css={`
+            margin-right: 0.25em;
+            display: block;
+            width: 10px;
+          `}
+        >
           <Caret />
         </span>
-      </$.BreadCrumb>
-      <$.BreadCrumb isActive={active === "information"}>
-        <button onClick={() => stepHandler("information")}>Information</button>
-      </$.BreadCrumb>
-      <$.BreadCrumb>
-        <span>
-          <Caret />
+
+        <span
+          css={`
+            white-space: nowrap;
+          `}
+        >
+          Return to {text[step].back}
         </span>
-      </$.BreadCrumb>
-      <$.BreadCrumb isActive={active === "shipping"}>
-        <button onClick={() => stepHandler("shipping")}>Shipping</button>
-      </$.BreadCrumb>
-      <$.BreadCrumb>
-        <span>
-          <Caret />
-        </span>
-      </$.BreadCrumb>
-      <$.BreadCrumb isActive={active === "payment"}>
-        <button onClick={() => stepHandler("payment")}>Payment</button>
-      </$.BreadCrumb>
-    </$.Wrapper>
+      </$.ButtonBack>
+      <$.ButtonForth onClick={() => stepHandler(text[step].forth)}>
+        {step === "payment"
+          ? text[step].forth
+          : `Continue to ${text[step].forth}`}
+      </$.ButtonForth>
+    </$.Navigation>
   );
 };
 

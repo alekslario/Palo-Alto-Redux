@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import $ from "./_Input";
+
 const Input = React.forwardRef(
-  ({ width = "100%", id, placeholder, value = "", ...props }, ref) => {
+  (
+    { width = "100%", position = "", id, placeholder, value = "", ...props },
+    ref
+  ) => {
     const [state, setState] = useState(value);
     const handleChange = e => setState(e.target.value);
     return (
-      <$.Wrapper width={width}>
+      <$.Wrapper width={width} position={position}>
         <div>
-          <$.Label htmlFor={id} value={!!state}>
-            {placeholder}
-          </$.Label>
           <$.Input
             ref={ref}
             id={id}
@@ -17,6 +18,9 @@ const Input = React.forwardRef(
             onChange={handleChange}
             {...props}
           />
+          <$.Label htmlFor={id} value={!!state}>
+            {placeholder}
+          </$.Label>
         </div>
       </$.Wrapper>
     );

@@ -25,6 +25,9 @@ export default createGlobalStyle`
     background-color: ${({ theme }) => theme.colors.primary};
     -webkit-font-smoothing: antialiased;
   }
+  body.stop-transition #sideCheckout{
+  transition: none !important;
+}
   a {
     text-decoration: none;
     color:${({ theme }) => theme.colors.alpha};

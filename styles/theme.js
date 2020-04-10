@@ -4,11 +4,14 @@ export default {
       background: "#fff",
       text: "#333",
       attention: "#1990c6",
+      attentionShadow: "#76ccf3",
       attentionSecondary: "#1579a6",
       subText: "#545454",
       smallText: "#737373",
       border: "#d9d9d9",
-      gamma: "#e6e6e6"
+      gamma: "#e6e6e6",
+      delta: "#136f99",
+      zita: "rgba(179, 179, 179, 0.5)"
     },
     sideColors: {
       primary: "#fff",

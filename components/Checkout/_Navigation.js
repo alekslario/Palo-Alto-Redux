@@ -1,41 +1,50 @@
 import styled from "styled-components";
-import { title } from "../../styles/reusable";
+import { Row, Column, flexCenter } from "../../styles/reusable";
 
-const Wrapper = styled.ul`
-  grid-area: navigation;
-  display: flex;
-  flex-direction: row;
-  margin-top: 1em;
-  padding-bottom: 2em;
-  span {
-    margin: 0 0.64286em;
+const Navigation = styled(Row)`
+  margin-top: 1.5em;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 4em;
+`;
+const ButtonBack = styled.button`
+  ${flexCenter}
+  color: ${({ theme }) => theme.checkout.colors.attention};
+  svg {
+    fill: ${({ theme }) => theme.checkout.colors.attention};
+    transform: scale(-1, 1);
     display: block;
-    width: 10px;
+    margin: 0 auto;
+  }
+  @media (min-width: 750px) {
+    margin-right: 1em;
+  }
+  &:hover {
+    opacity: 1;
+    fill: ${({ theme }) => theme.checkout.colors.delta};
+    color: ${({ theme }) => theme.checkout.colors.delta};
   }
 `;
-
-const BreadCrumb = styled.li`
-  button,
-  a {
-    font-size: 0.85714em;
-    transition: color 0.2s ease-in-out;
-    ${({ isActive, theme }) =>
-      isActive
-        ? `color:${theme.checkout.colors.text};cursor:text;`
-        : `color:${theme.checkout.colors.attention};cursor:pointer;`}
-  }
-  button :hover,
-  a :hover {
+const ButtonForth = styled.button`
+  background-color: ${({ theme }) => theme.checkout.colors.attention};
+  background-clip: border-box;
+  border: 1px transparent solid;
+  border-radius: 5px;
+  color: ${({ theme }) => theme.checkout.colors.background};
+  font-weight: 500;
+  padding: 1.4em 1.7em;
+  text-align: center;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+  &:hover {
     opacity: 1;
-    ${({ isActive, theme }) =>
-      !isActive ? `color:${theme.checkout.colors.attentionSecondary}` : ""};
-  }
-  svg {
-    color: ${({ theme }) => theme.checkout.colors.smallText};
-    fill: currentColor;
+    background-color: ${({ theme }) => theme.checkout.colors.delta};
   }
 `;
 export default {
-  Wrapper,
-  BreadCrumb
+  Row,
+  Column,
+  Navigation,
+  ButtonBack,
+  ButtonForth
 };

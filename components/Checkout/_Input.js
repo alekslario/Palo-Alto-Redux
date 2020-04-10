@@ -1,50 +1,83 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { title } from "../../styles/reusable";
 
 const Wrapper = styled.div`
-  width: ${({ width }) => width};
-  padding: 0.42857em;
+  width: ${({ width }) => width || "100%"};
+  padding: 0.42857em 0;
+  ${({ position }) => {
+    switch (position) {
+      case "left":
+        return css`
+          padding-right: 0.42857em;
+        `;
+      case "right":
+        return css`
+          padding-left: 0.42857em;
+        `;
+    }
+  }};
   div {
     position: relative;
   }
 `;
-const Label = styled.label`
+//tiny 0.02 delay to remove blinking on autofill
+const styledLabel = css`
   color: ${({ theme }) => theme.checkout.colors.smallText};
-  transition: all 0.2s ease-out;
+  transition: all 0.2s 0.02s ease-out;
   font-weight: normal;
   position: absolute;
   width: 100%;
   margin-top: 0.42857em;
   margin-left: 1px;
   padding: 0 0.91667em;
-  z-index: 1;
+  z-index: 0;
   pointer-events: none;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   text-align: left;
-  margin: 0.5em 0;
+`;
+const Label = styled.label`
+  ${styledLabel}
+  left: -1px;
   top: ${({ value }) => (value ? "0" : "0.5em")};
   font-size: ${({ value }) => (value ? "0.85714em" : "inherit")};
 `;
-const Input = styled.input`
+
+const styledInput = css`
   transition: all 0.2s ease-out;
-  background-color: white;
-  color: #333333;
-  border: 1px #d9d9d9 solid;
+  background-color: ${({ theme }) => theme.checkout.colors.background};
+  color: ${({ theme }) => theme.checkout.colors.text};
+  border: 1px ${({ theme }) => theme.checkout.colors.border} solid;
   border-radius: 5px;
   background-clip: padding-box;
   width: 100%;
-  padding: ${({ value }) =>
-    value ? "1.5em 0.78571em 0.35714em;" : "0.92857em 0.78571em;"};
+  padding: 1.5em 0.78571em 0.35714em;
   outline: none;
   &:focus {
     border-color: ${({ theme }) => theme.checkout.colors.attention};
     box-shadow: 0 0 0 1px ${({ theme }) => theme.checkout.colors.attention};
   }
 `;
+const Input = styled.input`
+   ${styledInput}
+  padding: ${({ value }) =>
+    value ? "1.5em 0.78571em 0.35714em;" : "0.92857em 0.78571em;"};
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    padding:1.5em 0.78571em 0.35714em;
+    & ~ label {
+      top: 0;
+      font-size:0.85714em;
+    }
+  }
+`;
 export default {
   Wrapper,
   Input,
-  Label
+  Label,
+  styledInput,
+  styledLabel
 };

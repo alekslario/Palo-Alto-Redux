@@ -19,7 +19,6 @@ const defaultState = {
   cart: [],
   cache: {},
   menuOpen: false,
-  checkoutCollapsed: true,
   product: {},
   blogPost: {},
   filter: {
@@ -117,12 +116,6 @@ const reducer = (state, action) => {
       return { ...state, menuOpen: false };
     case "TOGGLE_MENU":
       return { ...state, menuOpen: !state.menuOpen };
-    case "TOGGLE_CHECKOUT_COLLAPSE":
-      return { ...state, checkoutCollapsed: !state.checkoutCollapsed };
-    case "COLLAPSE_CHECKOUT":
-      return { ...state, checkoutCollapsed: true };
-    case "EXPAND_CHECKOUT":
-      return { ...state, checkoutCollapsed: false };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
   }

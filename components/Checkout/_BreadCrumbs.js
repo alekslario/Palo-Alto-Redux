@@ -5,12 +5,17 @@ const Wrapper = styled.ul`
   grid-area: navigation;
   display: flex;
   flex-direction: row;
-  margin-top: 1em;
-  padding-bottom: 2em;
+  padding-top: 1.5em;
+  padding-bottom: 1.5em;
+  flex-wrap: wrap;
   span {
     margin: 0 0.64286em;
     display: block;
     width: 10px;
+  }
+  @media (min-width: 1000px) {
+    padding-top: 1em;
+    padding-bottom: 2em;
   }
 `;
 

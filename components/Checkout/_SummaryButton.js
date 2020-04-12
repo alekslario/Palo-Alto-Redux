@@ -1,6 +1,13 @@
 import styled, { css } from "styled-components";
 import { title } from "../../styles/reusable";
+import _Checkout from "./_Checkout";
+const { Side, contentCss } = _Checkout;
 
+const LeftBlock = styled.span`
+  color: ${({ theme }) => theme.checkout.colors.attention};
+  fill: currentColor;
+  display: flex;
+`;
 const ShowMoreButton = styled.button`
   background: ${({ theme }) => theme.checkout.sideColors.background};
   border-top: 1px solid ${({ theme }) => theme.checkout.colors.gamma};
@@ -9,14 +16,18 @@ const ShowMoreButton = styled.button`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  @media (min-width: 1000px) {
-    display: none;
+
+  &:hover {
+    opacity: 1;
+    ${LeftBlock} {
+      color: ${({ theme }) => theme.checkout.colors.attentionSecondary};
+    }
+  }
+  &:focus {
+    outline: 2px solid ${({ theme }) => theme.checkout.colors.attention};
   }
   & > span {
-    margin: 0 auto;
-    max-width: 40em;
-    padding: 0 1em;
-    width: 100%;
+    ${contentCss}
     display: flex;
     justify-content: space-between;
   }
@@ -48,9 +59,24 @@ const CaretIcon = styled.span`
   width: 11px;
   ${iconPosition}
   svg {
-    transform: rotate(90deg);
+    transform: ${({ collapsed }) =>
+      collapsed ? "rotate(90deg)" : "rotate(-90deg)"};
     height: 100%;
+    margin-top: 3px;
   }
 `;
 
-export default { ShowMoreButton, Total, CartIcon, CaretIcon };
+const Content = styled.div`
+  ${contentCss};
+  min-height: 100%;
+`;
+
+export default {
+  ShowMoreButton,
+  Total,
+  CartIcon,
+  CaretIcon,
+  Side,
+  Content,
+  LeftBlock
+};

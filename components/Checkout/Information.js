@@ -22,18 +22,28 @@ const Information = () => {
         <$.Row
           css={`
             justify-content: space-between;
-            margin-bottom: 1.5em;
+            margin-bottom: 0.5em;
+            flex-wrap: wrap;
+            @media (min-width: 750px) {
+              margin-bottom: 1em;
+            }
           `}
         >
           <div
             css={`
-              padding-right: 0.57143rem;
+              padding: 0.14286rem 0.57143rem 0.14286rem 0;
               font-size: 1.28571em;
             `}
           >
             Contact Information
           </div>
-          <div>
+          <div
+            css={`
+              padding-bottom: 0.14286rem;
+              padding-top: 0.14286rem;
+              line-height: 1.5em;
+            `}
+          >
             <span>Already have an account?</span>
             <Link href="/">
               <a
@@ -74,7 +84,14 @@ const Information = () => {
           >
             Shipping Address
           </div>
-          <$.Row>
+          <$.Row
+            css={`
+              flex-direction: column;
+              @media (min-width: 750px) {
+                flex-direction: row;
+              }
+            `}
+          >
             <Input
               position="left"
               width="50%"
@@ -127,7 +144,14 @@ const Information = () => {
             type="text"
             id="checkout_shipping_address_city"
           />
-          <$.Row>
+          <$.Row
+            css={`
+              flex-direction: column;
+              @media (min-width: 750px) {
+                flex-direction: row;
+              }
+            `}
+          >
             <$.Selector width="50%" position="left">
               <label htmlFor="checkout_shipping_address_country">
                 Country/Region

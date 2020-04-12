@@ -11,7 +11,8 @@ export default {
       border: "#d9d9d9",
       gamma: "#e6e6e6",
       delta: "#136f99",
-      zita: "rgba(179, 179, 179, 0.5)"
+      zita: "rgba(179, 179, 179, 0.5)",
+      kappa: "#919191"
     },
     sideColors: {
       primary: "#fff",

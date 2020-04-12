@@ -1,37 +1,46 @@
+import React, { useState } from "react";
 import $ from "./_SummaryButton";
 import CartIcon from "../Icons/Cart";
 import CaretIcon from "../Icons/Caret";
-import { useStore } from "../../utils/contextStore";
-const SummaryButton = ({ cartTotal }) => {
-  const [store, dispatch] = useStore();
-  const handleClick = () => dispatch({ type: "TOGGLE_CHECKOUT_COLLAPSE" });
+import Collapsable from "../_App/Collapsable";
+import Summary from "./Summary";
+const SummaryButton = ({ cartTotal, products, shipping }) => {
+  const [collapsed, setCollapsed] = useState(true);
+  const handleClick = () => setCollapsed(prevState => !prevState);
   return (
-    <$.ShowMoreButton onClick={handleClick}>
-      <span>
-        <span
-          css={`
-            color: ${({ theme }) => theme.checkout.colors.attention};
-            fill: currentColor;
-            display: flex;
-          `}
-        >
-          <$.CartIcon>
-            <CartIcon />
-          </$.CartIcon>
-          <span
-            css={`
-              padding-right: 0.25em;
-            `}
-          >
-            Show order summary
-          </span>
-          <$.CaretIcon>
-            <CaretIcon />
-          </$.CaretIcon>
+    <>
+      <$.ShowMoreButton onClick={handleClick}>
+        <span>
+          <$.LeftBlock>
+            <$.CartIcon>
+              <CartIcon />
+            </$.CartIcon>
+            <span
+              css={`
+                padding-right: 0.25em;
+              `}
+            >
+              {collapsed ? "Show order summary" : "Hide order summary"}
+            </span>
+            <$.CaretIcon collapsed={collapsed}>
+              <CaretIcon />
+            </$.CaretIcon>
+          </$.LeftBlock>
+          <$.Total>{cartTotal}</$.Total>
         </span>
-        <$.Total>{cartTotal}</$.Total>
-      </span>
-    </$.ShowMoreButton>
+      </$.ShowMoreButton>
+      <Collapsable collapsed={collapsed}>
+        <$.Content>
+          <$.Side>
+            <Summary
+              cartTotal={cartTotal}
+              products={products}
+              shipping={shipping}
+            />
+          </$.Side>
+        </$.Content>
+      </Collapsable>
+    </>
   );
 };
 

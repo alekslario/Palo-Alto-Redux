@@ -1,15 +1,6 @@
 import styled from "styled-components";
 import { Row, Column, centerImg } from "../../styles/reusable";
 
-const Wrapper = styled.div`
-  max-height: ${({ collapsed, maxheight }) =>
-    collapsed ? "0" : `${maxheight}px`};
-  overflow: hidden;
-  transition: max-height 0.3s ease-in-out;
-  @media (min-width: 1000px) {
-    max-height: 100%;
-  }
-`;
 const ImageWrapper = styled.div`
   width: 4.6em;
   height: 4.6em;
@@ -29,7 +20,7 @@ const Products = styled.div`
     margin-top: 1em;
   }
   @media (max-width: 999px) {
-    padding-top: 3em;
+    padding-top: 0.75em;
   }
   @media (min-width: 1000px) {
     max-height: 52vh;
@@ -92,7 +83,6 @@ const ShowMoreButton = styled.button`
 `;
 
 export default {
-  Wrapper,
   Products,
   Quantity,
   Row,

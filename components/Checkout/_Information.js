@@ -1,29 +1,16 @@
 import styled, { css } from "styled-components";
 import { Row, Column } from "../../styles/reusable";
 import _Input from "./_Input";
-const { Input, Label, styledInput, styledLabel } = _Input;
+const { Input, Label, styledInput, styledLabel, Wrapper } = _Input;
 const Form = styled.form``;
 const ShippingAddress = styled(Column)`
+  padding-top: 2em;
   @media (min-width: 750px) {
     padding-top: 3em;
   }
 `;
 
-const Selector = styled.div`
-  width: ${({ width }) => width};
-  padding: 0.42857em 0;
-  ${({ position }) => {
-    switch (position) {
-      case "left":
-        return css`
-          padding-right: 0.42857em;
-        `;
-      case "right":
-        return css`
-          padding-left: 0.42857em;
-        `;
-    }
-  }};
+const Selector = styled(Wrapper)`
   position: relative;
   select {
     ${styledInput}
@@ -51,7 +38,7 @@ const Selector = styled.div`
     margin-right: 0.42857em;
   }
   svg {
-    color: #919191;
+    color: ${({ theme }) => theme.checkout.colors.kappa};
     fill: currentColor;
     position: absolute;
     margin-left: -2px;

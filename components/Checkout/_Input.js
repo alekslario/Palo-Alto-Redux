@@ -2,22 +2,25 @@ import styled, { css } from "styled-components";
 import { title } from "../../styles/reusable";
 
 const Wrapper = styled.div`
-  width: ${({ width }) => width || "100%"};
+  width: 100%;
   padding: 0.42857em 0;
-  ${({ position }) => {
-    switch (position) {
-      case "left":
-        return css`
-          padding-right: 0.42857em;
-        `;
-      case "right":
-        return css`
-          padding-left: 0.42857em;
-        `;
-    }
-  }};
   div {
     position: relative;
+  }
+  @media (min-width: 750px) {
+    width: ${({ width }) => width || "100%"};
+    ${({ position }) => {
+      switch (position) {
+        case "left":
+          return css`
+            padding-right: 0.42857em;
+          `;
+        case "right":
+          return css`
+            padding-left: 0.42857em;
+          `;
+      }
+    }};
   }
 `;
 //tiny 0.02 delay to remove blinking on autofill

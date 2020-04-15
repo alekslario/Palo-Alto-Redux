@@ -10,35 +10,17 @@ import useDeliverCart from "../utils/useDeliverCart";
 import BreadCrumbs from "../components/Checkout/BreadCrumbs";
 import dynamic from "next/dynamic";
 import Navigation from "../components/Checkout/Navigation";
-const Summary = dynamic(() => import("../components/Checkout/Summary"), {
-  ssr: false
-});
-const Header = dynamic(() => import("../components/Checkout/Header"), {
-  ssr: false
-});
-const Shipping = dynamic(() => import("../components/Checkout/Shipping"));
+import Summary from "../components/Checkout/Summary";
+import Header from "../components/Checkout/Header";
+import Shipping from "../components/Checkout/Shipping";
 const Payment = dynamic(() => import("../components/Checkout/Payment"));
-const Information = dynamic(() => import("../components/Checkout/Information"));
-const SummaryButton = dynamic(() =>
-  import("../components/Checkout/SummaryButton")
-);
+import SummaryButton from "../components/Checkout/SummaryButton";
+import Information from "../components/Checkout/Information";
 const shipping = 0;
 const Checkout = ({ user }) => {
-  const [step, setStep] = useState("information");
-  const [mobile, setMobile] = useState(
-    typeof window !== "undefined" &&
-      window.matchMedia("(max-width: 999px)").matches
-  );
+  const [step, setStep] = useState("shipping");
   const [store, dispatch] = useStore();
   const router = useRouter();
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const mql = window.matchMedia("(max-width: 999px)");
-    const handleResize = e => setMobile(e.matches ? true : false);
-    mql.addListener(handleResize);
-    return () => mql.removeListener(handleResize);
-  }, []);
 
   const [products] = useDeliverCart();
   const { cartTotal } = useMemo(() => calculateCartTotal(products, shipping), [
@@ -55,17 +37,18 @@ const Checkout = ({ user }) => {
   };
   return (
     <$.Wrapper>
-      {mobile && <Header padding="1.5em 0" />}
-      {mobile && (
-        <SummaryButton
-          cartTotal={cartTotal}
-          products={products}
-          shipping={shipping}
-        />
-      )}
+      <$.ContentMobileOnly>
+        <Header padding="1.9em 0" />
+      </$.ContentMobileOnly>
+
+      <SummaryButton
+        cartTotal={cartTotal}
+        products={products}
+        shipping={shipping}
+      />
       <$.Content>
         <$.Main>
-          {!mobile && <Header />}
+          <Header desktop={true} />
 
           <BreadCrumbs stepHandler={stepHandler} step={step} />
           {step === "information" && <Information />}
@@ -74,15 +57,13 @@ const Checkout = ({ user }) => {
           <Navigation stepHandler={stepHandler} step={step} />
           <$.Footer>All rights reserved Palo Alto Redux</$.Footer>
         </$.Main>
-        {!mobile && (
-          <$.Side>
-            <Summary
-              cartTotal={cartTotal}
-              products={products}
-              shipping={shipping}
-            />
-          </$.Side>
-        )}
+        <$.Side desktop={true}>
+          <Summary
+            cartTotal={cartTotal}
+            products={products}
+            shipping={shipping}
+          />
+        </$.Side>
       </$.Content>
     </$.Wrapper>
   );

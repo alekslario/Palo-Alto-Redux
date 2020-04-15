@@ -54,6 +54,7 @@ const Money = styled.div`
   padding-left: 1em;
   font-weight: 500;
   color: ${({ theme }) => theme.checkout.sideColors.text};
+  white-space: nowrap;
 `;
 
 const Name = styled(Column)`

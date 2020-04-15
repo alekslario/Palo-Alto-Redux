@@ -1,5 +1,10 @@
 import styled from "styled-components";
-import { Row, Column, flexCenter } from "../../styles/reusable";
+import {
+  Row,
+  Column,
+  flexCenter,
+  CheckoutClickMe
+} from "../../styles/reusable";
 
 const Navigation = styled(Column)`
   margin-top: 1em;
@@ -15,22 +20,17 @@ const Navigation = styled(Column)`
 `;
 const ButtonBack = styled.button`
   ${flexCenter}
-  color: ${({ theme }) => theme.checkout.colors.attention};
+  ${CheckoutClickMe}
   padding-top: 1.5em;
   svg {
-    fill: ${({ theme }) => theme.checkout.colors.attention};
+    fill: currentColor;
     transform: scale(-1, 1);
     display: block;
     margin: 0 auto;
   }
   @media (min-width: 750px) {
     margin-right: 1em;
-    padding-top:0;
-  }
-  &:hover {
-    opacity: 1;
-    fill: ${({ theme }) => theme.checkout.colors.delta};
-    color: ${({ theme }) => theme.checkout.colors.delta};
+    padding-top: 0;
   }
 `;
 const ButtonForth = styled.button`

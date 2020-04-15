@@ -1,8 +1,14 @@
 import styled, { css } from "styled-components";
-import { Row, Column } from "../../styles/reusable";
+import { Row, Column, CheckoutClickMe } from "../../styles/reusable";
 import _Input from "./_Input";
-const { Input, Label, styledInput, styledLabel, Wrapper } = _Input;
-const Form = styled.form``;
+const { styledInput, styledLabel, Wrapper } = _Input;
+import _Checkout from "./_Checkout";
+const { H2 } = _Checkout;
+const Form = styled.form`
+  a {
+    ${CheckoutClickMe}
+  }
+`;
 const ShippingAddress = styled(Column)`
   padding-top: 2em;
   @media (min-width: 750px) {
@@ -65,5 +71,6 @@ export default {
   Column,
   ShippingAddress,
   Selector,
-  CheckBoxWrapper
+  CheckBoxWrapper,
+  H2
 };

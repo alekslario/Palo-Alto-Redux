@@ -42,6 +42,7 @@ const Total = styled.span`
   line-height: 1em;
   display: flex;
   align-items: center;
+  white-space: nowrap;
 `;
 
 const iconPosition = css`

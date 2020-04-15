@@ -8,7 +8,14 @@ const SummaryButton = ({ cartTotal, products, shipping }) => {
   const [collapsed, setCollapsed] = useState(true);
   const handleClick = () => setCollapsed(prevState => !prevState);
   return (
-    <>
+    <div
+      css={`
+        display: block;
+        @media (min-width: 1000px) {
+          display: none;
+        }
+      `}
+    >
       <$.ShowMoreButton onClick={handleClick}>
         <span>
           <$.LeftBlock>
@@ -40,7 +47,7 @@ const SummaryButton = ({ cartTotal, products, shipping }) => {
           </$.Side>
         </$.Content>
       </Collapsable>
-    </>
+    </div>
   );
 };
 

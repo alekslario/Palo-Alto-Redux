@@ -1,8 +1,12 @@
+import React from "react";
 import Link from "next/link";
-const Header = ({ padding }) => (
+import { mobileOrDesktop } from "../../styles/reusable";
+const Header = React.memo(({ padding, ...rest }) => (
   <div
+    {...rest}
     css={`
       padding: ${padding};
+      ${mobileOrDesktop}
     `}
   >
     <Link href="/">
@@ -20,6 +24,6 @@ const Header = ({ padding }) => (
       </a>
     </Link>
   </div>
-);
+));
 
 export default Header;

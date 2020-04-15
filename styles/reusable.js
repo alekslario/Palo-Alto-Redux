@@ -214,6 +214,36 @@ const Column = styled.div`
   ${flexColumn}
 `;
 
+const mobileOrDesktop = css`
+  ${({ mobile }) =>
+    mobile
+      ? css`
+          display: block;
+          @media (min-width: 1000px) {
+            display: none;
+          }
+        `
+      : ""};
+  ${({ desktop }) =>
+    desktop
+      ? css`
+          display: none;
+          @media (min-width: 1000px) {
+            display: block;
+          }
+        `
+      : ""};
+`;
+
+const CheckoutClickMe = css`
+  color: ${({ theme }) => theme.checkout.colors.attention};
+  cursor: pointer;
+  fill: currentColor;
+  &:hover {
+    opacity: 1;
+    color: ${({ theme }) => theme.checkout.colors.attentionSecondary};
+  }
+`;
 export {
   flexCenter,
   absoluteCenter,
@@ -240,5 +270,7 @@ export {
   flexRow,
   Row,
   Column,
-  centerImg
+  centerImg,
+  mobileOrDesktop,
+  CheckoutClickMe
 };

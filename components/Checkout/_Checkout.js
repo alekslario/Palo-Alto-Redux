@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { title, Column } from "../../styles/reusable";
+import { title, Column, mobileOrDesktop } from "../../styles/reusable";
 
 const Wrapper = styled(Column)`
   min-height: 100%;
@@ -12,6 +12,8 @@ const Wrapper = styled(Column)`
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
     sans-serif;
+  display: flex;
+  flex-direction: column;
 `;
 
 const contentCss = css`
@@ -22,10 +24,16 @@ const contentCss = css`
 `;
 const ContentMobileOnly = styled.div`
   ${contentCss}
+  display: block;
+  @media (min-width: 1000px) {
+    display: none;
+  }
 `;
 
 const Content = styled.div`
+  flex: 1;
   display: flex;
+  flex-direction: column;
   ${contentCss}
   height:100%;
   @media (min-width: 1000px) {
@@ -61,9 +69,11 @@ const Side = styled.div`
         ${({ theme }) => theme.checkout.sideColors.backgroundBorder} inset;
     }
   }
+  ${mobileOrDesktop}
 `;
 
 const Main = styled.div`
+  flex: 1;
   width: 100%;
   height: 100%;
   display: flex;
@@ -84,6 +94,15 @@ const Footer = styled.footer`
   border-top: 1px solid ${({ theme }) => theme.checkout.colors.gamma};
 `;
 
+const H2 = styled.h2`
+  font-weight: normal;
+  font-size: 1.28571em;
+  margin-top: 0;
+  margin-bottom: 1em;
+  @media (min-width: 750px) {
+    margin-bottom: 1.5em;
+  }
+`;
 export default {
   Wrapper,
   Content,
@@ -91,5 +110,6 @@ export default {
   Side,
   Main,
   Footer,
-  contentCss
+  contentCss,
+  H2
 };

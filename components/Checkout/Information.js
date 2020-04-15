@@ -48,7 +48,6 @@ const Information = () => {
             <Link href="/">
               <a
                 css={`
-                  color: ${({ theme }) => theme.checkout.colors.attention};
                   margin-left: 4px;
                 `}
               >
@@ -76,14 +75,7 @@ const Information = () => {
           </label>
         </$.CheckBoxWrapper>
         <$.ShippingAddress>
-          <div
-            css={`
-              font-size: 1.28571em;
-              margin-bottom: calc(1.5em - 0.42857em);
-            `}
-          >
-            Shipping Address
-          </div>
+          <$.H2>Shipping Address</$.H2>
           <$.Row
             css={`
               flex-direction: column;

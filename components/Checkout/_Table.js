@@ -1,8 +1,5 @@
 import styled from "styled-components";
 import { Row, Column, CheckoutClickMe } from "../../styles/reusable";
-import _Checkout from "./_Checkout";
-const { H2 } = _Checkout;
-const Wrapper = styled.div``;
 
 const Table = styled(Column)`
   border-radius: 4px;
@@ -37,21 +34,11 @@ const Action = styled.div`
   }
 `;
 
-const Shipping = styled.div`
-  padding-top: 2em;
-  @media (min-width: 750px) {
-    padding-top: 3em;
-  }
-`;
-
 export default {
-  Wrapper,
   Table,
   Row,
   Column,
   FieldName,
   Record,
-  Action,
-  Shipping,
-  H2
+  Action
 };

@@ -117,6 +117,7 @@ const Summary = ({ shipping = 0, products, cartTotal }) => (
           css={`
             font-size: 1.71429em;
             font-weight: 500;
+            white-space: nowrap;
           `}
         >
           {cartTotal}

@@ -3,11 +3,11 @@ import { useStore } from "../../utils/contextStore";
 const { getCode } = require("country-list");
 import Input from "./Input";
 import $ from "./_Information";
-import CheckBox from "./Checkbox";
+import CheckBox from "./CheckBox";
 import ShippingAddress from "./ShippingAddress";
 const Information = () => {
   const [store, dispatch] = useStore();
-  const handleChange = e => {
+  const handleChange = (e) => {
     let [name, value] = [e.target.name, e.target.value];
     if (name === "country") {
       value = getCode(value);

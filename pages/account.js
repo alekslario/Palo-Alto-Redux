@@ -1,6 +1,3 @@
-// import AccountHeader from "../components/Account/AccountHeader";
-// import AccountOrders from "../components/Account/AccountOrders";
-// import AccountPermissions from "../components/Account/AccountPermissions";
 import { useEffect } from "react";
 import baseUrl from "../utils/baseUrl";
 import axios from "axios";
@@ -14,7 +11,7 @@ function Account({ user, orders }) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const handler = event => {
+    const handler = (event) => {
       if (event.key === "logout") {
         router.push("/login");
       }

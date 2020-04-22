@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from "react";
 import baseUrl from "../utils/baseUrl";
 import axios from "axios";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useStore } from "../utils/contextStore";
 import $ from "../components/Checkout/_Checkout";
 import calculateCartTotal from "../utils/calculateCartTotal";
@@ -16,25 +15,31 @@ import Shipping from "../components/Checkout/Shipping";
 const Payment = dynamic(() => import("../components/Checkout/Payment"));
 import SummaryButton from "../components/Checkout/SummaryButton";
 import Information from "../components/Checkout/Information";
-const shipping = 0;
+import { useFetchEntries } from "../utils/useFetchEntries";
 const Checkout = ({ user }) => {
-  const [step, setStep] = useState("shipping");
   const [store, dispatch] = useStore();
-  const router = useRouter();
-
   const [products] = useDeliverCart();
-  const { cartTotal } = useMemo(() => calculateCartTotal(products, shipping), [
-    products,
-    shipping
-  ]);
 
-  const stepHandler = name => {
-    if (typeof window !== "undefined" && name === "cart") {
-      router.push("/");
-    } else {
-      setStep(name);
+  const [shipping] = useFetchEntries({
+    dependency: [],
+    content_type: "shipping"
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && shipping.length > 0) {
+      dispatch({
+        type: "CHECKOUT_ADD_SHIPPING_FARES",
+        shipping: shipping[0].fields.shippingPricing
+      });
     }
-  };
+  }, [shipping]);
+  console.log(shipping);
+  const { cartTotal } = useMemo(
+    () =>
+      calculateCartTotal(products, store.checkout.selectedShipping.price || 0),
+    [products, shipping]
+  );
+
   return (
     <$.Wrapper>
       <$.ContentMobileOnly>
@@ -44,24 +49,24 @@ const Checkout = ({ user }) => {
       <SummaryButton
         cartTotal={cartTotal}
         products={products}
-        shipping={shipping}
+        shipping={store.checkout.selectedShipping.price || 0}
       />
       <$.Content>
         <$.Main>
           <Header desktop={true} />
 
-          <BreadCrumbs stepHandler={stepHandler} step={step} />
-          {step === "information" && <Information />}
-          {step === "shipping" && <Shipping />}
-          {step === "payment" && <Payment />}
-          <Navigation stepHandler={stepHandler} step={step} />
+          <BreadCrumbs />
+          {store.checkout.step === "information" && <Information />}
+          {store.checkout.step === "shipping" && <Shipping />}
+          {store.checkout.step === "payment" && <Payment />}
+          <Navigation />
           <$.Footer>All rights reserved Palo Alto Redux</$.Footer>
         </$.Main>
         <$.Side desktop={true}>
           <Summary
             cartTotal={cartTotal}
             products={products}
-            shipping={shipping}
+            shipping={store.checkout.selectedShipping.price || 0}
           />
         </$.Side>
       </$.Content>

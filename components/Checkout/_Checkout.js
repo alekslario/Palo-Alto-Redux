@@ -76,12 +76,14 @@ const Main = styled.div`
   flex: 1;
   width: 100%;
   height: 100%;
+  min-height: initial;
   display: flex;
   flex-direction: column;
   @media (min-width: 1000px) {
     width: 58%;
     padding-top: 4em;
     padding-right: 6%;
+    min-height: 100vh;
   }
 `;
 

@@ -36,6 +36,22 @@ const defaultState = {
       "T-Shirt": false,
       Womens: false
     }
+  },
+  checkout: {
+    step: "information",
+    stepsLocked: { information: false, payment: true, shipping: true },
+    details: {
+      email: { value: "", error: "" },
+      name: { value: "", error: "" },
+      surname: { value: "", error: "" },
+      address: { value: "", error: "" },
+      addressOptional: { value: "", error: "" },
+      city: { value: "", error: "" },
+      country: { value: "US", error: "" },
+      postcode: { value: "", error: "" }
+    },
+    shipping: [],
+    selectedShipping: {}
   }
 };
 
@@ -116,6 +132,55 @@ const reducer = (state, action) => {
       return { ...state, menuOpen: false };
     case "TOGGLE_MENU":
       return { ...state, menuOpen: !state.menuOpen };
+    case "CHECKOUT_TAKE_A_STEP":
+      return {
+        ...state,
+        checkout: {
+          ...state.checkout,
+          step: action.step,
+          stepsLocked: { ...state.checkout.stepsLocked, [action.step]: false }
+        }
+      };
+    case "CHECKOUT_SET_ERRORS":
+      return {
+        ...state,
+        checkout: {
+          ...state.checkout,
+          details: {
+            ...state.checkout.details,
+            ...action.errors.reduce((acc, el) => {
+              acc[el.name].error = el.error;
+              return acc;
+            }, state.checkout.details)
+          }
+        }
+      };
+    case "CHECKOUT_SHIPPING_ADDRESS_CHANGE":
+      return {
+        ...state,
+        checkout: {
+          ...state.checkout,
+          details: {
+            ...state.checkout.details,
+            [action.name]: { value: action.value, error: "" }
+          },
+          selectedShipping: {},
+          stepsLocked: { information: false, payment: true, shipping: true }
+        }
+      };
+    case "CHECKOUT_ADD_SHIPPING_FARES":
+      return {
+        ...state,
+        checkout: {
+          ...state.checkout,
+          shipping: action.shipping
+        }
+      };
+    case "CHECKOUT_SELECTED_SHIPPING":
+      return {
+        ...state,
+        checkout: { ...state.checkout, selectedShipping: action.shipping }
+      };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
   }

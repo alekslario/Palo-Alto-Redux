@@ -26,7 +26,7 @@ const BreadCrumb = styled.li`
     transition: color 0.2s ease-in-out;
     ${({ isActive, theme }) =>
       isActive
-        ? `color:${theme.checkout.colors.text};cursor:text;`
+        ? `color:${theme.checkout.colors.text};cursor:text;font-weight: 500;`
         : `color:${theme.checkout.colors.attention};cursor:pointer;`}
   }
   button :hover,
@@ -38,6 +38,10 @@ const BreadCrumb = styled.li`
   svg {
     color: ${({ theme }) => theme.checkout.colors.smallText};
     fill: currentColor;
+  }
+  button:disabled {
+    color: ${({ theme }) => theme.checkout.colors.smallText};
+    cursor: text;
   }
 `;
 export default {

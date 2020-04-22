@@ -7,7 +7,7 @@ const Wrapper = styled.div``;
 const Table = styled(Column)`
   border-radius: 4px;
   width: 100%;
-  padding: 0.85714em 1.14286em;
+  /* padding: 0.85714em 1.14286em; */
   border: 1px solid ${({ theme }) => theme.checkout.sideColors.border};
   overflow-wrap: break-word;
 `;

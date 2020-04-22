@@ -7,6 +7,9 @@ const Table = styled(Column)`
   padding: 0.85714em 1.14286em;
   border: 1px solid ${({ theme }) => theme.checkout.sideColors.border};
   overflow-wrap: break-word;
+  strong {
+    font-weight: 500;
+  }
 `;
 
 const FieldName = styled.div`
@@ -16,7 +19,7 @@ const FieldName = styled.div`
   word-break: keep-all;
   white-space: nowrap;
   @media (min-width: 750px) {
-    flex: 0 1 5em;
+    flex: 0 1 7em;
     padding-bottom: 0;
   }
 `;

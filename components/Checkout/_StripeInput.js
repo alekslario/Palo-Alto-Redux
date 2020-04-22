@@ -78,10 +78,11 @@ const styledInput = css`
           `}
   }
 `;
-const Input = styled.input`
-   ${styledInput}
-  padding: ${({ value }) =>
-    value ? "1.5em 0.78571em 0.35714em;" : "0.92857em 0.78571em;"};
+const Input = styled.div`
+
+     ${styledInput}
+     padding: ${({ value }) =>
+       value ? "1.5em 0.78571em 0.35714em;" : "0.92857em 0.78571em;"};
   &:-webkit-autofill,
   &:-webkit-autofill:hover,
   &:-webkit-autofill:focus,
@@ -92,6 +93,7 @@ const Input = styled.input`
       font-size:0.85714em;
     }
   }
+
 `;
 
 const Error = styled.p`
@@ -105,5 +107,5 @@ export default {
   styledInput,
   styledLabel,
   Error,
-  Column
+  Column,
 };

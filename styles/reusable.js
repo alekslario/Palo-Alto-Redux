@@ -27,6 +27,16 @@ const flexColumn = css`
   display: flex;
   flex-direction: column;
 `;
+const hidden = css`
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  width: 2px;
+  height: 2px;
+  margin: -2px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+`;
 
 const backgroundCover = css`
   background-position: center;
@@ -272,5 +282,6 @@ export {
   Column,
   centerImg,
   mobileOrDesktop,
-  CheckoutClickMe
+  CheckoutClickMe,
+  hidden,
 };

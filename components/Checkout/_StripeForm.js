@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { Column as DefaultColumn } from "../../styles/reusable";
+import { Row, Column as DefaultColumn } from "../../styles/reusable";
 
 const Column = styled(DefaultColumn)`
   width: 100%;
@@ -78,7 +78,7 @@ const styledInput = css`
           `}
   }
 `;
-const Input = styled.input`
+const Input = styled.div`
    ${styledInput}
   padding: ${({ value }) =>
     value ? "1.5em 0.78571em 0.35714em;" : "0.92857em 0.78571em;"};
@@ -105,5 +105,5 @@ export default {
   styledInput,
   styledLabel,
   Error,
-  Column
+  Column,
 };

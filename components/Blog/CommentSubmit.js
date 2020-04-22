@@ -8,22 +8,22 @@ const CommentSubmit = ({ id, tags, comments }) => {
   const [{ name, email, message }, setState] = useState({
     name: "",
     email: "",
-    message: ""
+    message: "",
   });
 
   const [extraComment, setExtraComment] = useState([]);
   const [error, setError] = useState("");
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setError("");
-      const url = `${baseUrl}/api/leaveComment`;
+      const url = `${baseUrl}/api/comments`;
       const payload = { name, email, message, id, tags };
       const response = await axios.post(url, payload);
       console.log(response);
-      setExtraComment(prevState => [
+      setExtraComment((prevState) => [
         ...prevState,
-        { name, email, message, time: Date.now() }
+        { name, email, message, time: Date.now() },
       ]);
     } catch (error) {
       catchErrors(error, setError);
@@ -43,7 +43,7 @@ const CommentSubmit = ({ id, tags, comments }) => {
       case "message":
         accepted = /^.{0,300}$/gi.test(value);
     }
-    if (accepted) setState(prevState => ({ ...prevState, [name]: value }));
+    if (accepted) setState((prevState) => ({ ...prevState, [name]: value }));
   };
   return (
     <>

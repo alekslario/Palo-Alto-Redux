@@ -1,6 +1,6 @@
 const baseUrl =
   process.env.NODE_ENV === "production"
-    ? "https://palo-alto-redux.now.sh"
+    ? process.env.NOW_URL
     : "http://localhost:3000";
 
 export default baseUrl;

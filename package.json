@@ -1,7 +1,7 @@
 {
-  "name": "mern-stack-demo-store",
+  "name": "palo-alto-redux-demo-store",
   "version": "1.0.1",
-  "description": "Mern stack demo store",
+  "description": "Palo Alto Redux demo store",
   "main": "index.js",
   "scripts": {
     "dev": "next",

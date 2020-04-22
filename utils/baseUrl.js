@@ -1,6 +1,6 @@
 const baseUrl =
   process.env.NODE_ENV === "production"
-    ? "https://mern-stack-demo-store.now.sh"
+    ? "https://palo-alto-redux.now.sh"
     : "http://localhost:3000";
 
 export default baseUrl;

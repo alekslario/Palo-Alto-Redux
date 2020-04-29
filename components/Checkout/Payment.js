@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, Suspense } from "react";
 const { getCode } = require("country-list");
 import $ from "./_Payment";
 import Table from "./Table";
@@ -6,11 +6,10 @@ import RadioPick from "./Radio";
 import ShippingAddress from "./ShippingAddress";
 import { useStore } from "../../utils/contextStore";
 import AlertIcon from "../Icons/Alert";
-import StripeForm from "./StripeForm";
-
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-
+import LoadingPlaceholder from "../_App/LoadingPlaceholder";
+const StripeForm = React.lazy(() => import("./StripeForm"));
 const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY);
 
 const Payment = () => {
@@ -63,7 +62,20 @@ const Payment = () => {
           This store can't accept real orders or real payments.
         </$.Warning>
         <Elements stripe={stripePromise}>
-          <StripeForm />
+          <Suspense
+            fallback={
+              <LoadingPlaceholder
+                css={`
+                  width: 100%;
+                  height: 44.77px;
+                  border-radius: 5px;
+                  margin: 1.02857em 0;
+                `}
+              />
+            }
+          >
+            <StripeForm />
+          </Suspense>
         </Elements>
       </$.Payment>
       <$.BillingAddress>

@@ -105,5 +105,5 @@ export default {
   styledInput,
   styledLabel,
   Error,
-  Column
+  Column,
 };

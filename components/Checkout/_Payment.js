@@ -41,7 +41,7 @@ const Information = styled.div`
 
 const Warning = styled(Row)`
   background-color: #fff8de;
-  margin-bottom: 1.42857em;
+  margin-bottom: 0.6em;
   padding: 1em;
   border-radius: 4px;
   border: 1px solid #f0e4bc;

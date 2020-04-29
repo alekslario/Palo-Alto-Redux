@@ -1,27 +1,16 @@
 import $ from "./_StripeInput";
-
 const StripeInput = ({
   children,
   position = "",
-  id,
-  placeholder,
-  value = "",
-  error,
+  error: { message } = {},
   ...props
 }) => {
   return (
     <$.Column position={position}>
-      <$.Wrapper>
-        <div>
-          <$.Input id={id} value={!value} {...props} error={error}>
-            {children}
-          </$.Input>
-          <$.Label htmlFor={id} value={!value}>
-            {placeholder}
-          </$.Label>
-        </div>
+      <$.Wrapper {...props} error={message}>
+        {children}
       </$.Wrapper>
-      {error && <$.Error>{error}</$.Error>}
+      {message && <$.Error>{message}</$.Error>}
     </$.Column>
   );
 };

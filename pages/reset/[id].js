@@ -11,7 +11,7 @@ const Reset = () => {
   const repeatPasswordRef = useRef(null);
   const passwordRef = useRef(null);
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (repeatPasswordRef.current.value !== passwordRef.current.value) {
       setStatus({ text: "Passwords do not match.", status: 0 });
@@ -22,10 +22,10 @@ const Reset = () => {
       await contactServer({
         data: {
           token: router.query.id,
-          password: passwordRef.current.value
+          password: passwordRef.current.value,
         },
         route: "reset",
-        setStatus
+        setStatus,
       });
       setLoading(false);
     }

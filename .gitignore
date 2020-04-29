@@ -4,3 +4,6 @@ now.json
 next.config.js
 .next/
 .vscode/
+.env
+.serverless
+.serverless_nextjs

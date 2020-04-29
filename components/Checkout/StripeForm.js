@@ -1,10 +1,4 @@
-import {
-  useStripe,
-  useElements,
-  CardNumberElement,
-  CardCvcElement,
-  CardExpiryElement,
-} from "@stripe/react-stripe-js";
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import $ from "./_StripeForm";
 import StripeInput from "./StripeInput";
@@ -14,9 +8,10 @@ const options = {
       fontSize: "14px",
       color: "#424770",
       letterSpacing: "0.025em",
-      fontFamily: "Source Code Pro, monospace",
+      fontFamily:
+        '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol",sans-serif',
       "::placeholder": {
-        color: "#fff",
+        color: "#737373",
       },
     },
     invalid: {
@@ -25,12 +20,17 @@ const options = {
   },
 };
 const StripeForm = () => {
-  const [input, setInput] = useState(true);
   const stripe = useStripe();
   const elements = useElements();
+  const [{ focus, complete, error }, setInputState] = useState({
+    focus: false,
+    complete: false,
+    error: false,
+  });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (!stripe || !elements) {
       // Stripe.js has not loaded yet. Make sure to disable
       // form submission until Stripe.js has loaded.
@@ -39,72 +39,43 @@ const StripeForm = () => {
 
     const payload = await stripe.createPaymentMethod({
       type: "card",
-      card: elements.getElement(CardNumberElement),
+      card: elements.getElement(CardElement),
     });
+
     console.log("[PaymentMethod]", payload);
   };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        <StripeInput value={input} placeholder={"1234 1234 1234 1234"}>
-          <CardNumberElement
-            options={options}
-            onReady={() => {
-              console.log("CardNumberElement [ready]");
-            }}
-            onChange={(event) => {
-              console.log("CardNumberElement [change]", event);
-              setInput(event.empty);
-            }}
-            onBlur={() => {
-              console.log("CardNumberElement [blur]");
-            }}
-            onFocus={() => {
-              console.log("CardNumberElement [focus]");
-            }}
-          />
-        </StripeInput>
-      </label>
-      <label>
-        Expiration date
-        <CardExpiryElement
+    <label>
+      <$.LabelText>Card details</$.LabelText>
+      <StripeInput focus={focus} error={error}>
+        <CardElement
           options={options}
           onReady={() => {
-            console.log("CardNumberElement [ready]");
+            setLoaded(true);
           }}
-          onChange={(event) => {
-            console.log("CardNumberElement [change]", event);
-          }}
-          onBlur={() => {
-            console.log("CardNumberElement [blur]");
-          }}
-          onFocus={() => {
-            console.log("CardNumberElement [focus]");
-          }}
-        />
-      </label>
-      <label>
-        CVC
-        <CardCvcElement
-          options={options}
-          onReady={() => {
-            console.log("CardNumberElement [ready]");
-          }}
-          onChange={(event) => {
-            console.log("CardNumberElement [change]", event);
+          onChange={({ complete, error }) => {
+            setInputState((prevState) => ({
+              ...prevState,
+              complete,
+              error,
+            }));
           }}
           onBlur={() => {
-            console.log("CardNumberElement [blur]");
+            setInputState((prevState) => ({
+              ...prevState,
+              focus: false,
+            }));
           }}
-          onFocus={() => {
-            console.log("CardNumberElement [focus]");
-          }}
+          onFocus={() =>
+            setInputState((prevState) => ({
+              ...prevState,
+              focus: true,
+            }))
+          }
         />
-      </label>
-      <button type="submit" disabled={!stripe}>
-        Pay
-      </button>
-    </form>
+      </StripeInput>
+    </label>
   );
 };
 

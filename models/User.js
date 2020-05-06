@@ -6,78 +6,94 @@ const UserSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true
+      required: true,
     },
     surname: {
       type: String,
-      required: true
+      required: true,
     },
     email: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     password: {
       type: String,
       required: true,
-      select: false
+      select: false,
     },
     role: {
       type: String,
       required: true,
       default: "user",
-      enum: ["user", "admin", "root"]
+      enum: ["user", "admin", "root"],
     },
     resetPasswordToken: {
       type: String,
       required: false,
-      select: false
+      select: false,
     },
 
     resetPasswordExpires: {
       type: Number,
       required: false,
-      select: false
+      select: false,
     },
+    stripeId: {
+      type: String,
+      required: false,
+    },
+    stripePaymentMethods: [
+      {
+        paymentId: {
+          type: String,
+          required: false,
+        },
+        stripeLastDigits: {
+          type: String,
+          required: false,
+        },
+      },
+    ],
     address: [
       {
         country: {
           type: String,
-          required: true
+          required: true,
         },
         city: {
           type: String,
-          required: true
+          required: true,
         },
         postcode: {
           type: String,
-          required: true
+          required: true,
         },
         address: {
           type: String,
-          required: true
+          required: true,
         },
         addressOptional: {
           type: String,
-          required: false
+          required: false,
         },
         province: {
           type: String,
-          required: false
+          required: false,
         },
         phone: {
           type: String,
-          required: false
-        }
-      }
-    ]
+          required: false,
+        },
+      },
+    ],
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
-UserSchema.methods.generatePasswordReset = function() {
+UserSchema.methods.generatePasswordReset = function () {
   this.resetPasswordToken = crypto.randomBytes(20).toString("hex");
   this.resetPasswordExpires = Date.now() + 3600000; //expires in an hour
 };

@@ -5,6 +5,7 @@ import Input from "./Input";
 import $ from "./_Information";
 import CheckBox from "./CheckBox";
 import ShippingAddress from "./ShippingAddress";
+import Navigation from "./Navigation";
 const Information = () => {
   const [store, dispatch] = useStore();
   const handleChange = (e) => {
@@ -90,6 +91,7 @@ const Information = () => {
           </$.CheckBoxWrapper>
         </$.ShippingAddress>
       </$.Form>
+      <Navigation />
     </>
   );
 };

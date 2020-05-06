@@ -3,7 +3,7 @@ import React, { createContext, useContext, useReducer } from "react";
 import { updateCartStorage, removeFromCartStorage } from "./updateCartStorage";
 const StoreContext = createContext();
 
-const applyMiddleware = (dispatch, getState) => action => {
+const applyMiddleware = (dispatch, getState) => (action) => {
   switch (action.type) {
     case "UPDATE_CART_PRODUCT":
       updateCartStorage({ ...action });
@@ -16,7 +16,7 @@ const applyMiddleware = (dispatch, getState) => action => {
 };
 
 const defaultState = {
-  cart: [],
+  cart: {},
   cache: {},
   menuOpen: false,
   product: {},
@@ -27,15 +27,15 @@ const defaultState = {
       "Long Sleeve": false,
       Plaid: false,
       "T-Shirt": false,
-      Wool: false
+      Wool: false,
     },
     women: {
       Hat: false,
       "Long Sleeve": false,
       Shorts: false,
       "T-Shirt": false,
-      Womens: false
-    }
+      Womens: false,
+    },
   },
   checkout: {
     step: "information",
@@ -48,11 +48,11 @@ const defaultState = {
       addressOptional: { value: "", error: "" },
       city: { value: "", error: "" },
       country: { value: "US", error: "" },
-      postcode: { value: "", error: "" }
+      postcode: { value: "", error: "" },
     },
     shipping: [],
-    selectedShipping: {}
-  }
+    selectedShipping: {},
+  },
 };
 
 const reducer = (state, action) => {
@@ -64,14 +64,14 @@ const reducer = (state, action) => {
           ...state.cart,
           ...action.items.reduce((acc, product) => {
             acc[product.productId] = {
-              contentId: [product.contentId],
+              contentId: product.contentId,
               quantity:
                 (state.cart[product.productId]?.quantity || 0) +
-                product.quantity
+                product.quantity,
             };
             return acc;
-          }, {})
-        }
+          }, {}),
+        },
       };
 
     case "UPDATE_CART_PRODUCT":
@@ -89,14 +89,14 @@ const reducer = (state, action) => {
           [action.productId]: {
             contentId: action.contentId,
             quantity:
-              (state.cart[action.productId]?.quantity || 0) + action.modifier
-          }
-        }
+              (state.cart[action.productId]?.quantity || 0) + action.modifier,
+          },
+        },
       };
     case "REMOVE_FROM_CART":
       delete state.cart[action.productId];
       return {
-        ...state
+        ...state,
       };
     case "ADD_TO_PRODUCT_CACHE":
       return {
@@ -106,8 +106,8 @@ const reducer = (state, action) => {
           ...action.products.reduce((acc, ele) => {
             acc[ele.sys.id] = ele;
             return acc;
-          }, {})
-        }
+          }, {}),
+        },
       };
     case "ADD_FILTER":
       return {
@@ -116,9 +116,9 @@ const reducer = (state, action) => {
           ...state.filter,
           [action.gender]: {
             ...state.filter[action.gender],
-            [action.filter]: !state.filter[action.gender][action.filter]
-          }
-        }
+            [action.filter]: !state.filter[action.gender][action.filter],
+          },
+        },
       };
     case "RESET_FILTER":
       return { ...state, filter: defaultState.filter };
@@ -138,8 +138,8 @@ const reducer = (state, action) => {
         checkout: {
           ...state.checkout,
           step: action.step,
-          stepsLocked: { ...state.checkout.stepsLocked, [action.step]: false }
-        }
+          stepsLocked: { ...state.checkout.stepsLocked, [action.step]: false },
+        },
       };
     case "CHECKOUT_SET_ERRORS":
       return {
@@ -151,9 +151,9 @@ const reducer = (state, action) => {
             ...action.errors.reduce((acc, el) => {
               acc[el.name].error = el.error;
               return acc;
-            }, state.checkout.details)
-          }
-        }
+            }, state.checkout.details),
+          },
+        },
       };
     case "CHECKOUT_SHIPPING_ADDRESS_CHANGE":
       return {
@@ -162,24 +162,24 @@ const reducer = (state, action) => {
           ...state.checkout,
           details: {
             ...state.checkout.details,
-            [action.name]: { value: action.value, error: "" }
+            [action.name]: { value: action.value, error: "" },
           },
           selectedShipping: {},
-          stepsLocked: { information: false, payment: true, shipping: true }
-        }
+          stepsLocked: { information: false, payment: true, shipping: true },
+        },
       };
     case "CHECKOUT_ADD_SHIPPING_FARES":
       return {
         ...state,
         checkout: {
           ...state.checkout,
-          shipping: action.shipping
-        }
+          shipping: action.shipping,
+        },
       };
     case "CHECKOUT_SELECTED_SHIPPING":
       return {
         ...state,
-        checkout: { ...state.checkout, selectedShipping: action.shipping }
+        checkout: { ...state.checkout, selectedShipping: action.shipping },
       };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);

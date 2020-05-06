@@ -30,7 +30,7 @@ export default async (req, res) => {
           reducedPrice: reducedPrice?.["en-US"] || 0,
           reducedPriceExpiration: reducedPriceExpiration
             ? new Date(reducedPriceExpiration["en-US"]).getTime()
-            : 0
+            : 0,
         });
         await product.save();
         return res.status(200).send("Saved");
@@ -43,7 +43,7 @@ export default async (req, res) => {
             : 0,
           inStock: inStock["en-US"],
           productId: sys.id,
-          contentId: fields.for["en-US"]
+          contentId: fields.for["en-US"],
         }).save();
         return res.status(201).send("Product created");
       }

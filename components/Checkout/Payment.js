@@ -1,19 +1,50 @@
-import React, { useState, Suspense } from "react";
+import React, { useState, useEffect } from "react";
+import cookie from "js-cookie";
+import baseUrl from "../../utils/baseUrl";
 const { getCode } = require("country-list");
 import $ from "./_Payment";
+import axios from "axios";
 import Table from "./Table";
-import RadioPick from "./Radio";
-import ShippingAddress from "./ShippingAddress";
 import { useStore } from "../../utils/contextStore";
 import AlertIcon from "../Icons/Alert";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
 import LoadingPlaceholder from "../_App/LoadingPlaceholder";
-const StripeForm = React.lazy(() => import("./StripeForm"));
-const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY);
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import StripeInput from "./StripeInput";
+import BillingAddress from "./BillingAddress";
+import Navigation from "./Navigation";
+const options = {
+  style: {
+    base: {
+      fontSize: "14px",
+      color: "#424770",
+      letterSpacing: "0.025em",
+      fontFamily:
+        '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol",sans-serif',
+      "::placeholder": {
+        color: "#737373",
+      },
+    },
+    invalid: {
+      color: "#9e2146",
+    },
+  },
+  hidePostalCode: true,
+};
 
-const Payment = () => {
+const Payment = ({ stripeTotal }) => {
   const [store, dispatch] = useStore();
+  const stripe = useStripe();
+  const elements = useElements();
+  const [loaded, setLoaded] = useState(false);
+  const [stripeError, setStripeError] = useState("");
+  const [processing, setProcessing] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [{ focus, complete, error }, setInputState] = useState({
+    focus: false,
+    complete: false,
+    error: false,
+  });
+  const [clientSecret, setClientSecret] = useState("");
 
   const [billingAddress, setBillingAddress] = useState({
     sameAsShipping: true,
@@ -27,6 +58,50 @@ const Payment = () => {
       postcode: { value: "", error: "" },
     },
   });
+
+  useEffect(() => {
+    const getStripeIntent = async () => {
+      console.log("fetching intent");
+      const token = cookie.get("token");
+      const payload = {
+        cart: store.cart,
+        total: stripeTotal,
+        shipping: {
+          ...store.checkout.selectedShipping,
+          region: store.checkout.details.country.value,
+        },
+        ...(token ? { headers: { Authorization: token } } : {}),
+      };
+      const url = `${baseUrl}/api/payment_intent`;
+      const response = await axios.post(url, payload);
+      console.log(response.data);
+      setClientSecret(response.data);
+    };
+    getStripeIntent();
+  }, []);
+
+  const getAddress = (shippingA = true) => {
+    const details = shippingA ? store.checkout.details : billingAddress.details;
+    const {
+      name,
+      surname,
+      address,
+      addressOptional,
+      city,
+      country,
+      postcode,
+    } = details;
+    return {
+      name: `${name.value} ${surname.value}`,
+      address: {
+        line1: address.value,
+        line2: addressOptional.value,
+        city: city.value,
+        country: country.value,
+        postal_code: postcode.value,
+      },
+    };
+  };
 
   const switchAddress = () =>
     setBillingAddress((prevState) => ({
@@ -43,115 +118,114 @@ const Payment = () => {
       details: { ...prevState.details, [name]: { value, error: "" } },
     }));
   };
-  return (
-    <$.Wrapper>
-      <Table
-        details={store.checkout.details}
-        shipping={store.checkout.selectedShipping}
-      />
-      <$.Payment>
-        <$.Information>
-          <$.H2>Payment</$.H2>
-          <p>All transactions are secure and encrypted.</p>
-        </$.Information>
 
-        <$.Warning aria-atomic="true" aria-live="polite">
-          <span>
-            <AlertIcon />
-          </span>
-          This store can't accept real orders or real payments.
-        </$.Warning>
-        <Elements stripe={stripePromise}>
-          <Suspense
-            fallback={
+  const handleSubmit = async () => {
+    if (!stripe || !elements) {
+      // Stripe.js has not yet loaded.
+      // Make sure to disable form submission until Stripe.js has loaded.
+      return;
+    }
+    setProcessing(true);
+
+    const payload = await stripe.confirmCardPayment(clientSecret, {
+      receipt_email: store.checkout.details.email.value,
+      payment_method: {
+        card: elements.getElement(CardElement),
+        billing_details: getAddress(billingAddress.sameAsShipping),
+      },
+      shipping: getAddress(),
+    });
+    if (payload.error) {
+      setSuccess("");
+      setStripeError(`Payment failed ${payload.error.message}`);
+      setProcessing(false);
+    } else {
+      setSuccess("Done!");
+      setStripeError(null);
+      setProcessing(false);
+    }
+  };
+
+  return (
+    <>
+      <$.Wrapper>
+        <Table
+          details={store.checkout.details}
+          shipping={store.checkout.selectedShipping}
+        />
+        <$.Payment>
+          <$.Information>
+            <$.H2>Payment</$.H2>
+            <p>All transactions are secure and encrypted.</p>
+          </$.Information>
+
+          <$.Warning aria-atomic="true" aria-live="polite">
+            <span>
+              <AlertIcon />
+            </span>
+            This store can't accept real orders or real payments.
+          </$.Warning>
+          <form
+            css={`
+              position: relative;
+            `}
+          >
+            {!loaded && (
               <LoadingPlaceholder
                 css={`
                   width: 100%;
                   height: 44.77px;
                   border-radius: 5px;
-                  margin: 1.02857em 0;
+                  margin: 0.42857em 0;
+                  position: absolute;
+                  top: 0;
+                  z-index: 10;
                 `}
               />
-            }
-          >
-            <StripeForm />
-          </Suspense>
-        </Elements>
-      </$.Payment>
-      <$.BillingAddress>
-        <$.Information>
-          <$.H2>Billing Address</$.H2>
-          <p>Select the address that matches your card or payment method.</p>
-        </$.Information>
-        <$.Table>
-          <label htmlFor={"sameAsShipping"}>
-            <$.Row
-              css={`
-                padding: 1.14286em;
-                cursor: pointer;
-              `}
-            >
-              <RadioPick
-                id={"sameAsShipping"}
-                name="radio-shipping"
-                checked={billingAddress.sameAsShipping}
-                onChange={switchAddress}
-              />
-              <label
-                htmlFor="sameAsShipping"
-                css={`
-                  font-weight: 500;
-                `}
-              >
-                Same as shipping address
-              </label>
-            </$.Row>
-          </label>
-          <label htmlFor={"differentBillingAddress"}>
-            <$.Row
-              css={`
-                padding: 1.14286em;
-                cursor: pointer;
-                border-top: 1px solid
-                  ${({ theme }) => theme.checkout.sideColors.border};
-              `}
-            >
-              <RadioPick
-                id={"differentBillingAddress"}
-                name="radio-shipping"
-                checked={!billingAddress.sameAsShipping}
-                onChange={switchAddress}
-              />
-              <label
-                htmlFor="differentBillingAddress"
-                css={`
-                  font-weight: 500;
-                `}
-              >
-                Use a different billing address
-              </label>
-            </$.Row>
-          </label>
-          {!billingAddress.sameAsShipping && (
-            <$.Row
-              css={`
-                padding: 0.71429em 1.14286em;
-                background-color: ${({ theme }) =>
-                  theme.checkout.sideColors.background};
-                cursor: pointer;
-                border-top: 1px solid
-                  ${({ theme }) => theme.checkout.sideColors.border};
-              `}
-            >
-              <ShippingAddress
-                details={billingAddress.details}
-                handleChange={handleBillingAddressChange}
-              />
-            </$.Row>
-          )}
-        </$.Table>
-      </$.BillingAddress>
-    </$.Wrapper>
+            )}
+            <label>
+              <$.LabelText>Card details</$.LabelText>
+              <StripeInput focus={focus} error={error}>
+                <CardElement
+                  options={options}
+                  onReady={() => {
+                    setLoaded(true);
+                  }}
+                  onChange={({ complete, error }) => {
+                    setInputState((prevState) => ({
+                      ...prevState,
+                      complete,
+                      error,
+                    }));
+                  }}
+                  onBlur={() => {
+                    setInputState((prevState) => ({
+                      ...prevState,
+                      focus: false,
+                    }));
+                  }}
+                  onFocus={() =>
+                    setInputState((prevState) => ({
+                      ...prevState,
+                      focus: true,
+                    }))
+                  }
+                />
+              </StripeInput>
+            </label>
+          </form>
+          {stripeError && <span>{stripeError}</span>}
+          {processing && <span>processing</span>}
+          {success && <span>{success}</span>}
+        </$.Payment>
+        <BillingAddress
+          switchAddress={switchAddress}
+          billingAddress={billingAddress}
+          handleBillingAddressChange={handleBillingAddressChange}
+        />
+      </$.Wrapper>
+      <Navigation toPay={handleSubmit} stripeLoaded={stripe} />
+    </>
   );
 };
 

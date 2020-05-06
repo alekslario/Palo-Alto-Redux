@@ -20,14 +20,14 @@ export default async (req, res) => {
     // 2) Find cart based on user id, populate it
     const cart = await Cart.findOne({ user: userId }).populate({
       path: "products.product",
-      model: Product
+      model: Product,
     });
     // 3) Calculate cart totals again from cart products
     const { cartTotal, stripeTotal } = calculateCartTotal(cart.products);
     // 4) Get email from payment data, see if email linked with existing Stripe customer
     const prevCustomer = await stripe.customers.list({
       email: paymentData.email,
-      limit: 1
+      limit: 1,
     });
     const isExistingCustomer = prevCustomer.data.length > 0;
     // 5) If not existing customer, create them based on their email
@@ -35,7 +35,7 @@ export default async (req, res) => {
     if (!isExistingCustomer) {
       newCustomer = await stripe.customers.create({
         email: paymentData.email,
-        source: paymentData.id
+        source: paymentData.id,
       });
     }
     const customer =
@@ -47,10 +47,10 @@ export default async (req, res) => {
         amount: stripeTotal,
         receipt_email: paymentData.email,
         customer,
-        description: `Checkout | ${paymentData.email} | ${paymentData.id}`
+        description: `Checkout | ${paymentData.email} | ${paymentData.id}`,
       },
       {
-        idempotency_key: uuidv4()
+        idempotency_key: uuidv4(),
       }
     );
     // 7) Add order data to database
@@ -58,7 +58,7 @@ export default async (req, res) => {
       user: userId,
       email: paymentData.email,
       total: cartTotal,
-      products: cart.products
+      products: cart.products,
     }).save();
     // 8) Clear products in cart
     await Cart.findOneAndUpdate({ _id: cart._id }, { $set: { products: [] } });

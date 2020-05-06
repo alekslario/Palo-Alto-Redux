@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Row, Column } from "../../styles/reusable";
+import { Row, Column, hidden } from "../../styles/reusable";
 import _Checkout from "./_Checkout";
 const { H2 } = _Checkout;
 import _Shipping from "./_Shipping";
@@ -13,12 +13,6 @@ const Wrapper = styled.div`
     h2 {
       margin-bottom: 0.6em;
     }
-  }
-`;
-const BillingAddress = styled.div`
-  padding-top: 2em;
-  @media (min-width: 750px) {
-    padding-top: 3em;
   }
 `;
 
@@ -59,9 +53,11 @@ const Warning = styled(Row)`
     min-width: 24px;
   }
 `;
+const LabelText = styled.span`
+  ${hidden}
+`;
 export default {
   Wrapper,
-  BillingAddress,
   H2,
   Row,
   Column,
@@ -69,4 +65,5 @@ export default {
   Payment,
   Information,
   Warning,
+  LabelText,
 };

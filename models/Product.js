@@ -6,28 +6,28 @@ const ProductSchema = new mongoose.Schema({
   productId: {
     type: String,
     unique: true,
-    required: true
+    required: true,
   },
   contentId: {
     type: String,
-    required: true
+    required: true,
   },
   price: {
     type: Number,
-    required: true
+    required: true,
   },
   reducedPrice: {
     type: Number,
-    default: 0
+    default: 0,
   },
   reducedPriceExpiration: {
     type: Number,
-    default: 0
+    default: 0,
   },
   inStock: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 });
 
 // prettier-ignore

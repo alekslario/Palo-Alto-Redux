@@ -8,7 +8,6 @@ import calculateCartTotal from "../utils/calculateCartTotal";
 import useDeliverCart from "../utils/useDeliverCart";
 import BreadCrumbs from "../components/Checkout/BreadCrumbs";
 import dynamic from "next/dynamic";
-import Navigation from "../components/Checkout/Navigation";
 import Summary from "../components/Checkout/Summary";
 import Header from "../components/Checkout/Header";
 import Shipping from "../components/Checkout/Shipping";
@@ -19,27 +18,24 @@ import { useFetchEntries } from "../utils/useFetchEntries";
 const Checkout = ({ user }) => {
   const [store, dispatch] = useStore();
   const [products] = useDeliverCart();
-
   const [shipping] = useFetchEntries({
     dependency: [],
-    content_type: "shipping"
+    content_type: "shipping",
   });
+  const { cartTotal, stripeTotal } = useMemo(
+    () =>
+      calculateCartTotal(products, store.checkout.selectedShipping.price || 0),
+    [products, store.checkout.selectedShipping.price]
+  );
 
   useEffect(() => {
     if (typeof window !== "undefined" && shipping.length > 0) {
       dispatch({
         type: "CHECKOUT_ADD_SHIPPING_FARES",
-        shipping: shipping[0].fields.shippingPricing
+        shipping: shipping[0].fields.shippingPricing,
       });
     }
   }, [shipping]);
-  console.log(shipping);
-  const { cartTotal } = useMemo(
-    () =>
-      calculateCartTotal(products, store.checkout.selectedShipping.price || 0),
-    [products, shipping]
-  );
-
   return (
     <$.Wrapper>
       <$.ContentMobileOnly>
@@ -58,8 +54,9 @@ const Checkout = ({ user }) => {
           <BreadCrumbs />
           {store.checkout.step === "information" && <Information />}
           {store.checkout.step === "shipping" && <Shipping />}
-          {store.checkout.step === "payment" && <Payment />}
-          <Navigation />
+          {store.checkout.step === "payment" && (
+            <Payment stripeTotal={stripeTotal} />
+          )}
           <$.Footer>All rights reserved Palo Alto Redux</$.Footer>
         </$.Main>
         <$.Side desktop={true}>

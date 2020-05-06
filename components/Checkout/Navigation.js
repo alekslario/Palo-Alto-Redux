@@ -6,9 +6,9 @@ import formValidation from "../../utils/formValidation";
 const text = {
   information: { back: "cart", forth: "shipping" },
   shipping: { back: "information", forth: "payment" },
-  payment: { back: "shipping" }
+  payment: { back: "shipping" },
 };
-const Navigation = () => {
+const Navigation = ({ toPay, stripeLoaded }) => {
   const router = useRouter();
   const [store, dispatch] = useStore();
 
@@ -18,7 +18,7 @@ const Navigation = () => {
     } else {
       dispatch({
         type: "CHECKOUT_TAKE_A_STEP",
-        step: text[store.checkout.step].back
+        step: text[store.checkout.step].back,
       });
     }
   };
@@ -28,19 +28,21 @@ const Navigation = () => {
       if (errors.length === 0) {
         dispatch({
           type: "CHECKOUT_TAKE_A_STEP",
-          step: "shipping"
+          step: "shipping",
         });
       } else {
         dispatch({
           type: "CHECKOUT_SET_ERRORS",
-          errors
+          errors,
         });
       }
-    } else {
+    } else if (store.checkout.step === "shipping") {
       dispatch({
         type: "CHECKOUT_TAKE_A_STEP",
-        step: text[store.checkout.step].forth
+        step: text[store.checkout.step].forth,
       });
+    } else if (stripeLoaded) {
+      toPay();
     }
   };
   return (

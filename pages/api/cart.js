@@ -26,14 +26,31 @@ async function handleGetRequest(req, res) {
   try {
     const cart = await Cart.findOne({ user: userId }, { "products._id": 0 })
       .populate("cartProducts", "contentId")
+      .populate("user")
       .lean();
-    const { cartProducts, products } = cart;
+    const { cartProducts, products, user: userInfo } = cart;
+    const {
+      name,
+      surname,
+      email,
+      address,
+      stripePaymentMethods,
+      stripeId,
+    } = userInfo;
     res.status(200).json({
+      user: {
+        name,
+        surname,
+        email,
+        address,
+        stripePaymentMethods,
+        stripeId,
+      },
       products: products.map((ele, index) => {
         ele["productId"] = ele.product;
         ele["contentId"] = cartProducts[index].contentId;
         return ele;
-      })
+      }),
     });
   } catch (error) {
     console.error(error);
@@ -49,7 +66,7 @@ async function handlePutRequest(req, res) {
     if (cart.products.length > 60 || Object.keys(payloadProducts).length > 60)
       res.status(400).send("Maximum cart size reached");
     cart.products = cart.products
-      .map(doc => {
+      .map((doc) => {
         if (payloadProducts[doc.product]) {
           doc.quantity += payloadProducts[doc.product];
           delete payloadProducts[doc.product];
@@ -57,11 +74,11 @@ async function handlePutRequest(req, res) {
           return doc;
         }
       })
-      .filter(ele => ele)
+      .filter((ele) => ele)
       .concat(
         Object.entries(payloadProducts).map(([key, value]) => ({
           quantity: value,
-          product: key
+          product: key,
         }))
       );
     await cart.save();

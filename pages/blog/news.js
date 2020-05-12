@@ -1,6 +1,8 @@
 import Blog from "../../components/Blog/Blog";
-import getInitialPosts from "../../utils/getInitialPosts";
-const News = ({ comments }) => <Blog comments={comments} />;
+import useGetComments from "../../utils/useGetComments";
+const News = () => {
+  const [comments] = useGetComments();
+  return <Blog comments={comments} />;
+};
 
-News.getInitialProps = getInitialPosts();
 export default News;

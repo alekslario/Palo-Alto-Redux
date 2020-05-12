@@ -34,6 +34,7 @@ const Layout = ({ children, hasToken }) => {
     const checkCartProduct = async () => {
       let token = cookie.get("token");
       let cart = [];
+      let user = {};
       if (token) {
         const response = await contactServer({
           route: "cart",
@@ -48,6 +49,7 @@ const Layout = ({ children, hasToken }) => {
           token = null;
         } else if (response.status === 201 || response.status === 200) {
           cart = response.data.products;
+          user = response.data.user;
         }
       }
       if (!token) {
@@ -57,7 +59,7 @@ const Layout = ({ children, hasToken }) => {
           console.log(error);
         }
       }
-      dispatch({ type: "ADD_TO_CART", items: cart });
+      dispatch({ type: "ADD_TO_CART", items: cart, user });
     };
     checkCartProduct();
   }, []);

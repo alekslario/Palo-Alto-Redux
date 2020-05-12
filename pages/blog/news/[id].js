@@ -1,11 +1,7 @@
-import { useRouter } from "next/router";
-import getInitialPosts from "../../../utils/getInitialPosts";
+import useGetComments from "../../../utils/useGetComments";
 import BlogPost from "../../../components/Blog/BlogPost";
-const Post = ({ comments }) => {
-  const {
-    query: { id }
-  } = useRouter();
+const Post = () => {
+  const [comments, id] = useGetComments({ id: true });
   return <BlogPost blogId={id} comments={comments} />;
 };
-Post.getInitialProps = getInitialPosts({ id: true });
 export default Post;

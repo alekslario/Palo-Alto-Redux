@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useStore } from "./contextStore";
 const client = require("contentful").createClient({
   space: process.env.CONTENTFUL_SPACE_ID,
-  accessToken: process.env.CONTENTFUL_ACCESS_TOKEN
+  accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
 });
 
 export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
@@ -10,7 +10,7 @@ export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
   const [{ entries, loading, timeStamp }, setEntries] = useState({
     entries: [],
     loading: true,
-    timeStamp: 0
+    timeStamp: 0,
   });
 
   const idQuery = useMemo(
@@ -28,7 +28,7 @@ export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
       searchParameters["sys.id"] || searchParameters["sys.id[in]"]
     )
       .split(",")
-      .filter(ele => ele)
+      .filter((ele) => ele)
       .reduce((acc, id) => {
         if (store.cache[id]) {
           acc.inStore.push(store.cache[id]);
@@ -47,9 +47,9 @@ export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
         ? {
             [`sys.id${
               searchParameters["sys.id[in]"] ? "[in]" : ""
-            }`]: toQuery.join()
+            }`]: toQuery.join(),
           }
-        : {})
+        : {}),
     });
     if (data.items) return data.items;
     console.log(`Error getting contentful entries.`);
@@ -65,15 +65,15 @@ export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
         setEntries({
           entries: [...items, ...inStore],
           loading: false,
-          timeStamp: Date.now()
+          timeStamp: Date.now(),
         });
-        dispatch({ type: "ADD_TO_PRODUCT_CACHE", products: items });
+        dispatch({ type: "ADD_TO_CACHE", items });
       }
     }
     if (!didCancel)
-      setEntries(prevState => ({
+      setEntries((prevState) => ({
         ...prevState,
-        loading: true
+        loading: true,
       }));
     getEntries();
     return () => {

@@ -1,6 +1,4 @@
 import { useEffect, useState, useMemo } from "react";
-import baseUrl from "../utils/baseUrl";
-import axios from "axios";
 import Link from "next/link";
 import { useStore } from "../utils/contextStore";
 import $ from "../components/Checkout/_Checkout";
@@ -69,16 +67,6 @@ const Checkout = ({ user }) => {
       </$.Content>
     </$.Wrapper>
   );
-};
-
-Checkout.getInitialProps = async (ctx, token) => {
-  if (!token) {
-    return {};
-  }
-  const payload = { headers: { Authorization: token } };
-  const url = `${baseUrl}/api/account`;
-  const response = await axios.get(url, payload);
-  return response.data;
 };
 
 export default Checkout;

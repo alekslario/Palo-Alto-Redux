@@ -1,9 +1,8 @@
 import Blog from "../../../../components/Blog/Blog";
-import getInitialPosts from "../../../../utils/getInitialPosts";
-const LongBoards = ({ comments }) => (
-  <Blog filter="longboards" comments={comments} />
-);
-
-LongBoards.getInitialProps = getInitialPosts({ tag: "longboards" });
+import useGetComments from "../../../../utils/useGetComments";
+const LongBoards = () => {
+  const [comments] = useGetComments({ tag: "longboards" });
+  return <Blog filter="longboards" comments={comments} />;
+};
 
 export default LongBoards;

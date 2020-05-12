@@ -20,7 +20,6 @@ const defaultState = {
   cache: {},
   menuOpen: false,
   product: {},
-  blogPost: {},
   filter: {
     men: {
       Jacket: false,
@@ -37,6 +36,7 @@ const defaultState = {
       Womens: false,
     },
   },
+  user: {},
   checkout: {
     step: "information",
     stepsLocked: { information: false, payment: true, shipping: true },
@@ -72,6 +72,7 @@ const reducer = (state, action) => {
             return acc;
           }, {}),
         },
+        user: action.user,
       };
 
     case "UPDATE_CART_PRODUCT":
@@ -98,12 +99,12 @@ const reducer = (state, action) => {
       return {
         ...state,
       };
-    case "ADD_TO_PRODUCT_CACHE":
+    case "ADD_TO_CACHE":
       return {
         ...state,
         cache: {
           ...state.cache,
-          ...action.products.reduce((acc, ele) => {
+          ...action.items.reduce((acc, ele) => {
             acc[ele.sys.id] = ele;
             return acc;
           }, {}),
@@ -124,8 +125,6 @@ const reducer = (state, action) => {
       return { ...state, filter: defaultState.filter };
     case "ADD_PRODUCT":
       return { ...state, product: action.product };
-    case "ADD_BLOG_POST":
-      return { ...state, blogPost: action.blogPost };
     case "OPEN_MENU":
       return { ...state, menuOpen: true };
     case "CLOSE_MENU":

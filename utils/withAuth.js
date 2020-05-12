@@ -1,7 +1,5 @@
 import jwt from "jsonwebtoken";
 export default (handler) => async (req, res) => {
-  console.log(req.headers, "req.headers");
-
   if (!("authorization" in req.headers)) {
     return res.status(401).send("No authorization token");
   }

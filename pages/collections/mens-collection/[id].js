@@ -2,5 +2,4 @@ import ProductSummary from "../../../components/Product/ProductSummary/ProductSu
 const Product = () => {
   return <ProductSummary />;
 };
-// Post.getInitialProps = getInitialPosts({ id: true });
 export default Product;

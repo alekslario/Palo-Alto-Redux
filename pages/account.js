@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import baseUrl from "../utils/baseUrl";
+import { redirectUser, handleLogout } from "../utils/auth";
+import { parseCookies, destroyCookie } from "nookies";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useStore } from "../utils/contextStore";
 import $ from "../components/Account/_Account";
-import { handleLogout } from "../utils/auth";
-function Account({ user, orders }) {
+function Account({ user }) {
   const [store, dispatch] = useStore();
   const router = useRouter();
 
@@ -51,21 +52,25 @@ function Account({ user, orders }) {
   );
 }
 
-Account.getInitialProps = async (ctx, token) => {
+export async function getServerSideProps(ctx) {
+  const { token } = parseCookies(ctx);
   if (!token) {
-    return { orders: [] };
+    redirectUser(ctx, "/login");
+  } else {
+    try {
+      const payload = { headers: { Authorization: token } };
+      const url = `${baseUrl}/api/account`;
+      const response = await axios.get(url, payload);
+      return { props: { user: response.data } };
+    } catch (error) {
+      console.error("Error getting current user", error);
+      // 1) Throw out invalid token
+      destroyCookie(ctx, "token");
+      // 2) Redirect to login
+      redirectUser(ctx, "/login");
+    }
   }
-  const payload = { headers: { Authorization: token } };
-  const url = `${baseUrl}/api/orders`;
-  const response = await axios.get(url, payload);
-  return response.data;
-};
-
-{
-  /* <AccountHeader {...user} />
-<AccountOrders orders={orders} />
-{user.role === "root" && <AccountPermissions />}
- */
+  return {};
 }
 
 export default Account;

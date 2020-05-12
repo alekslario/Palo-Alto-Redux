@@ -2,7 +2,7 @@ import React from "react";
 import $ from "./_InstagramFeed";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const InstagramFeed = ({ instagram: { data } }) => {
+const InstagramFeed = ({ instagram: { data = [] } = {} }) => {
   return (
     <>
       <$.Grid>
@@ -14,7 +14,7 @@ const InstagramFeed = ({ instagram: { data } }) => {
             key={index}
             href={link}
             style={{
-              backgroundImage: `${images.thumbnail}`
+              backgroundImage: `${images.thumbnail}`,
             }}
             data-bgset={images.standard_resolution.url}
           >

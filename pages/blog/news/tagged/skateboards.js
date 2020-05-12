@@ -1,9 +1,8 @@
 import Blog from "../../../../components/Blog/Blog";
-import getInitialPosts from "../../../../utils/getInitialPosts";
-const Skateboards = ({ comments }) => (
-  <Blog filter="skateboards" comments={comments} />
-);
-
-Skateboards.getInitialProps = getInitialPosts({ tag: "skateboards" });
+import useGetComments from "../../../../utils/useGetComments";
+const Skateboards = () => {
+  const [comments] = useGetComments({ tag: "skateboards" });
+  return <Blog filter="skateboards" comments={comments} />;
+};
 
 export default Skateboards;

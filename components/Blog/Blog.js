@@ -4,25 +4,17 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import $ from "./_Blog";
 import { useFetchEntries } from "../../utils/useFetchEntries";
-import { useStore } from "../../utils/contextStore";
 import Tags from "./Tags";
 import createSrcSet from "../../utils/createContentfulSrc";
 
-const Blog = ({ filter = "", comments = [] }) => {
+const Blog = ({ filter = "", comments = {} }) => {
   const { route } = useRouter();
-  const [store, dispatch] = useStore();
   const [posts, loading] = useFetchEntries({
     limit: 10,
     content_type: "blogPost",
     order: "sys.createdAt",
-    "fields.tags": filter
+    "fields.tags": filter,
   });
-  const saveBlogPost = blogPost => {
-    if (!!comments[blogPost.sys.id]) {
-      blogPost["comments"] = comments[blogPost.sys.id];
-    }
-    dispatch({ type: "ADD_BLOG_POST", blogPost });
-  };
 
   return (
     <$.PageWrapper>
@@ -58,12 +50,12 @@ const Blog = ({ filter = "", comments = [] }) => {
       {posts.map((blogPost, index) => {
         const {
           sys: { id },
-          fields: { title, author, publishDate, image, post, tags }
+          fields: { title, author, publishDate, image, post, tags },
         } = blogPost;
         return (
           <$.BlogBlock key={index}>
             <Link href={"/blog/news/[id]"} as={`/blog/news/${id}`}>
-              <a onClick={() => saveBlogPost(blogPost)}>
+              <a>
                 <img
                   src={image.fields.file.url + "?w=180"}
                   alt={image.fields.description}
@@ -76,7 +68,7 @@ const Blog = ({ filter = "", comments = [] }) => {
             </Link>
 
             <Link href={"/blog/news/[id]"} as={`/blog/news/${id}`}>
-              <a onClick={() => saveBlogPost(blogPost)}>
+              <a>
                 <$.Title>{title}</$.Title>
               </a>
             </Link>
@@ -85,7 +77,7 @@ const Blog = ({ filter = "", comments = [] }) => {
               Posted by {author} on {new Date(publishDate).toDateString()}
             </$.SmallPrint>
             <Link href={"/blog/news/[id]"} as={`/blog/news/${id}`}>
-              <a onClick={() => saveBlogPost(blogPost)}>
+              <a>
                 <$.Text>
                   {post.content
                     .map(({ content }) => content.map(({ value }) => value))

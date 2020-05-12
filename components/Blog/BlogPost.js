@@ -7,10 +7,10 @@ import Tags from "./Tags";
 import CommentSubmit from "./CommentSubmit";
 import createSrcSet from "../../utils/createContentfulSrc";
 import { useFetchEntries } from "../../utils/useFetchEntries";
-const BlogPost = ({ comments, blogId }) => {
+const BlogPost = ({ comments = {}, blogId }) => {
   const [blogPost, loading] = useFetchEntries({
     content_type: "blogPost",
-    "sys.id": blogId
+    "sys.id": blogId,
   });
   return (
     <$.PageWrapper>
@@ -18,7 +18,7 @@ const BlogPost = ({ comments, blogId }) => {
         (
           {
             sys: { id },
-            fields: { title, author, publishDate, image, post, tags }
+            fields: { title, author, publishDate, image, post, tags },
           },
           index
         ) => (

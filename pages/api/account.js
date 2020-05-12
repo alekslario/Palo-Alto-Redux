@@ -1,5 +1,4 @@
 import User from "../../models/User";
-import jwt from "jsonwebtoken";
 import connectDb from "../../utils/connectDb";
 import withAuth from "../../utils/withAuth";
 connectDb();

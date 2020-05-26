@@ -1,5 +1,6 @@
 import connectDb from "../../utils/connectDb";
 import Cart from "../../models/Cart";
+import User from "../../models/User";
 import Product from "../../models/Product";
 import withAuth from "../../utils/withAuth";
 connectDb();
@@ -9,8 +10,8 @@ export default withAuth(async (req, res) => {
     case "GET":
       await handleGetRequest(req, res);
       break;
-    case "PUT":
-      await handlePutRequest(req, res);
+    case "POST":
+      await handlePostRequest(req, res);
       break;
     case "DELETE":
       await handleDeleteRequest(req, res);
@@ -25,18 +26,10 @@ async function handleGetRequest(req, res) {
   const { userId } = req.user;
   try {
     const cart = await Cart.findOne({ user: userId }, { "products._id": 0 })
-      .populate("cartProducts", "contentId")
       .populate("user")
       .lean();
-    const { cartProducts, products, user: userInfo } = cart;
-    const {
-      name,
-      surname,
-      email,
-      address,
-      stripePaymentMethods,
-      stripeId,
-    } = userInfo;
+    const { products, user } = cart;
+    const { name, surname, email, address, stripePaymentMethods } = user;
     res.status(200).json({
       user: {
         name,
@@ -44,13 +37,8 @@ async function handleGetRequest(req, res) {
         email,
         address,
         stripePaymentMethods,
-        stripeId,
       },
-      products: products.map((ele, index) => {
-        ele["productId"] = ele.product;
-        ele["contentId"] = cartProducts[index].contentId;
-        return ele;
-      }),
+      cart: products,
     });
   } catch (error) {
     console.error(error);
@@ -58,31 +46,44 @@ async function handleGetRequest(req, res) {
   }
 }
 
-async function handlePutRequest(req, res) {
+async function handlePostRequest(req, res) {
   const { payloadProducts } = req.body;
   const { userId } = req.user;
   try {
     const cart = await Cart.findOne({ user: userId });
-    if (cart.products.length > 60 || Object.keys(payloadProducts).length > 60)
+    if (!cart)
+      return res
+        .status(404)
+        .json({ status: 404, message: "Error getting current user" });
+    if (cart.products.length > 50 || Object.keys(payloadProducts).length > 50)
       res.status(400).send("Maximum cart size reached");
+    console.log("serverCart", cart.products, payloadProducts);
     cart.products = cart.products
       .map((doc) => {
-        if (payloadProducts[doc.product]) {
-          doc.quantity += payloadProducts[doc.product];
-          delete payloadProducts[doc.product];
+        if (payloadProducts[doc.productId]) {
+          doc.quantity += payloadProducts[doc.productId].quantity;
+          delete payloadProducts[doc.productId];
           if (doc.quantity === 0) return;
           return doc;
         }
       })
       .filter((ele) => ele)
       .concat(
-        Object.entries(payloadProducts).map(([key, value]) => ({
-          quantity: value,
-          product: key,
-        }))
+        Object.entries(payloadProducts).map(
+          ([key, { quantity, contentId }]) => ({
+            quantity,
+            contentId,
+            productId: key,
+          })
+        )
       );
+    console.log("serverCart2", cart.products, payloadProducts);
     await cart.save();
-    res.status(200).send("Cart updated");
+    res.status(200).send({
+      status: 200,
+      message: "Cart updated",
+      cart: cart.products,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json("Error occurred. Try again later.");
@@ -95,7 +96,7 @@ async function handleDeleteRequest(req, res) {
   try {
     await Cart.findOneAndUpdate(
       { user: userId },
-      { $pull: { products: { product: productId } } }
+      { $pull: { products: { productId } } }
     );
     res.status(200).send("Product deleted");
   } catch (error) {

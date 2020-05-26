@@ -4,7 +4,7 @@ import isEmail from "validator/lib/isEmail";
 import isLength from "validator/lib/isLength";
 connectDb();
 
-export default withAuth(async (req, res) => {
+export default async (req, res) => {
   switch (req.method) {
     case "GET":
       await handleGetRequest(req, res);
@@ -16,7 +16,7 @@ export default withAuth(async (req, res) => {
       res.status(405).send(`Method ${req.method} not allowed`);
       break;
   }
-});
+};
 
 async function handleGetRequest(req, res) {
   const { skips = 0, id, tag } = req.query;

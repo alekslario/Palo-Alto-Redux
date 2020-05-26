@@ -7,12 +7,12 @@ import "swiper/css/swiper.css";
 import "@fortawesome/fontawesome-svg-core/styles.css"; // Import the CSS
 import "../styles/fontawesome";
 import "../utils/lazysizesImports";
-function MyApp({ Component }) {
+function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <StoreProvider>
-        <Layout>
-          <Component />
+        <Layout {...pageProps}>
+          <Component {...pageProps} />
         </Layout>
       </StoreProvider>
     </ThemeProvider>

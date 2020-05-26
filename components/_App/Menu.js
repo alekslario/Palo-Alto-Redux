@@ -1,17 +1,20 @@
+import { useEffect } from "react";
 import Router, { useRouter } from "next/router";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ShoppingBagIcon from "../Icons/ShoppingBag";
-import Logo from "../Icons/Logo";
+// import Logo from "../Icons/Logo";
+import dynamic from "next/dynamic";
+const Logo = dynamic(() => import("../Icons/Logo"));
 import AccountIcon from "../Icons/Account";
 import Search from "./Search";
 import { useStore } from "../../utils/contextStore";
 import { handleLogout } from "../../utils/auth";
 import $ from "./_Menu";
-const Menu = ({ hasToken }) => {
+const Menu = ({ user }) => {
   const { pathname } = useRouter();
   const [store, dispatch] = useStore();
-  const isActive = route => route === pathname;
+  const isActive = (route) => route === pathname;
   const isLightTheme =
     pathname === "/" ||
     pathname === "/collections/mens-collection" ||
@@ -52,7 +55,10 @@ const Menu = ({ hasToken }) => {
                   cursor: pointer;
                 `}
               >
-                <AccountIcon loggedIn={hasToken} isLightTheme={isLightTheme} />
+                <AccountIcon
+                  loggedIn={!!user || !!store.user}
+                  isLightTheme={isLightTheme}
+                />
               </a>
             </Link>
           </li>

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import baseUrl from "../utils/baseUrl";
 import { redirectUser, handleLogout } from "../utils/auth";
 import { parseCookies, destroyCookie } from "nookies";
@@ -6,14 +6,60 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useStore } from "../utils/contextStore";
 import $ from "../components/Account/_Account";
+import cookie from "js-cookie";
+import contactServer from "../utils/contactServer";
+
 function Account({ user }) {
   const [store, dispatch] = useStore();
+  const [deleteWarning, setDeleteWarning] = useState("");
   const router = useRouter();
+  useEffect(() => {
+    console.log(user, "inside hook account");
+    if (!user) return;
+    let didCancel = false;
+    async function mergeCart() {
+      const token = cookie.get("token");
+      let cart = [];
+      try {
+        cart = JSON.parse(localStorage.getItem("cart")) || [];
+      } catch (error) {
+        console.log(error);
+      }
+      const response = await contactServer({
+        data: {
+          payloadProducts: cart.reduce(
+            (acc, { productId, contentId, quantity }) => {
+              acc[productId] = { contentId, quantity };
+              return acc;
+            },
+            {}
+          ),
+        },
+        route: "cart",
+        auth: token,
+        method: cart.length > 0 ? "POST" : "GET",
+      });
+      console.log("fetch cart result", response.data);
+      if (response?.status === 200) {
+        localStorage.removeItem("cart");
+        console.log("before add to cart", response.data.cart, user);
+        dispatch({ type: "DELIVER_CART", items: response.data.cart, user });
+        setTimeout(() => {
+          console.log(store.user, " user from timeout");
+        }, 1500);
+      }
+    }
+    mergeCart();
+    return () => {
+      didCancel = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const handler = (event) => {
       if (event.key === "logout") {
+        cookie.remove("token");
         router.push("/login");
       }
     };
@@ -21,6 +67,20 @@ function Account({ user }) {
     return () => window.removeEventListener("storage", handler);
   }, []);
 
+  const handelDeleteUser = async () => {
+    const token = cookie.get("token");
+    const response = await contactServer({
+      auth: token,
+      route: "account",
+      method: "DELETE",
+    });
+    if (response.status === 200) {
+      dispatch({ type: "LOGOUT" });
+    } else {
+      setDeleteWarning(response.message);
+    }
+  };
+  console.log(store);
   return (
     <$.PageWrapper>
       <h1
@@ -28,8 +88,12 @@ function Account({ user }) {
           padding-bottom: 20px;
         `}
       >
-        My Account <button onClick={handleLogout}>Log out</button>
+        My Account{" "}
+        <button onClick={() => dispatch({ type: "LOGOUT" })}>Log out</button>
       </h1>
+      <br />
+      <button onClick={handelDeleteUser}>Delete account</button>
+      {deleteWarning && <span>{deleteWarning}</span>}
       <br />
       <div
         css={`
@@ -61,7 +125,12 @@ export async function getServerSideProps(ctx) {
       const payload = { headers: { Authorization: token } };
       const url = `${baseUrl}/api/account`;
       const response = await axios.get(url, payload);
-      return { props: { user: response.data } };
+      if (response.data.status === 404) {
+        throw "Error getting current user";
+      } else {
+        console.log("account response", response.data);
+        return { props: { ...response.data } };
+      }
     } catch (error) {
       console.error("Error getting current user", error);
       // 1) Throw out invalid token
@@ -70,7 +139,7 @@ export async function getServerSideProps(ctx) {
       redirectUser(ctx, "/login");
     }
   }
-  return {};
+  return { props: {} };
 }
 
 export default Account;

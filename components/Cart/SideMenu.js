@@ -31,7 +31,7 @@ const SideMenu = () => {
       type: "UPDATE_CART_PRODUCT",
       productId,
       contentId,
-      modifier
+      modifier,
     });
   };
   return (

@@ -13,7 +13,7 @@ const Register = () => {
   const nameRef = useRef(null);
   const surnameRef = useRef(null);
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     const response = await contactServer({
@@ -21,11 +21,11 @@ const Register = () => {
         email: emailRef.current.value,
         password: passwordRef.current.value,
         name: nameRef.current.value,
-        surname: surnameRef.current.value
+        surname: surnameRef.current.value,
       },
       route: "register",
       setStatus,
-      method: "PUT"
+      method: "POST",
     });
     setLoading(false);
     const token = response?.data?.token;

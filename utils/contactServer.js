@@ -6,7 +6,7 @@ export default async ({
   route,
   setStatus = () => {},
   auth,
-  method = "PUT"
+  method = "POST",
 }) => {
   try {
     setStatus("");
@@ -14,22 +14,25 @@ export default async ({
     const authentication = { headers: { Authorization: auth } };
     const payload = {
       ...data,
-      ...authentication
+      ...authentication,
     };
     let response;
     switch (method) {
       case "GET":
         response = await axios.get(url, payload);
         break;
-      case "PUT":
-        response = await axios.put(url, data, authentication);
+      case "POST":
+        response = await axios.post(url, data, authentication);
         break;
       case "DELETE":
         response = await axios.delete(url, payload);
         break;
     }
 
-    setStatus({ text: response.data, status: response.status });
+    setStatus({
+      text: response?.data?.message,
+      status: response?.data?.status,
+    });
     return response;
   } catch (error) {
     catchErrors(error, setStatus);

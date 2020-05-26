@@ -3,8 +3,9 @@ import {
   Row,
   Column,
   flexCenter,
-  CheckoutClickMe
+  CheckoutClickMe,
 } from "../../styles/reusable";
+import { loadingPlaceHolderCss } from "../_App/LoadingPlaceholder";
 
 const Navigation = styled(Column)`
   margin-top: 1em;
@@ -53,11 +54,14 @@ const ButtonForth = styled.button`
     width: initial;
     padding: 1.4em 1.7em;
   }
+  &:disabled {
+    ${loadingPlaceHolderCss}
+  }
 `;
 export default {
   Row,
   Column,
   Navigation,
   ButtonBack,
-  ButtonForth
+  ButtonForth,
 };

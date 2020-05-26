@@ -1,5 +1,8 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import cookie from "js-cookie";
+import baseUrl from "../utils/baseUrl";
+import axios from "axios";
 import { useStore } from "../utils/contextStore";
 import $ from "../components/Checkout/_Checkout";
 import calculateCartTotal from "../utils/calculateCartTotal";
@@ -13,20 +16,15 @@ const Payment = dynamic(() => import("../components/Checkout/Payment"));
 import SummaryButton from "../components/Checkout/SummaryButton";
 import Information from "../components/Checkout/Information";
 import { useFetchEntries } from "../utils/useFetchEntries";
-const Checkout = ({ user }) => {
+const Checkout = () => {
   const [store, dispatch] = useStore();
   const [products] = useDeliverCart();
   const [shipping] = useFetchEntries({
-    dependency: [],
     content_type: "shipping",
   });
-  const { cartTotal, stripeTotal } = useMemo(
-    () =>
-      calculateCartTotal(products, store.checkout.selectedShipping.price || 0),
-    [products, store.checkout.selectedShipping.price]
-  );
 
   useEffect(() => {
+    //adding shipping fares to the store as we fetch from contentful
     if (typeof window !== "undefined" && shipping.length > 0) {
       dispatch({
         type: "CHECKOUT_ADD_SHIPPING_FARES",
@@ -34,6 +32,48 @@ const Checkout = ({ user }) => {
       });
     }
   }, [shipping]);
+
+  const { cartTotal, stripeTotal } = useMemo(
+    () =>
+      calculateCartTotal(products, store.checkout.selectedShipping.price || 0),
+    [products, store.checkout.selectedShipping.price]
+  );
+
+  useEffect(() => {
+    if (!stripeTotal) return;
+    let didCancel = false;
+    const getStripeIntent = async () => {
+      console.log("fetching intent");
+      const token = cookie.get("token");
+      const payload = {
+        clientSecret: store.checkout.clientSecret,
+        cart: store.cart,
+        total: stripeTotal,
+        ...(store.checkout.selectedShipping.price
+          ? {
+              shipping: {
+                ...store.checkout.selectedShipping,
+                region: store.checkout.details.country.value,
+              },
+            }
+          : {}),
+      };
+      console.log(payload);
+      const url = `${baseUrl}/api/payment_intent`;
+      const response = await axios.post(url, payload, {
+        ...(token ? { headers: { Authorization: token } } : {}),
+      });
+
+      console.log(response.data);
+      if (!didCancel)
+        dispatch({ type: "UPDATE_CLIENT_SECRET", clientSecret: response.data });
+    };
+    getStripeIntent();
+    return () => {
+      didCancel = true;
+    };
+  }, [stripeTotal]);
+
   return (
     <$.Wrapper>
       <$.ContentMobileOnly>
@@ -52,9 +92,7 @@ const Checkout = ({ user }) => {
           <BreadCrumbs />
           {store.checkout.step === "information" && <Information />}
           {store.checkout.step === "shipping" && <Shipping />}
-          {store.checkout.step === "payment" && (
-            <Payment stripeTotal={stripeTotal} />
-          )}
+          {store.checkout.step === "payment" && <Payment />}
           <$.Footer>All rights reserved Palo Alto Redux</$.Footer>
         </$.Main>
         <$.Side desktop={true}>

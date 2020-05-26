@@ -72,7 +72,11 @@ const Information = () => {
           onChange={handleChange}
         />
         <$.CheckBoxWrapper>
-          <CheckBox id="checkout_buyer_accepts_marketing" />
+          <CheckBox
+            id="checkout_buyer_accepts_marketing"
+            checked={store.checkout.saveEmail}
+            onChange={() => dispatch({ type: "TOGGLE_SAVE_EMAIL" })}
+          />
           <label htmlFor="checkout_buyer_accepts_marketing">
             Keep me up to date on news and exclusive offers
           </label>
@@ -84,7 +88,11 @@ const Information = () => {
             handleChange={handleChange}
           />
           <$.CheckBoxWrapper>
-            <CheckBox id="checkout_remember_me" />
+            <CheckBox
+              id="checkout_remember_me"
+              checked={store.checkout.saveShipping}
+              onChange={() => dispatch({ type: "TOGGLE_SAVE_SHIPPING" })}
+            />
             <label htmlFor="checkout_remember_me">
               Save this information for next time
             </label>

@@ -5,14 +5,16 @@ export const updateCartStorage = async ({ productId, contentId, modifier }) => {
   let token = cookie.get("token");
   if (token) {
     const response = await contactServer({
-      data: { payloadProducts: { [productId]: modifier } },
+      data: {
+        payloadProducts: { [productId]: { quantity: modifier, contentId } },
+      },
       route: "cart",
       auth: token,
-      method: "PUT"
+      method: "POST",
     });
     console.log("response", response);
     //handle errors better //todo
-    if (response.status === 403) {
+    if (response?.status === 403) {
       cookie.remove("token");
       token = null;
     }
@@ -39,7 +41,11 @@ export const updateCartStorage = async ({ productId, contentId, modifier }) => {
       if (!productFound) {
         updatedCart.push({ productId, contentId, quantity: 1 });
       }
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      if (updatedCart.length > 0) {
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+      } else {
+        localStorage.removeItem("cart");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -53,7 +59,7 @@ export const removeFromCartStorage = async ({ productId }) => {
       data: { productId },
       route: "cart",
       auth: token,
-      method: "DELETE"
+      method: "DELETE",
     });
     //handle errors better //todo
     if (response.status === 403) {
@@ -64,7 +70,7 @@ export const removeFromCartStorage = async ({ productId }) => {
   if (!token) {
     try {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const updatedCart = cart.map(ele => {
+      const updatedCart = cart.map((ele) => {
         if (ele.productId === productId) {
           return;
         } else {

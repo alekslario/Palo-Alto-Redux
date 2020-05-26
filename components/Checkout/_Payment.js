@@ -4,6 +4,8 @@ import _Checkout from "./_Checkout";
 const { H2 } = _Checkout;
 import _Shipping from "./_Shipping";
 const { Table } = _Shipping;
+import _Information from "./_Information";
+const { CheckBoxWrapper } = _Information;
 const Wrapper = styled.div`
   h2 {
     margin-bottom: 0.6em;
@@ -66,4 +68,5 @@ export default {
   Information,
   Warning,
   LabelText,
+  CheckBoxWrapper,
 };

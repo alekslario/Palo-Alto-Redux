@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import cookie from "js-cookie";
-import baseUrl from "../../utils/baseUrl";
 const { getCode } = require("country-list");
 import $ from "./_Payment";
-import axios from "axios";
 import Table from "./Table";
+import CheckBox from "./CheckBox";
 import { useStore } from "../../utils/contextStore";
 import AlertIcon from "../Icons/Alert";
 import LoadingPlaceholder from "../_App/LoadingPlaceholder";
@@ -12,6 +10,7 @@ import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import StripeInput from "./StripeInput";
 import BillingAddress from "./BillingAddress";
 import Navigation from "./Navigation";
+import contactServer from "../../utils/contactServer";
 const options = {
   style: {
     base: {
@@ -31,7 +30,7 @@ const options = {
   hidePostalCode: true,
 };
 
-const Payment = ({ stripeTotal }) => {
+const Payment = () => {
   const [store, dispatch] = useStore();
   const stripe = useStripe();
   const elements = useElements();
@@ -44,7 +43,6 @@ const Payment = ({ stripeTotal }) => {
     complete: false,
     error: false,
   });
-  const [clientSecret, setClientSecret] = useState("");
 
   const [billingAddress, setBillingAddress] = useState({
     sameAsShipping: true,
@@ -58,27 +56,6 @@ const Payment = ({ stripeTotal }) => {
       postcode: { value: "", error: "" },
     },
   });
-
-  useEffect(() => {
-    const getStripeIntent = async () => {
-      console.log("fetching intent");
-      const token = cookie.get("token");
-      const payload = {
-        cart: store.cart,
-        total: stripeTotal,
-        shipping: {
-          ...store.checkout.selectedShipping,
-          region: store.checkout.details.country.value,
-        },
-        ...(token ? { headers: { Authorization: token } } : {}),
-      };
-      const url = `${baseUrl}/api/payment_intent`;
-      const response = await axios.post(url, payload);
-      console.log(response.data);
-      setClientSecret(response.data);
-    };
-    getStripeIntent();
-  }, []);
 
   const getAddress = (shippingA = true) => {
     const details = shippingA ? store.checkout.details : billingAddress.details;
@@ -127,14 +104,31 @@ const Payment = ({ stripeTotal }) => {
     }
     setProcessing(true);
 
-    const payload = await stripe.confirmCardPayment(clientSecret, {
-      receipt_email: store.checkout.details.email.value,
-      payment_method: {
-        card: elements.getElement(CardElement),
-        billing_details: getAddress(billingAddress.sameAsShipping),
-      },
-      shipping: getAddress(),
-    });
+    const payload = await stripe.confirmCardPayment(
+      store.checkout.clientSecret,
+      {
+        receipt_email: store.checkout.details.email.value,
+        setup_future_usage: store.checkout.savePaymentMethod
+          ? "on_session"
+          : null,
+        payment_method: {
+          card: elements.getElement(CardElement),
+          billing_details: getAddress(billingAddress.sameAsShipping),
+        },
+        shipping: getAddress(),
+      }
+    );
+    console.log(payload.paymentIntent.id, payload);
+    if (payload.paymentIntent.status === "succeeded") {
+      const pm = await contactServer({
+        method: "POST",
+        route: "checkout",
+        data: {
+          paymentIntentId: payload.paymentIntent.id,
+        },
+      });
+      console.log(pm);
+    }
     if (payload.error) {
       setSuccess("");
       setStripeError(`Payment failed ${payload.error.message}`);
@@ -145,7 +139,6 @@ const Payment = ({ stripeTotal }) => {
       setProcessing(false);
     }
   };
-
   return (
     <>
       <$.Wrapper>
@@ -165,6 +158,7 @@ const Payment = ({ stripeTotal }) => {
             </span>
             This store can't accept real orders or real payments.
           </$.Warning>
+          {/* <$.Table>{store.map()}</$.Table> */}
           <form
             css={`
               position: relative;
@@ -214,6 +208,16 @@ const Payment = ({ stripeTotal }) => {
               </StripeInput>
             </label>
           </form>
+          <$.CheckBoxWrapper>
+            <CheckBox
+              id="checkout_remember_me"
+              checked={store.checkout.savePaymentMethod}
+              onChange={() => dispatch({ type: "TOGGLE_SAVE_PAYMENT_METHOD" })}
+            />
+            <label htmlFor="checkout_remember_me">
+              Save this card for next time
+            </label>
+          </$.CheckBoxWrapper>
           {stripeError && <span>{stripeError}</span>}
           {processing && <span>processing</span>}
           {success && <span>{success}</span>}
@@ -224,7 +228,14 @@ const Payment = ({ stripeTotal }) => {
           handleBillingAddressChange={handleBillingAddressChange}
         />
       </$.Wrapper>
-      <Navigation toPay={handleSubmit} stripeLoaded={stripe} />
+      <Navigation
+        toPay={handleSubmit}
+        stripeLoaded={
+          loaded &&
+          store.checkout.clientSecret &&
+          !!store.checkout.selectedShipping.price
+        }
+      />
     </>
   );
 };

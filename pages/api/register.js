@@ -1,3 +1,4 @@
+import Stripe from "stripe";
 import connectDb from "../../utils/connectDb";
 import User from "../../models/User";
 import Cart from "../../models/Cart";
@@ -7,6 +8,7 @@ import isEmail from "validator/lib/isEmail";
 import isLength from "validator/lib/isLength";
 
 connectDb();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async (req, res) => {
   const { name, surname, email, password } = req.body;
@@ -29,18 +31,23 @@ export default async (req, res) => {
     // 3) --if not, hash their password
     const hash = await bcrypt.hash(password, 10);
     // 4) create user
+    const customer = await stripe.customers.create({
+      name: `${name} ${surname}`,
+      email,
+    });
     const newUser = await new User({
       name,
       surname,
       email,
-      password: hash
+      password: hash,
+      stripeId: customer.id,
     }).save();
     console.log({ newUser });
     // 5) create cart for new user
     await new Cart({ user: newUser._id }).save();
     // 6) create token for the new user
     const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d"
+      expiresIn: "7d",
     });
     // 7) send back token
     res.status(201).json({ token });

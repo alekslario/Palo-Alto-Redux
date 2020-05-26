@@ -41,15 +41,27 @@ const UserSchema = new mongoose.Schema(
     },
     stripeId: {
       type: String,
-      required: false,
+      required: true,
     },
     stripePaymentMethods: [
       {
-        paymentId: {
+        payment_method: {
           type: String,
           required: false,
         },
-        stripeLastDigits: {
+        brand: {
+          type: String,
+          required: false,
+        },
+        exp_month: {
+          type: Number,
+          required: false,
+        },
+        exp_year: {
+          type: Number,
+          required: false,
+        },
+        last4: {
           type: String,
           required: false,
         },

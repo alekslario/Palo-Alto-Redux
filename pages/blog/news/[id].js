@@ -1,4 +1,4 @@
-import useGetComments from "../../../utils/useGetComments";
+import { useGetComments } from "../../../utils/useGetComments";
 import BlogPost from "../../../components/Blog/BlogPost";
 const Post = () => {
   const [comments, id] = useGetComments({ id: true });

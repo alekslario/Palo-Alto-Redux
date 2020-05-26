@@ -173,11 +173,44 @@ const Discover = (
   </svg>
 );
 
+const Maestro = (
+  <svg
+    className="payment-icon"
+    viewBox="0 0 38 24"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    width="38"
+    height="24"
+    aria-labelledby="pi-maestro"
+  >
+    <title id="pi-maestro">Maestro</title>
+    <path
+      opacity=".07"
+      d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z"
+    ></path>
+    <path
+      fill="#fff"
+      d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32"
+    ></path>
+    <svg viewBox="0 0 48 47">
+      <path
+        d="M46 24c0 7.18-5.82 13-13 13s-13-5.82-13-13 5.82-13 13-13 13 5.82 13 13z"
+        fill="#F44336"
+      ></path>
+      <path
+        d="M28 24h-8c0-.684.066-1.348.168-2h7.66a12.609 12.609 0 0 0-.46-2h-6.735a13.1 13.1 0 0 1 .84-2h5.05c-.367-.71-.8-1.375-1.293-2h-2.464A13.22 13.22 0 0 1 24 14.633a11.808 11.808 0 0 0-.695-.633A12.96 12.96 0 0 0 15 11C7.82 11 2 16.82 2 24s5.82 13 13 13a12.943 12.943 0 0 0 10.23-5h-2.464a13.06 13.06 0 0 1-1.293-2h5.05c.336-.637.618-1.305.844-2h-6.734a13.052 13.052 0 0 1-.461-2h7.66c.102-.652.168-1.316.168-2z"
+        fill="#2196F3"
+      ></path>
+    </svg>
+  </svg>
+);
+
 export default [
   Visa,
   MasterCard,
   AmericanExpress,
   PayPal,
   DinersClub,
-  Discover
+  Discover,
+  Maestro,
 ];

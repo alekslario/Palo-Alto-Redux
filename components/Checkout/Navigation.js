@@ -11,7 +11,6 @@ const text = {
 const Navigation = ({ toPay, stripeLoaded }) => {
   const router = useRouter();
   const [store, dispatch] = useStore();
-
   const goBack = () => {
     if (store.checkout.step === "information") {
       router.push("/cart");
@@ -66,7 +65,11 @@ const Navigation = ({ toPay, stripeLoaded }) => {
           Return to {text[store.checkout.step].back}
         </span>
       </$.ButtonBack>
-      <$.ButtonForth onClick={goForth}>
+      <$.ButtonForth
+        name="submit"
+        onClick={goForth}
+        disabled={stripeLoaded === false ? true : false}
+      >
         {store.checkout.step === "payment"
           ? "Pay now"
           : "Continue to " + text[store.checkout.step].forth}

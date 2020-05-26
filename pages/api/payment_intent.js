@@ -16,11 +16,16 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export default async (req, res) => {
   if (req.method === "POST") {
     try {
-      const { cart, total, shipping } = req.body;
+      const { cart, total, shipping = null, intentId = null } = req.body;
       const { authorization } = req.headers;
-
       // safeguard vs price manipulation client side
-      const [itemsCost, shippingCost] = await Promise.all([
+      if (Object.keys(cart) > 50) {
+        return res.status(500).json({
+          statusCode: 500,
+          message: "Only 50 items per shopping cart allowed.",
+        });
+      }
+      const [[itemsCost, cartSummary], shippingCost] = await Promise.all([
         calculateTotal(cart),
         findShippingCost(shipping),
       ]);
@@ -31,10 +36,19 @@ export default async (req, res) => {
           .status(500)
           .json({ statusCode: 500, message: "Error processing charge" });
       }
+      const metadata = {
+        shippingCost,
+        ...cartSummary.split(" ").reduce((acc, ele, index) => {
+          acc[index] = ele;
+          return acc;
+        }, {}),
+      };
 
-      const paymentIntent = authorization
-        ? await handleAuthorizedCustomer(res, amount, authorization)
-        : await handleAnonymousCustomer(amount);
+      const paymentIntent = intentId
+        ? await updatePaymentIntent(amount, intentId, metadata)
+        : authorization
+        ? await handleAuthorizedCustomer(res, amount, authorization, metadata)
+        : await handleAnonymousCustomer(amount, metadata);
 
       res.status(200).send(paymentIntent.client_secret);
     } catch (err) {
@@ -62,17 +76,24 @@ async function findShippingCost(shipping) {
 async function calculateTotal(cart) {
   const ids = Object.keys(cart);
   const records = await Product.find().where("productId").in(ids).exec();
-  return records.reduce((acc, product) => {
-    //check if the price is reduced
-    acc +=
-      (new Date().getTime() < product.reducedPriceExpiration
-        ? product.reducedPrice
-        : product.price) * cart[product.productId].quantity;
-    return acc;
-  }, 0);
+  return records.reduce(
+    (acc, product, index) => {
+      //check if the price is reduced
+      acc[0] +=
+        (new Date().getTime() < product.reducedPriceExpiration
+          ? product.reducedPrice
+          : product.price) * cart[product.productId].quantity;
+      //adding empty space after so it would easier to split later//metadata max character count is 500
+      acc[1] += `${product.productId}-${cart[product.productId].quantity};${
+        index % 15 === 0 ? " " : ""
+      }`;
+      return acc;
+    },
+    [0, ""]
+  );
 }
 
-async function handleAuthorizedCustomer(res, amount, authorization) {
+async function handleAuthorizedCustomer(res, amount, authorization, metadata) {
   let unHashed = null;
   try {
     unHashed = jwt.verify(authorization, process.env.JWT_SECRET);
@@ -82,20 +103,28 @@ async function handleAuthorizedCustomer(res, amount, authorization) {
       .json({ statusCode: 403, message: "Please login again" });
   }
   const { userId } = unHashed;
-
-  const user = await User.findOne({ id: userId });
-  const customer = user.stripeId || (await stripe.customers.create()).id;
+  const user = await User.findOne({ _id: userId });
   return await stripe.paymentIntents.create({
-    customer,
+    customer: user.stripeId,
+    metadata,
     amount,
     currency: "usd",
     payment_method_types: ["card"],
   });
 }
 
-async function handleAnonymousCustomer(amount) {
+async function updatePaymentIntent(amount, intentId, metadata) {
+  return await stripe.paymentIntents.update(intentId, {
+    metadata,
+    amount,
+  });
+}
+
+async function handleAnonymousCustomer(amount, metadata) {
+  console.log("anonimous customer");
   return await stripe.paymentIntents.create({
     amount,
+    metadata,
     currency: "usd",
     payment_method_types: ["card"],
   });

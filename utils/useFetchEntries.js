@@ -13,16 +13,11 @@ export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
     timeStamp: 0,
   });
 
-  const idQuery = useMemo(
-    () =>
-      (typeof searchParameters["sys.id"] === "string" &&
-        searchParameters["sys.id"]) ||
-      (typeof searchParameters["sys.id[in]"] === "string" &&
-        searchParameters["sys.id[in]"])
-  );
-
-  const { inStore, toQuery } = useMemo(() => {
-    const defaultState = { inStore: [], toQuery: [] };
+  const { inStore, toQuery, idQuery } = useMemo(() => {
+    const idQuery =
+      typeof searchParameters["sys.id"] === "string" ||
+      typeof searchParameters["sys.id[in]"] === "string";
+    const defaultState = { inStore: [], toQuery: [], idQuery };
     if (!idQuery) return defaultState;
     const result = (
       searchParameters["sys.id"] || searchParameters["sys.id[in]"]
@@ -80,8 +75,9 @@ export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
       didCancel = true;
     };
   }, [...dependency]);
-
   return idQuery && toQuery.length === 0
-    ? [inStore, false]
+    ? (searchParameters["sys.id"] || searchParameters["sys.id[in]"]).length > 0
+      ? [inStore, false]
+      : [[], false]
     : [entries, loading, timeStamp];
 };

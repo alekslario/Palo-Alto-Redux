@@ -15,7 +15,7 @@ import { Elements } from "@stripe/react-stripe-js";
 
 const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY);
 
-const Layout = ({ children, hasToken }) => {
+const Layout = ({ children, user }) => {
   const [store, dispatch] = useStore();
   const router = useRouter();
   const sideMenu = useRef(null);
@@ -29,12 +29,13 @@ const Layout = ({ children, hasToken }) => {
   //   window.addEventListener("click", handler);
   //   return () => window.removeEventListener("click", handler);
   // }, [store.menuOpen]);
-
   useEffect(() => {
+    console.log("layoutCartUseEffect");
+    if (router.route === "/account") return;
     const checkCartProduct = async () => {
       let token = cookie.get("token");
       let cart = [];
-      let user = {};
+      let user = null;
       if (token) {
         const response = await contactServer({
           route: "cart",
@@ -45,10 +46,10 @@ const Layout = ({ children, hasToken }) => {
         console.log("response", response);
 
         if (response?.response?.status === 403) {
-          cookie.remove("token");
+          dispatch({ type: "LOGOUT_WITHOUT_REDIRECT" });
           token = null;
         } else if (response.status === 201 || response.status === 200) {
-          cart = response.data.products;
+          cart = response.data.cart;
           user = response.data.user;
         }
       }
@@ -59,7 +60,7 @@ const Layout = ({ children, hasToken }) => {
           console.log(error);
         }
       }
-      dispatch({ type: "ADD_TO_CART", items: cart, user });
+      dispatch({ type: "DELIVER_CART", items: cart, user });
     };
     checkCartProduct();
   }, []);
@@ -91,7 +92,7 @@ const Layout = ({ children, hasToken }) => {
                 transition: transform 0.4s cubic-bezier(0.46, 0.01, 0.32, 1);
               `}
             >
-              <Menu hasToken={hasToken} />
+              <Menu user={user} />
               <div id="header-observer" />
               <div id="main" role="main">
                 {children}
@@ -111,7 +112,7 @@ const Layout = ({ children, hasToken }) => {
           <>{children}</>
         )}
       </Elements>
-      <GlobalStyle loggedIn={hasToken} />
+      <GlobalStyle loggedIn={!!store.user} />
     </>
   );
 };

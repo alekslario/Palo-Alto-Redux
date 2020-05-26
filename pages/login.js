@@ -15,18 +15,18 @@ const Login = () => {
   const emailResetRef = useRef(null);
   const passwordRef = useRef(null);
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     const response = await contactServer({
       data: {
         email: emailRef.current.value,
-        password: passwordRef.current.value
+        password: passwordRef.current.value,
       },
       route: "login",
       setStatus,
-      method: "PUT"
+      method: "POST",
     });
     setLoading(false);
     const token = response?.data?.token;
@@ -36,14 +36,14 @@ const Login = () => {
     }
   };
 
-  const handleReset = e => {
+  const handleReset = (e) => {
     e.preventDefault();
     if (emailResetRef.current.value.length < 5) {
       setStatus({ text: "Enter a valid email", status: 0 });
     } else {
       router.push({
         pathname: "/challenge",
-        query: { email: emailResetRef.current.value }
+        query: { email: emailResetRef.current.value },
       });
     }
   };

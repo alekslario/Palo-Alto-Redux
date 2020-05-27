@@ -3,9 +3,7 @@ import Router, { useRouter } from "next/router";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ShoppingBagIcon from "../Icons/ShoppingBag";
-// import Logo from "../Icons/Logo";
-import dynamic from "next/dynamic";
-const Logo = dynamic(() => import("../Icons/Logo"));
+import Logo from "../Icons/Logo";
 import AccountIcon from "../Icons/Account";
 import Search from "./Search";
 import { useStore } from "../../utils/contextStore";
@@ -21,7 +19,9 @@ const Menu = ({ user }) => {
     pathname === "/collections/womens-collection";
   return (
     <$.Menu id="menu" position={pathname === "/" ? "fixed" : "absolute"}>
-      <$.Wrapper>{isLightTheme && <Logo />}</$.Wrapper>
+      <$.Wrapper>
+        <Logo />
+      </$.Wrapper>
 
       <$.DesktopLinks lightTheme={isLightTheme}>
         <Link href="/collections/mens-collection">

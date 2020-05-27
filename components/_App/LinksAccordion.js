@@ -9,7 +9,7 @@ const LinksAccordion = ({ children, name = "Learn More", type }) => {
       <$.Button
         type={type}
         className={`${collapsed ? "collapsed" : ""}`}
-        onClick={() => setCollapsed(prevState => !prevState)}
+        onClick={() => setCollapsed((prevState) => !prevState)}
       >
         {name}
       </$.Button>
@@ -18,6 +18,11 @@ const LinksAccordion = ({ children, name = "Learn More", type }) => {
         collapsed={collapsed}
         ref={content}
         maxheight={content.current?.scrollHeight || 0}
+        css={`
+          @media (min-width: 768px) {
+            max-height: 100%;
+          }
+        `}
       >
         {children}
       </$.List>

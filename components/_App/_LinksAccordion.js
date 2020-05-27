@@ -1,7 +1,5 @@
 import styled, { css } from "styled-components";
 import { footerTitles } from "../../styles/reusable";
-import theme from "../../styles/theme";
-const { colors, font_family } = theme;
 const Wrapper = styled.div`
   a {
     color: ${({ theme }) => theme.colors.secondary};

@@ -5,6 +5,8 @@ import Product from "../../models/Product";
 import withAuth from "../../utils/withAuth";
 connectDb();
 
+const isKey = (str) => /^[a-zA-Z0-9]{16,30}$/.test(str);
+
 export default withAuth(async (req, res) => {
   switch (req.method) {
     case "GET":
@@ -57,27 +59,27 @@ async function handlePostRequest(req, res) {
         .json({ status: 404, message: "Error getting current user" });
     if (cart.products.length > 50 || Object.keys(payloadProducts).length > 50)
       res.status(400).send("Maximum cart size reached");
-    console.log("serverCart", cart.products, payloadProducts);
     cart.products = cart.products
       .map((doc) => {
         if (payloadProducts[doc.productId]) {
           doc.quantity += payloadProducts[doc.productId].quantity;
           delete payloadProducts[doc.productId];
-          if (doc.quantity === 0) return;
+          if (!doc.quantity || doc.quantity <= 0) return;
           return doc;
         }
       })
-      .filter((ele) => ele)
       .concat(
-        Object.entries(payloadProducts).map(
-          ([key, { quantity, contentId }]) => ({
-            quantity,
-            contentId,
-            productId: key,
-          })
+        Object.entries(payloadProducts).map(([key, { quantity, contentId }]) =>
+          quantity > 0 && isKey(key) && isKey(contentId)
+            ? {
+                quantity,
+                contentId,
+                productId: key,
+              }
+            : null
         )
-      );
-    console.log("serverCart2", cart.products, payloadProducts);
+      )
+      .filter((ele) => ele);
     await cart.save();
     res.status(200).send({
       status: 200,

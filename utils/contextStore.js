@@ -228,6 +228,7 @@ const reducer = (state, action) => {
     case "LOGOUT":
       return {
         ...state,
+        cart: {},
         user: null,
         checkout: defaultCheckout,
       };

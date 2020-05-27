@@ -10,7 +10,7 @@ import LinksAccordion from "../../_App/LinksAccordion";
 import SocialShare from "../../_App/SocialShare";
 import formatMoney from "../../../utils/formatMoney";
 import AddToCart from "../AddToCart";
-
+import Image from "../../_App/Image";
 const ProductSummary = ({ id, inStock = true }) => {
   const [option, setOption] = useState(0);
   const [gallerySwiper, getGallerySwiper] = useState(null);
@@ -18,11 +18,11 @@ const ProductSummary = ({ id, inStock = true }) => {
 
   const [product, loading] = useFetchEntries({
     content_type: "paloAltoProduct",
-    "sys.id": id
+    "sys.id": id,
   });
 
   const {
-    fields: { name, description, type, styles = [] }
+    fields: { name, description, type, styles = [] },
   } = product[0] || { fields: {} };
   const multipleKinds = styles.length > 1;
 
@@ -32,13 +32,13 @@ const ProductSummary = ({ id, inStock = true }) => {
     spaceBetween: 0,
     navigation: {
       nextEl: ".swiper-button-next.product-details",
-      prevEl: ".swiper-button-prev.product-details"
+      prevEl: ".swiper-button-prev.product-details",
     },
     on: {
-      activeIndexChange: function() {
+      activeIndexChange: function () {
         if (multipleKinds) setOption(this.activeIndex);
-      }
-    }
+      },
+    },
   };
   const thumbnailSwiperParams = {
     getSwiper: getThumbnailSwiper,
@@ -46,7 +46,7 @@ const ProductSummary = ({ id, inStock = true }) => {
     centeredSlides: true,
     slidesPerView: "auto",
     touchRatio: 0.2,
-    slideToClickedSlide: true
+    slideToClickedSlide: true,
   };
 
   useEffect(() => {
@@ -62,27 +62,26 @@ const ProductSummary = ({ id, inStock = true }) => {
   }, [gallerySwiper, thumbnailSwiper]);
   //path to urls ⮯
   // product[0].fields.styles[0].fields.images[0].fields.file.url
-
+  //   <img
+  //   key={index}
+  //   css={style}
+  //   src={url + "?w=180"}
+  //   alt=""
+  //   className="lazyload blur-up"
+  //   data-sizes="auto"
+  //   data-parent-fit="cover"
+  //   data-srcset={createContentfulSrc(url)}
+  // />
   const makeSwiper = (params, style = "") => (
     <Swiper {...params}>
       {(multipleKinds ? styles : [styles[0]]).map(({ fields: { images } }) =>
         images.map(({ fields: { file: { url } } }, index) => (
-          <img
-            key={index}
-            css={style}
-            src={url + "?w=180"}
-            alt=""
-            className="lazyload blur-up"
-            data-sizes="auto"
-            data-parent-fit="cover"
-            data-srcset={createContentfulSrc(url)}
-          />
+          <Image url={url} key={index} css={style} />
         ))
       )}
     </Swiper>
   );
-  console.log();
-  // fix buttons without click animation //todo
+  // fix buttons without click animation //tod
   return (
     <$.Wrapper>
       <BreadCrumbs parentPath={type} currentPath={name || ""} />
@@ -145,7 +144,7 @@ const ProductSummary = ({ id, inStock = true }) => {
             <AddToCart
               product={{
                 contentId: id,
-                productId: styles[option].sys.id
+                productId: styles[option].sys.id,
               }}
             >
               <$.Button>ADD TO CART</$.Button>

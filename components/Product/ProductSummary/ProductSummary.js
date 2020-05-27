@@ -147,7 +147,7 @@ const ProductSummary = ({ id, inStock = true }) => {
                 productId: styles[option].sys.id,
               }}
             >
-              <$.Button>ADD TO CART</$.Button>
+              <$.Button className="OPEN_SIDEBAR">ADD TO CART</$.Button>
             </AddToCart>
           )}
           <$.Button black={true}>BUY IT NOW</$.Button>

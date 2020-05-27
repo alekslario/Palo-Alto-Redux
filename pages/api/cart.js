@@ -51,6 +51,9 @@ async function handleGetRequest(req, res) {
 async function handlePostRequest(req, res) {
   const { payloadProducts } = req.body;
   const { userId } = req.user;
+  if (Object.keys(payloadProducts) === 0) {
+    res.status(200).send("No products found");
+  }
   try {
     const cart = await Cart.findOne({ user: userId });
     if (!cart)
@@ -65,8 +68,8 @@ async function handlePostRequest(req, res) {
           doc.quantity += payloadProducts[doc.productId].quantity;
           delete payloadProducts[doc.productId];
           if (!doc.quantity || doc.quantity <= 0) return;
-          return doc;
         }
+        return doc;
       })
       .concat(
         Object.entries(payloadProducts).map(([key, { quantity, contentId }]) =>

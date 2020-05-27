@@ -72,6 +72,7 @@ const Menu = ({ user }) => {
                 return acc;
               }, 0)}
               id="cart"
+              className="OPEN_SIDEBAR"
               onClick={() => {
                 dispatch({ type: "TOGGLE_MENU" });
               }}

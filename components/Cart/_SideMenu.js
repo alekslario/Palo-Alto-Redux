@@ -2,7 +2,7 @@ import styled from "styled-components";
 import {
   inlineFlexCenter,
   textCenter,
-  IconButton
+  IconButton,
 } from "../../styles/reusable";
 
 const SideMenu = styled.div`
@@ -17,6 +17,9 @@ const SideMenu = styled.div`
   transition: transform 0.4s cubic-bezier(0.46, 0.01, 0.32, 1);
   z-index: 900;
   overflow-y: auto;
+  svg {
+    pointer-events: none;
+  }
   &.side-menu-transition-enter {
     display: block;
     transform: translateX(300px);
@@ -60,5 +63,5 @@ export default {
   IconButton,
   SideMenu,
   Grid,
-  ProductWrapper
+  ProductWrapper,
 };

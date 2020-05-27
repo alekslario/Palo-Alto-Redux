@@ -14,7 +14,6 @@ function Account({ user }) {
   const [deleteWarning, setDeleteWarning] = useState("");
   const router = useRouter();
   useEffect(() => {
-    console.log(user, "inside hook account");
     if (!user) return;
     let didCancel = false;
     async function mergeCart() {
@@ -39,14 +38,9 @@ function Account({ user }) {
         auth: token,
         method: cart.length > 0 ? "POST" : "GET",
       });
-      console.log("fetch cart result", response.data);
       if (response?.status === 200) {
         localStorage.removeItem("cart");
-        console.log("before add to cart", response.data.cart, user);
         dispatch({ type: "DELIVER_CART", items: response.data.cart, user });
-        setTimeout(() => {
-          console.log(store.user, " user from timeout");
-        }, 1500);
       }
     }
     mergeCart();

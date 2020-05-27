@@ -12,19 +12,22 @@ const SideMenu = () => {
   const [store, dispatch] = useStore();
   const sideMenu = useRef(null);
   const [products] = useDeliverCart();
-  // useEffect(() => {
-  //   if (typeof window === "undefined" || !store.menuOpen) return;
-  //   const handler = e => {
-  //     const target = e.target;
-  //     if (target === document.querySelector("#cart")) {
-  //       dispatch({ type: "OPEN_MENU" });
-  //     } else if (target !== sideMenu.current) {
-  //       dispatch({ type: "CLOSE_MENU" });
-  //     }
-  //   };
-  //   window.addEventListener("click", handler);
-  //   return () => window.removeEventListener("click", handler);
-  // }, [store.menuOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !store.menuOpen) return;
+    const handler = (e) => {
+      const target = e.target;
+      if (
+        (target.getBoundingClientRect().left <
+          sideMenu.current.getBoundingClientRect().left ||
+          target.classList.contains("CLOSE_SIDEBAR")) &&
+        !target.classList.contains("OPEN_SIDEBAR")
+      )
+        dispatch({ type: "CLOSE_MENU" });
+    };
+    window.addEventListener("click", handler);
+    return () => window.removeEventListener("click", handler);
+  }, []);
 
   const handlePlusMinus = (productId, contentId, modifier) => {
     dispatch({
@@ -54,7 +57,7 @@ const SideMenu = () => {
           >
             Shopping Cart
           </div>
-          <$.IconButton size={"19"}>
+          <$.IconButton size={"19"} className="CLOSE_SIDEBAR">
             <CrossIcon />
           </$.IconButton>
         </div>
@@ -75,11 +78,13 @@ const SideMenu = () => {
               index
             ) => (
               <$.ProductWrapper key={index}>
-                <Link href={`/products/${contentId}`}>
+                <Link href={"/products/[id]"} as={`/products/${contentId}`}>
                   <a
                     css={`
                       width: 33.333%;
+                      cursor: pointer;
                     `}
+                    className="CLOSE_SIDEBAR"
                   >
                     <Image url={image} />
                   </a>
@@ -93,14 +98,13 @@ const SideMenu = () => {
                   `}
                 >
                   <div>
-                    <Link
-                      href={`/products/${contentId}`}
-                      as={`/products/${contentId}`}
-                    >
+                    <Link href={"/products/[id]"} as={`/products/${contentId}`}>
                       <a
                         css={`
                           font-size: 16px;
+                          cursor: pointer;
                         `}
+                        className="CLOSE_SIDEBAR"
                       >
                         {name}
                       </a>

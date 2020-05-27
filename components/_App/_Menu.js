@@ -2,7 +2,7 @@ import styled from "styled-components";
 import {
   inlineFlexCenter,
   textCenter,
-  IconButton
+  IconButton,
 } from "../../styles/reusable";
 
 const Wrapper = styled.div`
@@ -66,6 +66,9 @@ const CartButton = styled.button`
   height: 27px;
   width: 22px;
   margin-bottom: 4px;
+  svg {
+    pointer-events: none;
+  }
   ::after {
     ${textCenter};
     line-height: normal;
@@ -89,5 +92,5 @@ export default {
   CartButton,
   DesktopLinks,
   MobileLinks,
-  IconButton
+  IconButton,
 };

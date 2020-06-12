@@ -1,8 +1,8 @@
 import React from "react";
 import $ from "./_CheckBox";
-const CheckBox = React.forwardRef(({ id }, ref) => {
+const CheckBox = React.forwardRef(({ id, ...props }, ref) => {
   return (
-    <$.CheckBox>
+    <$.CheckBox {...props}>
       <input type="checkbox" id={id} ref={ref} />
       <div>
         <svg viewBox="0 0 20 20">

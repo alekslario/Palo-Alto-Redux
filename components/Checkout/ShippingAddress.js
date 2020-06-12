@@ -44,7 +44,7 @@ const ShippingAddress = ({ details, handleChange }) => {
         <Input
           position="right"
           placeholder="Last name"
-          autoComplete="family-name shipping"
+          autoComplete="family-name"
           required
           autoCorrect="off"
           size="30"

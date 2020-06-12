@@ -12,20 +12,22 @@ export default async ({
     setStatus("");
     const url = `${baseUrl}/api/${route}`;
     const authentication = { headers: { Authorization: auth } };
-    const payload = {
-      ...data,
-      ...authentication,
-    };
     let response;
     switch (method) {
       case "GET":
-        response = await axios.get(url, payload);
+        response = await axios.get(url, {
+          ...authentication,
+          ...data,
+        });
         break;
       case "POST":
         response = await axios.post(url, data, authentication);
         break;
       case "DELETE":
-        response = await axios.delete(url, payload);
+        response = await axios.delete(url, {
+          ...authentication,
+          data,
+        });
         break;
     }
 
@@ -36,6 +38,6 @@ export default async ({
     return response;
   } catch (error) {
     catchErrors(error, setStatus);
-    return error;
+    return error.response;
   }
 };

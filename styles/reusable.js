@@ -48,7 +48,7 @@ const absoluteCenter = css`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 2;
+  z-index: 100000;
 `;
 
 const footerTitles = css`

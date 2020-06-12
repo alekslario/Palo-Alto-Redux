@@ -4,6 +4,7 @@ import Cart from "../../models/Cart";
 import connectDb from "../../utils/connectDb";
 import withAuth from "../../utils/withAuth";
 import isLength from "validator/lib/isLength";
+const { getName } = require("country-list");
 connectDb();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -40,28 +41,30 @@ async function handleGetRequest(req, res) {
         },
       });
     } else {
-      res.status(404).json({ status: 404, message: "User not found" });
+      res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ status: 500, message: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 }
 
 async function handlePostRequest(req, res) {
   try {
     const { userId } = req.user;
+
     const user = await User.findOne({ _id: userId });
     if (user) {
       [addAddress].forEach((f) => f(req, res, user));
       await user.save();
-      res.status(201).json({ status: 201, message: "Account updated" });
+      const { address } = user;
+      if (!res.headersSent) res.status(201).json({ address });
     } else {
-      res.status(404).json({ status: 404, message: "User not found" });
+      res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ status: 500, message: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 }
 
@@ -70,28 +73,30 @@ async function handleDeleteRequest(req, res) {
   const { addressId } = req.body;
   try {
     if (addressId) {
-      const addresses = await User.findOneAndUpdate(
+      const { address } = await User.findOneAndUpdate(
         { _id: userId },
         { $pull: { address: { _id: addressId } } },
         { new: true }
       );
-      res.status(200).json({ status: 200, addresses });
+      res.status(200).json({ address });
     } else {
+      await Cart.findOneAndDelete({ user: userId });
       const user = await User.findByIdAndDelete({ _id: userId });
-      await Cart.findByIdAndDelete({ user: userId });
       await stripe.customers.del(user.stripeId);
-      res.status(200).json({ status: 200 });
+      res.status(200).json({ message: "Done!" });
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ status: 500, message: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 }
 function addAddress(req, res, user) {
   const { shipAddress } = req.body;
   if (shipAddress) {
     const {
-      id,
+      _id,
+      name = "",
+      surname = "",
       country = "",
       city = "",
       postcode = "",
@@ -99,51 +104,65 @@ function addAddress(req, res, user) {
       addressOptional = "",
       province = "",
       phone = "",
+      setDefault,
     } = shipAddress;
-
-    if (!isLength(city, { min: 2, max: 40 })) {
-      return res.status(422).send("City must be 2-40 characters long");
-    } else if (!isLength(address, { min: 4, max: 160 })) {
-      return res.status(422).send("Address must be 4-160 characters long");
-    } else if (!isLength(addressOptional, { max: 160 })) {
-      return res
-        .status(422)
-        .send("Address(optional) should be maximum 160 characters long");
-    } else if (!isLength(province, { max: 30 })) {
-      return res
-        .status(422)
-        .send("Province should be maximum 30 characters long");
-    } else if (!isLength(phone, { max: 65 })) {
-      return res.status(422).send("Phone should be maximum 65 characters long");
-    } else if (!isLength(postcode, { min: 4, max: 40 })) {
-      return res.status(422).send("Postcode must be 4-40 characters long");
-    } else if (!getName(country)) {
-      return res.status(422).send("Invalid country code");
-    }
-    if (id) {
-      const addressObject = user.address.id(id);
-      addressObject.country = country;
-      addressObject.city = city;
-      addressObject.postcode = postcode;
-      addressObject.address = address;
-      addressObject.addressOptional = addressOptional;
-      addressObject.province = province;
-      addressObject.phone = phone;
-    } else {
-      if (user.address.length > 4) {
-        return res
-          .status(422)
-          .send("You've reached the limit of 5 addresses per account");
-      } else {
-        user.address.push({
-          country,
-          city,
-          postcode,
-          address,
-          addressOptional,
-          province,
-          phone,
+    const errors = [];
+    [
+      [{ city }, { min: 2, max: 40 }],
+      [{ name }, { min: 2, max: 40 }],
+      [{ surname }, { min: 2, max: 40 }],
+      [{ address }, { min: 4, max: 160 }],
+      [{ addressOptional }, { max: 160 }],
+      [{ province }, { max: 30 }],
+      [{ phone }, { max: 65 }],
+      [{ postcode }, { min: 4, max: 40 }],
+    ].forEach(([val, { min = 0, max }]) => {
+      const [key, value] = Object.entries(val)[0];
+      if (!isLength(value, { min, max })) {
+        console.log(key, value, min, max, val);
+        const name = key.charAt(0).toUpperCase() + key.substring(1);
+        errors.push({
+          [key]:
+            min > 0
+              ? `${name} must be ${min}-${max} characters long`
+              : `${name} should be maximum ${max} characters long`,
         });
+      }
+    });
+    if (!getName(country)) errors.push({ country: "Invalid country code" });
+    if (errors.length > 0) {
+      return res.status(422).json({ errors });
+    }
+    const shippingAddress = {
+      name,
+      surname,
+      country,
+      city,
+      postcode,
+      address,
+      addressOptional,
+      province,
+      phone,
+    };
+    if (_id) {
+      if (setDefault) {
+        user.address = [
+          shippingAddress,
+          ...user.address.filter((el) => el.id !== _id),
+        ];
+      } else {
+        const addressObject = user.address.id(_id);
+        Object.assign(addressObject, shippingAddress);
+      }
+    } else {
+      if (user.address.length > 4)
+        return res.status(422).json({
+          message: "You've reached the limit of 5 addresses per account",
+        });
+      if (setDefault) {
+        user.address.unshift(shippingAddress);
+      } else {
+        user.address.push(shippingAddress);
       }
     }
     return user;

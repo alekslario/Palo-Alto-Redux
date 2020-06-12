@@ -6,13 +6,23 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useStore } from "../utils/contextStore";
 import $ from "../components/Account/_Account";
+const { getName } = require("country-list");
+import AddressList from "../components/Account/AddressList";
 import cookie from "js-cookie";
 import contactServer from "../utils/contactServer";
+import Popup from "../components/Account/PopUp";
 
 function Account({ user }) {
   const [store, dispatch] = useStore();
+  const [addressOverview, setAddressOverview] = useState(false);
   const [deleteWarning, setDeleteWarning] = useState("");
+  const [orders, setOrders] = useState([]);
   const router = useRouter();
+
+  useEffect(() => {
+    dispatch({ type: "SET_USER", user });
+  }, []);
+
   useEffect(() => {
     if (!user) return;
     let didCancel = false;
@@ -61,55 +71,96 @@ function Account({ user }) {
     return () => window.removeEventListener("storage", handler);
   }, []);
 
-  const handelDeleteUser = async () => {
-    const token = cookie.get("token");
-    const response = await contactServer({
-      auth: token,
-      route: "account",
-      method: "DELETE",
-    });
-    if (response.status === 200) {
-      dispatch({ type: "LOGOUT" });
-    } else {
-      setDeleteWarning(response.message);
-    }
-  };
-  console.log(store);
+  const handleManageAddress = () => setAddressOverview((prev) => !prev);
   return (
     <$.PageWrapper>
-      <h1
-        css={`
-          padding-bottom: 20px;
-        `}
-      >
-        My Account{" "}
-        <button onClick={() => dispatch({ type: "LOGOUT" })}>Log out</button>
-      </h1>
-      <br />
-      <button onClick={handelDeleteUser}>Delete account</button>
-      {deleteWarning && <span>{deleteWarning}</span>}
-      <br />
-      <div
-        css={`
-          display: flex;
-          justify-content: space-between;
-          flex-direction: row;
-        `}
-      >
-        <div>
-          <h2>Order history</h2>
-          <div></div>
-        </div>
-        <div>
-          <h2>Account details</h2>
-          <div>details</div>
-          <button>View Addresses</button>
-        </div>
-      </div>
+      {!addressOverview ? (
+        <>
+          <div>
+            <$.Row>
+              <$.Title>My Account</$.Title>
+              <$.Row
+                css={`
+                  justify-content: space-between;
+                  width: 100%;
+                `}
+              >
+                <button
+                  css={`
+                    color: ${({ theme }) => theme.colors.alpha};
+                  `}
+                  onClick={() => dispatch({ type: "LOGOUT" })}
+                >
+                  Log out
+                </button>
+                <Popup />
+              </$.Row>
+            </$.Row>
+          </div>
+
+          <hr
+            css={`
+              margin: 25px 0;
+              clear: both;
+              border-top: solid #d3d3d3;
+              border-width: 2px 0 0;
+              height: 0;
+            `}
+          />
+          <$.Row
+            css={`
+              justify-content: space-between;
+            `}
+          >
+            <div>
+              <$.SubTitle
+                css={`
+                  margin-right: 20px;
+                `}
+              >
+                Order history
+              </$.SubTitle>
+              {orders.length > 0 ? (
+                orders.map((ele) => ele)
+              ) : (
+                <p>You haven't placed any orders yet.</p>
+              )}
+            </div>
+            <div>
+              <$.SubTitle>Account details</$.SubTitle>
+              {store.user?.address.length > 0 && (
+                <p>
+                  {Object.entries(store.user.address[0])
+                    .filter(([key, val]) => key !== "_id" && val)
+                    .map(([key, val], index) => (
+                      <React.Fragment key={index}>
+                        <span>{key !== "country" ? val : getName(val)}</span>
+                        <br />
+                      </React.Fragment>
+                    ))}
+                </p>
+              )}
+              <button onClick={handleManageAddress}>
+                View Addresses{" "}
+                <span
+                  css={`
+                    letter-spacing: 1.3px;
+                  `}
+                >
+                  ({store.user?.address.length})
+                </span>
+              </button>
+            </div>
+          </$.Row>
+        </>
+      ) : store.user ? (
+        <AddressList handleReturn={handleManageAddress} />
+      ) : null}
     </$.PageWrapper>
   );
 }
-
+/* <button onClick={handelDeleteUser}>Delete account</button>
+      {deleteWarning && <span>{deleteWarning}</span>} */
 export async function getServerSideProps(ctx) {
   const { token } = parseCookies(ctx);
   if (!token) {
@@ -122,7 +173,6 @@ export async function getServerSideProps(ctx) {
       if (response.data.status === 404) {
         throw "Error getting current user";
       } else {
-        console.log("account response", response.data);
         return { props: { ...response.data } };
       }
     } catch (error) {

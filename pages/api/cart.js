@@ -44,7 +44,7 @@ async function handleGetRequest(req, res) {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json("Error occurred. Try again later.");
+    res.status(500).json({ message: "Error occurred. Try again later." });
   }
 }
 
@@ -52,16 +52,14 @@ async function handlePostRequest(req, res) {
   const { payloadProducts } = req.body;
   const { userId } = req.user;
   if (Object.keys(payloadProducts) === 0) {
-    res.status(200).send("No products found");
+    res.status(200).json({ message: "No products found" });
   }
   try {
     const cart = await Cart.findOne({ user: userId });
     if (!cart)
-      return res
-        .status(404)
-        .json({ status: 404, message: "Error getting current user" });
+      return res.status(404).json({ message: "Error getting current user" });
     if (cart.products.length > 50 || Object.keys(payloadProducts).length > 50)
-      res.status(400).send("Maximum cart size reached");
+      res.status(400).json({ message: "Maximum cart size reached" });
     cart.products = cart.products
       .map((doc) => {
         if (payloadProducts[doc.productId]) {
@@ -84,14 +82,13 @@ async function handlePostRequest(req, res) {
       )
       .filter((ele) => ele);
     await cart.save();
-    res.status(200).send({
-      status: 200,
+    res.status(200).json({
       message: "Cart updated",
       cart: cart.products,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json("Error occurred. Try again later.");
+    res.status(500).json({ message: "Error occurred. Try again later." });
   }
 }
 
@@ -103,9 +100,9 @@ async function handleDeleteRequest(req, res) {
       { user: userId },
       { $pull: { products: { productId } } }
     );
-    res.status(200).send("Product deleted");
+    res.status(200).json({ message: "Product deleted" });
   } catch (error) {
     console.error(error);
-    res.status(500).json("Error occurred. Try again later.");
+    res.status(500).json({ message: "Error occurred. Try again later." });
   }
 }

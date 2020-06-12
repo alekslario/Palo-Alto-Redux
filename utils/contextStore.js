@@ -131,6 +131,14 @@ const reducer = (state, action) => {
           },
         },
       };
+    case "ADD_ADDRESS":
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          address: action.address,
+        },
+      };
     case "RESET_FILTER":
       return { ...state, filter: defaultState.filter };
     case "ADD_PRODUCT":
@@ -231,6 +239,11 @@ const reducer = (state, action) => {
         cart: {},
         user: null,
         checkout: defaultCheckout,
+      };
+    case "SET_USER":
+      return {
+        ...state,
+        user: action.user,
       };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);

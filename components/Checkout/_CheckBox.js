@@ -10,10 +10,12 @@ const CheckBox = styled.div`
   white-space: nowrap;
   &:focus-within {
     box-shadow: 0 0 0 2px
-      ${({ theme }) => theme.checkout.colors.attentionShadow};
+      ${({ theme, shadow }) =>
+        shadow ? shadow : theme.checkout.colors.attentionShadow};
   }
   &:focus-within input {
-    border: 2px solid ${({ theme }) => theme.checkout.colors.attention};
+    border: 2px solid
+      ${({ theme, color }) => (color ? color : theme.checkout.colors.attention)};
   }
   &:hover input {
     border: 1px solid ${({ theme }) => theme.checkout.colors.border};
@@ -41,7 +43,8 @@ const CheckBox = styled.div`
     box-shadow: none;
   }
   input[type="checkbox"]:checked + div {
-    box-shadow: 0 0 0 10px ${({ theme }) => theme.checkout.colors.attention}
+    box-shadow: 0 0 0 10px
+      ${({ theme, color }) => (color ? color : theme.checkout.colors.attention)}
       inset;
   }
 `;

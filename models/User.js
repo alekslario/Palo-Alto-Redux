@@ -69,6 +69,14 @@ const UserSchema = new mongoose.Schema(
     ],
     address: [
       {
+        name: {
+          type: String,
+          required: true,
+        },
+        surname: {
+          type: String,
+          required: true,
+        },
         country: {
           type: String,
           required: true,

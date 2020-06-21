@@ -93,7 +93,7 @@ async function handlePostRequest(req, res) {
 }
 
 async function handleDeleteRequest(req, res) {
-  const { productId } = req.query;
+  const { productId } = req.body;
   const { userId } = req.user;
   try {
     await Cart.findOneAndUpdate(

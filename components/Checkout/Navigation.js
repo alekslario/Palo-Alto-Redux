@@ -23,7 +23,9 @@ const Navigation = ({ toPay, stripeLoaded }) => {
   };
   const goForth = () => {
     if (store.checkout.step === "information") {
-      const errors = formValidation(store.checkout.details);
+      //form doesn't contain province, phone...yet
+      const { province, phone, ...rest } = store.checkout.details;
+      const errors = formValidation(rest);
       if (errors.length === 0) {
         dispatch({
           type: "CHECKOUT_TAKE_A_STEP",

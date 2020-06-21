@@ -7,16 +7,17 @@ import SearchIcon from "../Icons/Search";
 import CrossIcon from "../Icons/Cross";
 import Products from "../Product/Products";
 import $ from "./_Search";
-import debounce from "lodash.debounce";
+import { useStore } from "../../utils/contextStore";
 
 const Modal = ({ closePortal }) => {
   const [input, setInput] = useState("");
+  const [store, dispatch] = useStore();
   const [debouncedInput, setDebouncedInput] = useState(input);
 
   useEffect(() => {
     const body = document.querySelector("body");
     disableBodyScroll(body, {
-      reserveScrollBarGap: true
+      reserveScrollBarGap: true,
     });
     return () => clearAllBodyScrollLocks();
   }, []);
@@ -27,13 +28,19 @@ const Modal = ({ closePortal }) => {
   }, []);
 
   useEffect(() => {
+    if (store.menuOpen || store.cartOpen) {
+      dispatch({ type: "CLOSE_SIDEBAR" });
+    }
+  }, []);
+
+  useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedInput(input);
     }, 500);
     return () => clearTimeout(handler);
   }, [input]);
 
-  const handleSearch = e => setInput(e.target.value);
+  const handleSearch = (e) => setInput(e.target.value);
   const clearInput = () => setInput("");
   return (
     <$.Wrapper id="portal">

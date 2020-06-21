@@ -81,7 +81,7 @@ const ProductSummary = ({ id, inStock = true }) => {
       )}
     </Swiper>
   );
-  // fix buttons without click animation //tod
+  // fix buttons without click animation //todo
   return (
     <$.Wrapper>
       <BreadCrumbs parentPath={type} currentPath={name || ""} />
@@ -141,16 +141,27 @@ const ProductSummary = ({ id, inStock = true }) => {
           )}
           {!inStock && <p>Out of stock</p>}
           {styles.length > 0 && (
-            <AddToCart
-              product={{
-                contentId: id,
-                productId: styles[option].sys.id,
-              }}
-            >
-              <$.Button className="OPEN_SIDEBAR">ADD TO CART</$.Button>
-            </AddToCart>
+            <>
+              <AddToCart
+                product={{
+                  contentId: id,
+                  productId: styles[option].sys.id,
+                }}
+              >
+                <$.Button className="OPEN_CART_SIDEBAR">ADD TO CART</$.Button>
+              </AddToCart>
+
+              <AddToCart
+                product={{
+                  contentId: id,
+                  productId: styles[option].sys.id,
+                }}
+                checkout={true}
+              >
+                <$.Button black={true}>BUY IT NOW</$.Button>
+              </AddToCart>
+            </>
           )}
-          <$.Button black={true}>BUY IT NOW</$.Button>
           <div
             css={`
               line-height: 2;

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useMemo } from "react";
 import Router, { useRouter } from "next/router";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,6 +17,17 @@ const Menu = ({ user }) => {
     pathname === "/" ||
     pathname === "/collections/mens-collection" ||
     pathname === "/collections/womens-collection";
+
+  const sizeOfCart = useMemo(
+    () =>
+      Object.values(store.cart).reduce(
+        (acc, ele) => ((acc += ele.quantity), acc),
+        0
+      ),
+    [store.cart]
+  );
+  const handleCartClick = () =>
+    dispatch({ type: store.cartOpen ? "CLOSE_CART" : "OPEN_CART" });
   return (
     <$.Menu id="menu" position={pathname === "/" ? "fixed" : "absolute"}>
       <$.Wrapper>
@@ -67,15 +78,10 @@ const Menu = ({ user }) => {
           </li>
           <li>
             <$.CartButton
-              data-size={Object.values(store.cart).reduce((acc, ele) => {
-                acc += ele.quantity;
-                return acc;
-              }, 0)}
+              data-size={sizeOfCart}
               id="cart"
-              className="OPEN_SIDEBAR"
-              onClick={() => {
-                dispatch({ type: "TOGGLE_MENU" });
-              }}
+              className="OPEN_CART_SIDEBAR"
+              onClick={handleCartClick}
             >
               <ShoppingBagIcon lightTheme={isLightTheme} />
             </$.CartButton>
@@ -83,85 +89,25 @@ const Menu = ({ user }) => {
         </ul>
       </$.DesktopLinks>
       <$.MobileLinks lightTheme={isLightTheme}>
-        <button>
+        <button
+          css={`
+            svg {
+              pointer-events: none;
+            }
+          `}
+          className="OPEN_MENU_SIDEBAR"
+          onClick={() =>
+            dispatch({ type: store.menuOpen ? "CLOSE_MENU" : "OPEN_MENU" })
+          }
+        >
           <FontAwesomeIcon icon={["fas", "bars"]} />
         </button>
-        <span>Cart (0)</span>
+        <button className="OPEN_CART_SIDEBAR" onClick={handleCartClick}>
+          Cart ({sizeOfCart})
+        </button>
       </$.MobileLinks>
     </$.Menu>
   );
 };
 
 export default Menu;
-
-{
-  //   <SiteMenu right pageWrapId="main" outerContainerId="__next">
-  //   <div>
-  //     <Link href="/">
-  //       <a>polo</a>
-  //     </Link>
-  //   </div>
-  // </SiteMenu>
-  /* <Menu stackable fluid id="menu" inverted>
-      <Container text>
-        <Link href="/">
-          <Menu.Item header active={isActive("/")}>
-            <Image
-              size="mini"
-              src="/public/logo.svg"
-              style={{ marginRight: "1em" }}
-            />
-            ReactReserve
-          </Menu.Item>
-        </Link>
-
-        <Link href="/cart">
-          <Menu.Item header active={isActive("/cart")}>
-            <Icon name="cart" size="large" />
-            Cart
-          </Menu.Item>
-        </Link>
-
-        {isRootOrAdmin && (
-          <Link href="/create">
-            <Menu.Item header active={isActive("/create")}>
-              <Icon name="add square" size="large" />
-              Create
-            </Menu.Item>
-          </Link>
-        )}
-
-        {user ? (
-          <>
-            <Link href="/account">
-              <Menu.Item header active={isActive("/account")}>
-                <Icon name="user" size="large" />
-                Account
-              </Menu.Item>
-            </Link>
-
-            <Menu.Item onClick={handleLogout} header>
-              <Icon name="sign out" size="large" />
-              Logout
-            </Menu.Item>
-          </>
-        ) : (
-          <>
-            <Link href="/login">
-              <Menu.Item header active={isActive("/login")}>
-                <Icon name="sign in" size="large" />
-                Login
-              </Menu.Item>
-            </Link>
-
-            <Link href="/signup">
-              <Menu.Item header active={isActive("/signup")}>
-                <Icon name="signup" size="large" />
-                Signup
-              </Menu.Item>
-            </Link>
-          </>
-        )}
-      </Container>
-    </Menu> */
-}

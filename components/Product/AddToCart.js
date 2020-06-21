@@ -1,10 +1,16 @@
 import React from "react";
 import { useStore } from "../../utils/contextStore";
+import { useRouter } from "next/router";
 
-const AddToCart = ({ product: { productId, contentId }, children }) => {
+const AddToCart = ({
+  product: { productId, contentId },
+  checkout = false,
+  children,
+}) => {
   // styles[0].fields.reducedPrice
   // styles[0].fields.reducedPriceExpiration
-  const [store, dispatch] = useStore();
+  const [_, dispatch] = useStore();
+  const router = useRouter();
   const handleClick = () => {
     dispatch({
       type: "UPDATE_CART_PRODUCT",
@@ -12,7 +18,7 @@ const AddToCart = ({ product: { productId, contentId }, children }) => {
       contentId,
       modifier: 1,
     });
-    dispatch({ type: "OPEN_MENU" });
+    checkout ? router.push("/checkout") : dispatch({ type: "OPEN_CART" });
   };
 
   return <>{React.cloneElement(children, { onClick: handleClick })}</>;

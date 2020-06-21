@@ -4,6 +4,7 @@ import Head from "next/head";
 import Menu from "./Menu";
 import HeadContent from "./HeadContent";
 import Footer from "./Footer";
+import SideMenuCart from "../Cart/SideMenuCart";
 import SideMenu from "../Cart/SideMenu";
 import GlobalStyle from "../../styles/global";
 import { useStore } from "../../utils/contextStore";
@@ -19,18 +20,8 @@ const Layout = ({ children, user }) => {
   const [store, dispatch] = useStore();
   const router = useRouter();
   const sideMenu = useRef(null);
-  // useEffect(() => {
-  //   if (typeof window === "undefined" || !store.menuOpen) return;
-  //   const handler = e => {
-  //     if (e.target !== sideMenu.current) {
-  //       dispatch({ type: "CLOSE_MENU" });
-  //     }
-  //   };
-  //   window.addEventListener("click", handler);
-  //   return () => window.removeEventListener("click", handler);
-  // }, [store.menuOpen]);
+
   useEffect(() => {
-    console.log("layoutCartUseEffect");
     if (router.route === "/account") return;
     const checkCartProduct = async () => {
       let token = cookie.get("token");
@@ -65,6 +56,15 @@ const Layout = ({ children, user }) => {
     checkCartProduct();
   }, []);
 
+  // useEffect(() => {
+  //   if(store.cartOpen||store.menuOpen)
+  //   const handler = () => {
+  //     if(store.cartOpen || store.menuOpen){
+  //       dispatch({type:"CLOSE_SIDEBAR"})
+  //     }
+  //   }
+  // },[store.cartOpen, store.menuOpen]);
+
   return (
     <>
       <Head>
@@ -88,7 +88,9 @@ const Layout = ({ children, user }) => {
                 height: 100%;
                 width: 100%;
                 position: relative;
-                ${store.menuOpen ? "transform: translateX(-300px);" : ""}
+                ${store.menuOpen || store.cartOpen
+                  ? "transform: translateX(-300px);"
+                  : ""}
                 transition: transform 0.4s cubic-bezier(0.46, 0.01, 0.32, 1);
               `}
             >
@@ -99,6 +101,14 @@ const Layout = ({ children, user }) => {
               </div>
               <Footer />
             </div>
+            <CSSTransition
+              in={store.cartOpen}
+              timeout={400}
+              classNames="side-menu-transition"
+              unmountOnExit
+            >
+              {<SideMenuCart />}
+            </CSSTransition>
             <CSSTransition
               in={store.menuOpen}
               timeout={400}

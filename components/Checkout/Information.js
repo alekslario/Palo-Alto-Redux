@@ -1,6 +1,7 @@
+import { useEffect } from "react";
 import Link from "next/link";
 import { useStore } from "../../utils/contextStore";
-const { getCode } = require("country-list");
+const { getCode, getName } = require("country-list");
 import Input from "./Input";
 import $ from "./_Information";
 import CheckBox from "./CheckBox";
@@ -8,12 +9,33 @@ import ShippingAddress from "./ShippingAddress";
 import Navigation from "./Navigation";
 const Information = () => {
   const [store, dispatch] = useStore();
+
+  useEffect(() => {
+    if (store.user?.address.length > 0) {
+      const { _id, country, ...rest } = store.user.address[0];
+      dispatch({
+        type: "CHECKOUT_SHIPPING_ADDRESS_CHANGE",
+        changes: [
+          ...Object.entries(rest).reduce(
+            (acc, [name, value]) => (acc.push({ name, value }), acc),
+            []
+          ),
+          { name: "country", value: getName(country) },
+          { name: "email", value: store.user?.email },
+        ],
+      });
+    }
+  }, []);
+
   const handleChange = (e) => {
     let [name, value] = [e.target.name, e.target.value];
     if (name === "country") {
       value = getCode(value);
     }
-    dispatch({ type: "CHECKOUT_SHIPPING_ADDRESS_CHANGE", name, value });
+    dispatch({
+      type: "CHECKOUT_SHIPPING_ADDRESS_CHANGE",
+      changes: [{ name, value }],
+    });
   };
   return (
     <>
@@ -36,24 +58,26 @@ const Information = () => {
           >
             Contact Information
           </div>
-          <div
-            css={`
-              padding-bottom: 0.14286rem;
-              padding-top: 0.14286rem;
-              line-height: 1.5em;
-            `}
-          >
-            <span>Already have an account?</span>
-            <Link href="/">
-              <a
-                css={`
-                  margin-left: 4px;
-                `}
-              >
-                Log in
-              </a>
-            </Link>
-          </div>
+          {!store.user && (
+            <div
+              css={`
+                padding-bottom: 0.14286rem;
+                padding-top: 0.14286rem;
+                line-height: 1.5em;
+              `}
+            >
+              <span>Already have an account?</span>
+              <Link href="/">
+                <a
+                  css={`
+                    margin-left: 4px;
+                  `}
+                >
+                  Log in
+                </a>
+              </Link>
+            </div>
+          )}
         </$.Row>
         <Input
           placeholder="Email"

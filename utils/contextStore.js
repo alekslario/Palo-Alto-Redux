@@ -47,6 +47,7 @@ const defaultState = {
   cart: {},
   cache: {},
   menuOpen: false,
+  cartOpen: false,
   product: {},
   filter: {
     men: {
@@ -143,12 +144,18 @@ const reducer = (state, action) => {
       return { ...state, filter: defaultState.filter };
     case "ADD_PRODUCT":
       return { ...state, product: action.product };
+
+    case "OPEN_CART":
+      return { ...state, cartOpen: true, menuOpen: false };
+    case "CLOSE_SIDEBAR":
+      return { ...state, cartOpen: false, menuOpen: false };
+    case "CLOSE_CART":
+      return { ...state, cartOpen: false };
+
     case "OPEN_MENU":
-      return { ...state, menuOpen: true };
+      return { ...state, menuOpen: true, cartOpen: false };
     case "CLOSE_MENU":
       return { ...state, menuOpen: false };
-    case "TOGGLE_MENU":
-      return { ...state, menuOpen: !state.menuOpen };
     case "CHECKOUT_TAKE_A_STEP":
       return {
         ...state,
@@ -179,7 +186,12 @@ const reducer = (state, action) => {
           ...state.checkout,
           details: {
             ...state.checkout.details,
-            [action.name]: { value: action.value, error: "" },
+            ...action.changes.reduce(
+              (acc, { name, value }) => (
+                (acc[name] = { value, error: "" }), acc
+              ),
+              {}
+            ),
           },
           selectedShipping: {},
           stepsLocked: { information: false, payment: true, shipping: true },

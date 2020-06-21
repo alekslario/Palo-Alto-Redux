@@ -40,6 +40,8 @@ const useDeliverCart = () => {
         image: url,
       };
     }),
+    loading,
+    timeStamp,
   ];
 };
 

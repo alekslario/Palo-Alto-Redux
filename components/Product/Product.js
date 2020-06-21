@@ -7,17 +7,17 @@ import Image from "../_App/Image";
 const Product = React.forwardRef(({ product }, ref) => {
   // styles[0].fields.reducedPrice
   // styles[0].fields.reducedPriceExpiration
-  const [store, dispatch] = useStore();
+  const [_, dispatch] = useStore();
 
   const {
     sys: { id },
-    fields: { name, styles }
+    fields: { name, styles },
   } = product;
   const src = [
     styles[0].fields.images[0].fields.file.url,
     styles.length > 1
       ? styles[1].fields.images[0].fields.file.url
-      : styles[0].fields.images[1].fields.file.url
+      : styles[0].fields.images[1].fields.file.url,
   ];
 
   const saveProduct = () => dispatch({ type: "ADD_PRODUCT", product });
@@ -33,7 +33,7 @@ const Product = React.forwardRef(({ product }, ref) => {
             data-parent-fit="cover"
             data-aspectratio="1.0"
             style={{
-              backgroundImage: `${src[0] + "?w=180"}`
+              backgroundImage: `${src[0] + "?w=180"}`,
             }}
           >
             <Image url={src[0]} />

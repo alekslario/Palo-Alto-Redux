@@ -1,6 +1,6 @@
 import contactServer from "./contactServer";
 import cookie from "js-cookie";
-
+import { handleLogout } from "./auth";
 let data = {};
 let handler = null;
 export const updateCartStorage = ({ productId, contentId, modifier }) => {
@@ -11,7 +11,6 @@ export const updateCartStorage = ({ productId, contentId, modifier }) => {
   const sendToServer = async () => {
     const payloadProducts = { ...data };
     data = {};
-    console.log("sending to server");
     let token = cookie.get("token");
     if (token) {
       const response = await contactServer({
@@ -22,11 +21,9 @@ export const updateCartStorage = ({ productId, contentId, modifier }) => {
         auth: token,
         method: "POST",
       });
-      console.log("response", response);
       //handle errors better //todo
       if (response?.status === 403) {
-        cookie.remove("token");
-        token = null;
+        handleLogout();
       }
     }
     if (!token) {
@@ -64,7 +61,7 @@ export const updateCartStorage = ({ productId, contentId, modifier }) => {
   if (handler) clearTimeout(handler);
   handler = setTimeout(() => {
     sendToServer();
-  }, 1500);
+  }, 600);
 };
 
 export const removeFromCartStorage = async ({ productId }) => {
@@ -78,20 +75,13 @@ export const removeFromCartStorage = async ({ productId }) => {
     });
     //handle errors better //todo
     if (response.status === 403) {
-      cookie.remove("token");
-      token = null;
+      handleLogout();
     }
   }
   if (!token) {
     try {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const updatedCart = cart.map((ele) => {
-        if (ele.productId === productId) {
-          return;
-        } else {
-          return ele;
-        }
-      });
+      const updatedCart = cart.filter((ele) => ele.productId !== productId);
       localStorage.setItem("cart", JSON.stringify(updatedCart));
     } catch (error) {
       console.log(error);

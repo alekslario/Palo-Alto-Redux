@@ -1,67 +1,33 @@
 import styled from "styled-components";
-import {
-  inlineFlexCenter,
-  textCenter,
-  IconButton,
-} from "../../styles/reusable";
+import { Row, Column, IconButton } from "../../styles/reusable";
+import _SideMenuCart from "./_SideMenuCart";
+const { SideMenuCart, Header: CartHeader } = _SideMenuCart;
 
-const SideMenu = styled.div`
-  height: 100%;
-  width: 300px;
-  background: ${({ theme }) => theme.colors.primary};
-  right: 0;
-  position: fixed;
-  padding: 0 25px 25px;
-  max-width: 95%;
-  border-left: 2px solid ${({ theme }) => theme.colors.secondary};
-  transition: transform 0.4s cubic-bezier(0.46, 0.01, 0.32, 1);
-  z-index: 900;
-  overflow-y: auto;
-  svg {
-    pointer-events: none;
-  }
-  &.side-menu-transition-enter {
-    display: block;
-    transform: translateX(300px);
-  }
-  &.side-menu-transition-enter-active {
-    transform: translateX(0px);
-  }
-  &.side-menu-transition-exit {
-    transform: translateX(0px);
-  }
-  &.side-menu-transition-exit-active {
-    transform: translateX(300px);
+const Header = styled(CartHeader)`
+  button {
+    margin-left: auto;
   }
 `;
 
-const Grid = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const ProductWrapper = styled.div`
-  color: ${({ theme }) => theme.colors.beta};
+const SideMenu = styled(SideMenuCart)`
   a {
+    cursor: pointer;
     color: ${({ theme }) => theme.colors.beta};
+    display: block;
   }
-  button {
-    color: ${({ theme }) => theme.colors.beta};
+  & li {
+    padding: 5px 0;
+    margin-bottom: 7px;
   }
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  margin-bottom: 50px;
-  button {
-    padding: 0 8px;
-  }
-  img {
-    width: 100%;
-  }
+`;
+const MainLink = styled.a`
+  font-size: 22px;
 `;
 export default {
   IconButton,
   SideMenu,
-  Grid,
-  ProductWrapper,
+  Row,
+  Column,
+  Header,
+  MainLink,
 };

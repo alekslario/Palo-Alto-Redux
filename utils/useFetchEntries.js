@@ -77,7 +77,7 @@ export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
   }, [...dependency]);
   return idQuery && toQuery.length === 0
     ? (searchParameters["sys.id"] || searchParameters["sys.id[in]"]).length > 0
-      ? [inStore, false]
-      : [[], false]
+      ? [inStore, false, 0]
+      : [[], false, 0]
     : [entries, loading, timeStamp];
 };

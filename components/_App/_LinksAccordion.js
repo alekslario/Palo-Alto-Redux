@@ -16,9 +16,6 @@ const List = styled.div`
     margin-bottom: 9px;
     color: ${({ theme }) => theme.colors.gamma};
   }
-  @media (min-width: 768px) {
-    max-height: ${({ maxheight }) => maxheight || `100%`};
-  }
   & > ul,
   p:last-child {
     padding-bottom: 22px;
@@ -40,6 +37,44 @@ const List = styled.div`
           & > ul,
           p {
             line-height: 2;
+          }
+        `;
+      case "menu":
+        return css`
+          @media (min-width: 768px) {
+            max-height: 100%;
+          }
+        `;
+      case "sideMenu":
+        return css`
+          li {
+            padding: 5px 0;
+            margin-bottom: 7px;
+          }
+          li:first-child {
+            margin-top: 12px;
+          }
+          li:last-child {
+            margin-bottom: 2px;
+          }
+          a {
+            margin: 0;
+          }
+          transition: all 0.3s;
+          &.side-dropdown-transition-enter {
+            margin: 0;
+            opacity: 0;
+          }
+          &.side-dropdown-transition-enter-active,
+          &.side-dropdown-transition-enter-done,
+          &.side-dropdown-transition-exit {
+            margin-left: 30px;
+            opacity: 1;
+          }
+
+          &.side-dropdown-transition-exit-active {
+            margin: 0;
+            opacity: 0;
           }
         `;
     }
@@ -100,6 +135,15 @@ const Button = styled.button`
           @media (min-width: 1024px) {
             font-size: 28px;
           }
+        `;
+      case "sideMenu":
+        return css`
+          font-size: 22px;
+          color: ${({ theme }) => theme.colors.beta};
+          font-weight: normal;
+          font-family: ${({ theme }) => theme.font_family.primary};
+          padding: 0;
+          margin: 0;
         `;
       case "features":
         return css`

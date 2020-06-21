@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
-import Link from "next/link";
+import { CSSTransition } from "react-transition-group";
 import $ from "./_LinksAccordion";
 const LinksAccordion = ({ children, name = "Learn More", type }) => {
   const [collapsed, setCollapsed] = useState(true);
   const content = useRef(null);
+
   return (
     <$.Wrapper>
       <$.Button
@@ -13,19 +14,23 @@ const LinksAccordion = ({ children, name = "Learn More", type }) => {
       >
         {name}
       </$.Button>
-      <$.List
-        type={type}
-        collapsed={collapsed}
-        ref={content}
-        maxheight={content.current?.scrollHeight || 0}
-        css={`
-          @media (min-width: 768px) {
-            max-height: 100%;
-          }
-        `}
+
+      <CSSTransition
+        in={!collapsed}
+        timeout={400}
+        classNames="side-dropdown-transition"
       >
-        {children}
-      </$.List>
+        {
+          <$.List
+            type={type}
+            collapsed={collapsed}
+            ref={content}
+            maxheight={content.current?.scrollHeight || 0}
+          >
+            {children}
+          </$.List>
+        }
+      </CSSTransition>
     </$.Wrapper>
   );
 };

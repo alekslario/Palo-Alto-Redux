@@ -38,10 +38,13 @@ export default async (req, res) => {
       }
       const metadata = {
         shippingCost,
-        ...cartSummary.split(" ").reduce((acc, ele, index) => {
-          acc[index] = ele;
-          return acc;
-        }, {}),
+        ...cartSummary
+          .split(" ")
+          .filter((x) => x)
+          .reduce((acc, ele, index) => {
+            acc[index] = ele;
+            return acc;
+          }, {}),
       };
 
       const paymentIntent = intentId
@@ -84,9 +87,9 @@ async function calculateTotal(cart) {
           ? product.reducedPrice
           : product.price) * cart[product.productId].quantity;
       //adding empty space after so it would easier to split later//metadata max character count is 500
-      acc[1] += `${product.productId}-${cart[product.productId].quantity};${
-        index % 15 === 0 ? " " : ""
-      }`;
+      acc[1] += `${product.productId}-${cart[product.productId].quantity}$${
+        product.price
+      };${index % 15 === 0 ? " " : ""}`;
       return acc;
     },
     [0, ""]

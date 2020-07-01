@@ -8,6 +8,12 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      required: true,
+      default: "active",
+      enum: ["active", "deleted"],
+    },
     surname: {
       type: String,
       required: true,

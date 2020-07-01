@@ -2,14 +2,12 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import $ from "./_SideMenu";
 import Link from "next/link";
 import CrossIcon from "../Icons/Cross";
-import { useRouter } from "next/router";
 import { useStore } from "../../utils/contextStore";
 import LinksAccordion from "../_App/LinksAccordion";
 
 const SideMenu = () => {
   const [store, dispatch] = useStore();
   const sideMenu = useRef(null);
-  const router = useRouter();
 
   useEffect(() => {
     if (typeof window === "undefined" || !store.menuOpen) return;
@@ -49,16 +47,12 @@ const SideMenu = () => {
           </li>
           <li>
             <LinksAccordion name="Shop" type="sideMenu">
-              <li>
-                <Link href="/collections/mens-collection">
-                  <a>Men's Collection</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/collections/womens-collection">
-                  <a>Women's Collection</a>
-                </Link>
-              </li>
+              <Link href="/collections/mens-collection">
+                <a>Men's Collection</a>
+              </Link>
+              <Link href="/collections/womens-collection">
+                <a>Women's Collection</a>
+              </Link>
             </LinksAccordion>
           </li>
           <li>

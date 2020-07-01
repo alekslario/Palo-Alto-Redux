@@ -1,4 +1,3 @@
-import App from "next/app";
 import Layout from "../components/_App/Layout";
 import { ThemeProvider } from "styled-components";
 import { StoreProvider } from "../utils/contextStore";

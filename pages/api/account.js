@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import User from "../../models/User";
+import Order from "../../models/Order";
 import Cart from "../../models/Cart";
 import connectDb from "../../utils/connectDb";
 import withAuth from "../../utils/withAuth";
@@ -27,8 +28,25 @@ export default withAuth(async (req, res) => {
 
 async function handleGetRequest(req, res) {
   const { userId } = req.user;
+  const { includeOrders } = req.query;
   try {
-    const user = await User.findOne({ _id: userId });
+    //fetching up to 6 month old orders
+    const [orders, user, cart] = await Promise.all([
+      includeOrders
+        ? Order.find(
+            {
+              user: userId,
+              createdAt: { $gt: new Date(Date.now() - 86400000 * 30 * 6) },
+            },
+            { user: 0, stripeIntentId: 0, "products._id": 0 }
+          ).lean()
+        : [],
+      User.findOne({ _id: userId }).lean(),
+      Cart.findOne(
+        { user: userId },
+        { "products._id": 0, user: 0, _id: 0 }
+      ).lean(),
+    ]);
     if (user) {
       const { name, surname, email, stripePaymentMethods, address } = user;
       res.status(200).json({
@@ -39,6 +57,8 @@ async function handleGetRequest(req, res) {
           stripePaymentMethods,
           address,
         },
+        orders,
+        cart: cart.products,
       });
     } else {
       res.status(404).json({ message: "User not found" });
@@ -80,8 +100,12 @@ async function handleDeleteRequest(req, res) {
       );
       res.status(200).json({ address });
     } else {
-      await Cart.findOneAndDelete({ user: userId });
-      const user = await User.findByIdAndDelete({ _id: userId });
+      // usually better to set status active without deleting in production
+      // but for debugging purposes we delete all traces here apart from Orders
+      const [user] = await Promise.all([
+        User.findByIdAndDelete({ _id: userId }),
+        Cart.findOneAndDelete({ user: userId }),
+      ]);
       await stripe.customers.del(user.stripeId);
       res.status(200).json({ message: "Done!" });
     }

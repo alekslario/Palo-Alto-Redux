@@ -44,9 +44,11 @@ const defaultCheckout = {
   clientSecret: "",
 };
 const defaultState = {
+  orders: [],
   cart: {},
   cache: {},
   menuOpen: false,
+  activeModal: null,
   cartOpen: false,
   product: {},
   filter: {
@@ -142,6 +144,8 @@ const reducer = (state, action) => {
       };
     case "RESET_FILTER":
       return { ...state, filter: defaultState.filter };
+    case "SET_ACTIVE_MODAL":
+      return { ...state, activeModal: action.id };
     case "ADD_PRODUCT":
       return { ...state, product: action.product };
 
@@ -218,6 +222,14 @@ const reducer = (state, action) => {
         ...state,
         checkout: { ...state.checkout, selectedShipping: action.shipping },
       };
+
+    case "WIPE_CHECKOUT":
+      return {
+        ...state,
+        user: action.user || null,
+        cart: action.cart || {},
+        checkout: defaultCheckout,
+      };
     case "TOGGLE_SAVE_SHIPPING":
       return {
         ...state,
@@ -243,12 +255,14 @@ const reducer = (state, action) => {
       return {
         ...state,
         user: null,
+        orders: [],
         checkout: defaultCheckout,
       };
     case "LOGOUT":
       return {
         ...state,
         cart: {},
+        orders: [],
         user: null,
         checkout: defaultCheckout,
       };
@@ -256,6 +270,8 @@ const reducer = (state, action) => {
       return {
         ...state,
         user: action.user,
+        cart: action.cart,
+        orders: action.orders,
       };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);

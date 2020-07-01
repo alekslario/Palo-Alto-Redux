@@ -17,7 +17,9 @@ export default async ({
       case "GET":
         response = await axios.get(url, {
           ...authentication,
-          ...data,
+          params: {
+            ...data,
+          },
         });
         break;
       case "POST":
@@ -29,6 +31,8 @@ export default async ({
           data,
         });
         break;
+      default:
+        throw `${method} method is not supported`;
     }
 
     setStatus({

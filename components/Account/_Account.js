@@ -46,7 +46,7 @@ const BiggerTittle = styled.div`
   margin-bottom: -10px;
 `;
 
-const PageWrapper = styled(DefaultPageWrapper)`
+export const PageWrapper = styled(DefaultPageWrapper)`
   max-width: 1100px;
   margin: 0 auto;
 `;

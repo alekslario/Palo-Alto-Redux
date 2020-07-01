@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import baseUrl from "../utils/baseUrl";
 import { redirectUser, handleLogout } from "../utils/auth";
 import { parseCookies, destroyCookie } from "nookies";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { useStore } from "../utils/contextStore";
 import $ from "../components/Account/_Account";
@@ -10,30 +8,43 @@ const { getName } = require("country-list");
 import AddressList from "../components/Account/AddressList";
 import cookie from "js-cookie";
 import contactServer from "../utils/contactServer";
-import Popup from "../components/Account/PopUp";
-
-function Account({ user }) {
+import DeleteAccount from "../components/Account/PopUp";
+import Order from "../components/Account/Order";
+import { useFetchEntries } from "../utils/useFetchEntries";
+function Account({ user, cart, orders = [] }) {
   const [store, dispatch] = useStore();
   const [addressOverview, setAddressOverview] = useState(false);
-  const [deleteWarning, setDeleteWarning] = useState("");
-  const [orders, setOrders] = useState([]);
   const router = useRouter();
-
   useEffect(() => {
-    dispatch({ type: "SET_USER", user });
+    dispatch({ type: "SET_USER", user, cart, orders });
   }, []);
 
+  const [] = useFetchEntries({
+    "sys.id[in]": orders
+      .reduce(
+        (acc, ele) => [...acc, ...ele.products.map((prod) => prod.contentId)],
+        []
+      )
+      .join(),
+    content_type: "paloAltoProduct",
+    order: "sys.createdAt",
+  });
+
   useEffect(() => {
+    //merging possible local storage cart with database
+
     if (!user) return;
     let didCancel = false;
+    let cart = [];
+    try {
+      cart = JSON.parse(localStorage.getItem("cart")) || [];
+    } catch (error) {
+      console.log(error);
+    }
+    // if local storage doesn't contain a cart the hook is terminated early
+    if (cart.length === 0) return;
     async function mergeCart() {
       const token = cookie.get("token");
-      let cart = [];
-      try {
-        cart = JSON.parse(localStorage.getItem("cart")) || [];
-      } catch (error) {
-        console.log(error);
-      }
       const response = await contactServer({
         data: {
           payloadProducts: cart.reduce(
@@ -46,11 +57,11 @@ function Account({ user }) {
         },
         route: "cart",
         auth: token,
-        method: cart.length > 0 ? "POST" : "GET",
+        method: "POST",
       });
       if (response?.status === 200) {
         localStorage.removeItem("cart");
-        dispatch({ type: "DELIVER_CART", items: response.data.cart, user });
+        dispatch({ type: "DELIVER_CART", items: response.data.cart });
       }
     }
     mergeCart();
@@ -87,13 +98,13 @@ function Account({ user }) {
               >
                 <button
                   css={`
-                    color: ${({ theme }) => theme.colors.alpha};
+                    color: ${({ theme }) => theme.colors.secondary};
                   `}
                   onClick={() => dispatch({ type: "LOGOUT" })}
                 >
                   Log out
                 </button>
-                <Popup />
+                <DeleteAccount />
               </$.Row>
             </$.Row>
           </div>
@@ -112,7 +123,11 @@ function Account({ user }) {
               justify-content: space-between;
             `}
           >
-            <div>
+            <div
+              css={`
+                width: 100%;
+              `}
+            >
               <$.SubTitle
                 css={`
                   margin-right: 20px;
@@ -120,8 +135,10 @@ function Account({ user }) {
               >
                 Order history
               </$.SubTitle>
-              {orders.length > 0 ? (
-                orders.map((ele) => ele)
+              {store.orders.length > 0 ? (
+                store.orders.map((ele, index) => (
+                  <Order order={ele} key={index} />
+                ))
               ) : (
                 <p>You haven't placed any orders yet.</p>
               )}
@@ -159,28 +176,39 @@ function Account({ user }) {
     </$.PageWrapper>
   );
 }
-/* <button onClick={handelDeleteUser}>Delete account</button>
-      {deleteWarning && <span>{deleteWarning}</span>} */
+
+let cache = {};
 export async function getServerSideProps(ctx) {
   const { token } = parseCookies(ctx);
   if (!token) {
     redirectUser(ctx, "/login");
   } else {
-    try {
-      const payload = { headers: { Authorization: token } };
-      const url = `${baseUrl}/api/account`;
-      const response = await axios.get(url, payload);
-      if (response.data.status === 404) {
-        throw "Error getting current user";
-      } else {
-        return { props: { ...response.data } };
+    if (cache["user"]) {
+      console.log("returning cache");
+      return { props: { ...cache } };
+    } else {
+      try {
+        const response = await contactServer({
+          data: {
+            includeOrders: true,
+          },
+          route: "account",
+          auth: token,
+          method: "GET",
+        });
+        if (response.status === 404) {
+          throw "Error getting current user";
+        } else {
+          cache = { ...response.data };
+          return { props: { ...response.data } };
+        }
+      } catch (error) {
+        console.error("Error getting current user", error);
+        // 1) Throw out invalid token
+        destroyCookie(ctx, "token");
+        // 2) Redirect to login
+        redirectUser(ctx, "/login");
       }
-    } catch (error) {
-      console.error("Error getting current user", error);
-      // 1) Throw out invalid token
-      destroyCookie(ctx, "token");
-      // 2) Redirect to login
-      redirectUser(ctx, "/login");
     }
   }
   return { props: {} };

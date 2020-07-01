@@ -27,19 +27,12 @@ export default withAuth(async (req, res) => {
 async function handleGetRequest(req, res) {
   const { userId } = req.user;
   try {
-    const cart = await Cart.findOne({ user: userId }, { "products._id": 0 })
-      .populate("user")
-      .lean();
-    const { products, user } = cart;
-    const { name, surname, email, address, stripePaymentMethods } = user;
+    const cart = await Cart.findOne(
+      { user: userId },
+      { "products._id": 0, user: 0 }
+    ).lean();
+    const { products } = cart;
     res.status(200).json({
-      user: {
-        name,
-        surname,
-        email,
-        address,
-        stripePaymentMethods,
-      },
       cart: products,
     });
   } catch (error) {

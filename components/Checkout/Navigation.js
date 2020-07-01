@@ -8,7 +8,7 @@ const text = {
   shipping: { back: "information", forth: "payment" },
   payment: { back: "shipping" },
 };
-const Navigation = ({ toPay, stripeLoaded }) => {
+const Navigation = ({ toPay, stripeLoaded, processing }) => {
   const router = useRouter();
   const [store, dispatch] = useStore();
   const goBack = () => {
@@ -70,7 +70,7 @@ const Navigation = ({ toPay, stripeLoaded }) => {
       <$.ButtonForth
         name="submit"
         onClick={goForth}
-        disabled={stripeLoaded === false ? true : false}
+        disabled={stripeLoaded === false || processing ? true : false}
       >
         {store.checkout.step === "payment"
           ? "Pay now"

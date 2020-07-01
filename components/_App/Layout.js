@@ -19,7 +19,6 @@ const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY);
 const Layout = ({ children, user }) => {
   const [store, dispatch] = useStore();
   const router = useRouter();
-  const sideMenu = useRef(null);
 
   useEffect(() => {
     if (router.route === "/account") return;
@@ -29,17 +28,17 @@ const Layout = ({ children, user }) => {
       let user = null;
       if (token) {
         const response = await contactServer({
-          route: "cart",
+          route: "account",
           auth: token,
           method: "GET",
         });
-        //handle error better
+        //handle errors better
         console.log("response", response);
 
         if (response?.response?.status === 403) {
           dispatch({ type: "LOGOUT_WITHOUT_REDIRECT" });
           token = null;
-        } else if (response.status === 201 || response.status === 200) {
+        } else if (response.status === 200) {
           cart = response.data.cart;
           user = response.data.user;
         }
@@ -56,14 +55,16 @@ const Layout = ({ children, user }) => {
     checkCartProduct();
   }, []);
 
-  // useEffect(() => {
-  //   if(store.cartOpen||store.menuOpen)
-  //   const handler = () => {
-  //     if(store.cartOpen || store.menuOpen){
-  //       dispatch({type:"CLOSE_SIDEBAR"})
-  //     }
-  //   }
-  // },[store.cartOpen, store.menuOpen]);
+  useEffect(() => {
+    if (!store.cartOpen && !store.menuOpen) return;
+    const handler = () => {
+      if (store.cartOpen || store.menuOpen) {
+        dispatch({ type: "CLOSE_SIDEBAR" });
+      }
+    };
+    router.events.on("routeChangeComplete", handler);
+    return () => router.events.off("routeChangeComplete", handler);
+  }, [store.cartOpen, store.menuOpen]);
 
   return (
     <>

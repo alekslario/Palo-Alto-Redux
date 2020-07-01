@@ -11,8 +11,8 @@ const Information = () => {
   const [store, dispatch] = useStore();
 
   useEffect(() => {
-    if (store.user?.address.length > 0) {
-      const { _id, country, ...rest } = store.user.address[0];
+    if (store.user?.address.length > 0 && !store.checkout.details.name.value) {
+      const { _id, ...rest } = store.user.address[0];
       dispatch({
         type: "CHECKOUT_SHIPPING_ADDRESS_CHANGE",
         changes: [
@@ -20,12 +20,11 @@ const Information = () => {
             (acc, [name, value]) => (acc.push({ name, value }), acc),
             []
           ),
-          { name: "country", value: getName(country) },
           { name: "email", value: store.user?.email },
         ],
       });
     }
-  }, []);
+  }, [store.user]);
 
   const handleChange = (e) => {
     let [name, value] = [e.target.name, e.target.value];
@@ -37,6 +36,7 @@ const Information = () => {
       changes: [{ name, value }],
     });
   };
+
   return (
     <>
       <$.Form>

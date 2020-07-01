@@ -56,6 +56,7 @@ const ButtonForth = styled.button`
   }
   &:disabled {
     ${loadingPlaceHolderCss}
+    color: #00000000;
   }
 `;
 export default {

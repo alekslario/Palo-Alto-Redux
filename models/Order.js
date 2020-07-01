@@ -22,6 +22,14 @@ const OrderSchema = new mongoose.Schema(
           type: String,
           ref: "Product",
         },
+        contentId: {
+          type: String,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
       },
     ],
     email: {
@@ -35,6 +43,12 @@ const OrderSchema = new mongoose.Schema(
     shippingCost: {
       type: Number,
       required: true,
+    },
+    status: {
+      type: String,
+      required: true,
+      default: "processing",
+      enum: ["processing", "dispatched", "delivered"],
     },
     shipping: {
       city: {

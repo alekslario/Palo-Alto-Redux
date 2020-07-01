@@ -47,18 +47,15 @@ const List = styled.div`
         `;
       case "sideMenu":
         return css`
-          li {
+          a {
             padding: 5px 0;
             margin-bottom: 7px;
           }
-          li:first-child {
+          a:first-child {
             margin-top: 12px;
           }
-          li:last-child {
+          a:last-child {
             margin-bottom: 2px;
-          }
-          a {
-            margin: 0;
           }
           transition: all 0.3s;
           &.side-dropdown-transition-enter {

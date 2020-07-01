@@ -1,5 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
-import Link from "next/link";
+import { useEffect, useMemo } from "react";
 import cookie from "js-cookie";
 import baseUrl from "../utils/baseUrl";
 import axios from "axios";
@@ -92,7 +91,7 @@ const Checkout = () => {
           <BreadCrumbs />
           {store.checkout.step === "information" && <Information />}
           {store.checkout.step === "shipping" && <Shipping />}
-          {store.checkout.step === "payment" && <Payment />}
+          {store.checkout.step === "payment" && <Payment products={products} />}
           <$.Footer>All rights reserved Palo Alto Redux</$.Footer>
         </$.Main>
         <$.Side desktop={true}>

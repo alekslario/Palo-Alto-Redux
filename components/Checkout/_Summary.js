@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Row, Column, centerImg } from "../../styles/reusable";
 
-const ImageWrapper = styled.div`
+export const ImageWrapper = styled.div`
   width: 4.6em;
   height: 4.6em;
   background: ${({ theme }) => theme.checkout.sideColors.primary};
@@ -29,7 +29,7 @@ const Products = styled.div`
   }
 `;
 
-const Quantity = styled.span`
+export const Quantity = styled.span`
   display: block;
   position: absolute;
   font-size: 0.85714em;
@@ -91,5 +91,5 @@ export default {
   ImageWrapper,
   Money,
   Name,
-  ShowMoreButton
+  ShowMoreButton,
 };

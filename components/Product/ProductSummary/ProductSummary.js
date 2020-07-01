@@ -5,7 +5,6 @@ import { documentToReactComponents } from "@contentful/rich-text-react-renderer"
 import Products from "../Products";
 import $ from "./_ProductSummary";
 import BreadCrumbs from "../../_App/BreadCrumbs";
-import createContentfulSrc from "../../../utils/createContentfulSrc";
 import LinksAccordion from "../../_App/LinksAccordion";
 import SocialShare from "../../_App/SocialShare";
 import formatMoney from "../../../utils/formatMoney";

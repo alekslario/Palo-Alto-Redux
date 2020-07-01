@@ -11,6 +11,9 @@ import StripeInput from "./StripeInput";
 import BillingAddress from "./BillingAddress";
 import Navigation from "./Navigation";
 import contactServer from "../../utils/contactServer";
+import cookie from "js-cookie";
+import { useRouter } from "next/router";
+
 const options = {
   style: {
     base: {
@@ -30,14 +33,14 @@ const options = {
   hidePostalCode: true,
 };
 
-const Payment = () => {
+const Payment = ({ products }) => {
+  const router = useRouter();
   const [store, dispatch] = useStore();
   const stripe = useStripe();
   const elements = useElements();
   const [loaded, setLoaded] = useState(false);
   const [stripeError, setStripeError] = useState("");
   const [processing, setProcessing] = useState(false);
-  const [success, setSuccess] = useState("");
   const [{ focus, complete, error }, setInputState] = useState({
     focus: false,
     complete: false,
@@ -99,7 +102,6 @@ const Payment = () => {
   const handleSubmit = async () => {
     if (!stripe || !elements) {
       // Stripe.js has not yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
     setProcessing(true);
@@ -118,27 +120,67 @@ const Payment = () => {
         shipping: getAddress(),
       }
     );
-    console.log(payload.paymentIntent.id, payload);
-    if (payload.paymentIntent.status === "succeeded") {
-      const pm = await contactServer({
+    if (payload.error) {
+      setStripeError(`Payment failed ${payload.error.message}`);
+      setProcessing(false);
+    } else if (payload.paymentIntent.status === "succeeded") {
+      console.log(payload.paymentIntent.id, payload);
+      const token = cookie.get("token");
+      const response = await contactServer({
         method: "POST",
+        auth: token,
         route: "checkout",
         data: {
+          cartItems: store.cart,
           paymentIntentId: payload.paymentIntent.id,
         },
       });
-      console.log(pm);
-    }
-    if (payload.error) {
-      setSuccess("");
-      setStripeError(`Payment failed ${payload.error.message}`);
-      setProcessing(false);
-    } else {
-      setSuccess("Done!");
-      setStripeError(null);
-      setProcessing(false);
+
+      const { orderId, user, cart } = response.data;
+      const {
+        selectedShipping,
+        details: { name, surname, email, ...rest },
+      } = store.checkout;
+      const shippingDays = selectedShipping.time.match(/\d+/g);
+      const boughtItems = products.map((ele) => ele.name).join(", ");
+      dispatch({ type: "WIPE_CHECKOUT", user, cart });
+      router.push({
+        pathname: "/thankyou",
+        query: {
+          orderId,
+          name: `${name.value} ${surname.value}`,
+          email: email.value,
+          boughtItems:
+            boughtItems.length > 30
+              ? boughtItems.substring(0, 26) + " ..."
+              : boughtItems,
+          shippingAddress: Object.values(rest)
+            .map((ele) => ele.value)
+            .filter((x) => x)
+            .join(", "),
+          delivery_date:
+            Date.now() +
+            1000 *
+              60 *
+              60 *
+              24 *
+              Math.max(...(shippingDays ? shippingDays : [1])),
+        },
+      });
     }
   };
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+    };
+    processing
+      ? window.addEventListener("click", handler, true)
+      : window.removeEventListener("click", handler, true);
+    return () => window.removeEventListener("click", handler, true);
+  }, [processing]);
+
   return (
     <>
       <$.Wrapper>
@@ -218,9 +260,7 @@ const Payment = () => {
               Save this card for next time
             </label>
           </$.CheckBoxWrapper>
-          {stripeError && <span>{stripeError}</span>}
-          {processing && <span>processing</span>}
-          {success && <span>{success}</span>}
+          {stripeError && <$.Error>{stripeError}</$.Error>}
         </$.Payment>
         <BillingAddress
           switchAddress={switchAddress}
@@ -230,6 +270,7 @@ const Payment = () => {
       </$.Wrapper>
       <Navigation
         toPay={handleSubmit}
+        processing={processing}
         stripeLoaded={
           loaded &&
           store.checkout.clientSecret &&

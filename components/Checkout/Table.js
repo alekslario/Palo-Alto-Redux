@@ -2,38 +2,47 @@ import $ from "./_Table";
 import { css } from "styled-components";
 const { getName } = require("country-list");
 import formatMoney from "../../utils/formatMoney";
-
-const Row = ({ label, text, index }) => (
-  <$.Row
-    css={`
-      ${index > 0
-        ? css`
-            margin-top: 0.85714em;
-            padding-top: 0.85714em;
-            border-top: 1px solid
-              ${({ theme }) => theme.checkout.sideColors.gamma};
-          `
-        : ""}
-    `}
-  >
-    <$.Column
+import { useStore } from "../../utils/contextStore";
+const Row = ({ label, text, index }) => {
+  const [_, dispatch] = useStore();
+  return (
+    <$.Row
       css={`
-        flex: 1;
-        @media (min-width: 750px) {
-          flex-direction: row;
-        }
+        ${index > 0
+          ? css`
+              margin-top: 0.85714em;
+              padding-top: 0.85714em;
+              border-top: 1px solid
+                ${({ theme }) => theme.checkout.sideColors.gamma};
+            `
+          : ""}
       `}
     >
-      <$.FieldName>{label}</$.FieldName>
-      <$.Record>{text}</$.Record>
-    </$.Column>
-    {index < 2 && (
-      <$.Action>
-        <button>Change</button>
-      </$.Action>
-    )}
-  </$.Row>
-);
+      <$.Column
+        css={`
+          flex: 1;
+          @media (min-width: 750px) {
+            flex-direction: row;
+          }
+        `}
+      >
+        <$.FieldName>{label}</$.FieldName>
+        <$.Record>{text}</$.Record>
+      </$.Column>
+      {index < 2 && (
+        <$.Action>
+          <button
+            onClick={() =>
+              dispatch({ type: "CHECKOUT_TAKE_A_STEP", step: "information" })
+            }
+          >
+            Change
+          </button>
+        </$.Action>
+      )}
+    </$.Row>
+  );
+};
 const Table = ({ details, shipping }) => {
   const { address, addressOptional, city, country, postcode } = details;
   return (

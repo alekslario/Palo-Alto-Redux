@@ -2,7 +2,7 @@ import { useStore } from "./contextStore";
 import { useFetchEntries } from "./useFetchEntries";
 
 const useDeliverCart = () => {
-  const [store, dispatch] = useStore();
+  const [store] = useStore();
   const [products, loading, timeStamp] = useFetchEntries({
     "sys.id[in]": Object.values(store.cart)
       .map((ele) => ele.contentId)

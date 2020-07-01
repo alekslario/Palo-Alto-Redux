@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { Row } from "../../styles/reusable";
 
-const Wrapper = styled.div`
-  position: absolute;
+export const Wrapper = styled.div`
+  position: fixed;
   max-width: 800px;
   top: 50%;
   left: 50%;

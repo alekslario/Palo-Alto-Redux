@@ -5,13 +5,14 @@ import cookie from "js-cookie";
 import contactServer from "../../utils/contactServer";
 import { useStore } from "../../utils/contextStore";
 import LoaderIcon from "../Icons/Loader";
+import { useCloseModals } from "../../utils/useCloseModals";
 const Modal = ({ closePortal }) => {
   const [_, dispatch] = useStore();
   const [{ loading, message }, setLoading] = useState({
     loading: false,
     message: "",
   });
-
+  useCloseModals(closePortal);
   const handelDeleteUser = async () => {
     setLoading({ loading: true, message: "" });
     const token = cookie.get("token");
@@ -79,7 +80,7 @@ const PopUp = () => (
         <React.Fragment>
           <button
             css={`
-              color: ${({ theme }) => theme.colors.alpha};
+              color: ${({ theme }) => theme.colors.secondary};
             `}
             onClick={openPortal}
           >

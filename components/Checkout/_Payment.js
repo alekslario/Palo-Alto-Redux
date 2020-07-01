@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Row, Column, hidden } from "../../styles/reusable";
+import { Row, Column, hidden, Error } from "../../styles/reusable";
 import _Checkout from "./_Checkout";
 const { H2 } = _Checkout;
 import _Shipping from "./_Shipping";
@@ -58,6 +58,7 @@ const Warning = styled(Row)`
 const LabelText = styled.span`
   ${hidden}
 `;
+
 export default {
   Wrapper,
   H2,
@@ -69,4 +70,5 @@ export default {
   Warning,
   LabelText,
   CheckBoxWrapper,
+  Error,
 };

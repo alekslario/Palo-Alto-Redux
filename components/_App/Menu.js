@@ -20,7 +20,7 @@ const Menu = ({ user }) => {
 
   const sizeOfCart = useMemo(
     () =>
-      Object.values(store.cart).reduce(
+      Object.values(store.cart || {}).reduce(
         (acc, ele) => ((acc += ele.quantity), acc),
         0
       ),

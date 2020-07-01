@@ -37,31 +37,40 @@ const ProductModal = ({
         <$.Row>
           <Link href={"/products/[id]"} as={`/products/${contentId}`}>
             <a>
-              <Image url={url} />
+              <$.ModalImageWrapper>
+                <Image url={url} />
+              </$.ModalImageWrapper>
             </a>
           </Link>
-        </$.Row>
-        <Link href={"/products/[id]"} as={`/products/${contentId}`}>
-          <a>
-            <h3
+          <$.Column
+            css={`
+              justify-content: center;
+            `}
+          >
+            <Link href={"/products/[id]"} as={`/products/${contentId}`}>
+              <a>
+                <h3
+                  css={`
+                    margin: 0;
+                    color: #333;
+                    font-family: ${({ theme }) => theme.font_family.secondary};
+                  `}
+                >
+                  {name}
+                </h3>
+              </a>
+            </Link>
+            {style !== "Default" && <small>{style}</small>}
+            <div
               css={`
-                margin: 0;
-                color: #333;
-                font-family: ${({ theme }) => theme.font_family.secondary};
+                margin-bottom: 5px;
               `}
             >
-              {name}
-            </h3>
-          </a>
-        </Link>
-        {style !== "Default" && <small>{style}</small>}
-        <div
-          css={`
-            margin-bottom: 5px;
-          `}
-        >
-          {formatMoney(price)}
-        </div>
+              {formatMoney(price)}
+            </div>
+          </$.Column>
+        </$.Row>
+
         <div>
           {description.content
             .map(({ content }) => content.map(({ value }) => value))

@@ -58,7 +58,12 @@ async function handleGetRequest(req, res) {
           address,
         },
         orders,
-        cart: cart.products,
+        cart: cart.products.reduce(
+          (acc, { productId, quantity, contentId }) => (
+            (acc[productId] = { quantity, contentId }), acc
+          ),
+          {}
+        ),
       });
     } else {
       res.status(404).json({ message: "User not found" });
@@ -114,7 +119,7 @@ async function handleDeleteRequest(req, res) {
     res.status(500).json({ message: "Server error" });
   }
 }
-function addAddress(req, res, user) {
+export function addAddress(req, res, user) {
   const { shipAddress } = req.body;
   if (shipAddress) {
     const {

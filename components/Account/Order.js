@@ -24,7 +24,7 @@ const ProductModal = ({
           <span
             onClick={closePortal}
             css={`
-              width: 22px;
+              width: 17px;
               cursor: pointer;
               svg {
                 pointer-events: none;

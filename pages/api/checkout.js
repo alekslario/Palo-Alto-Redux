@@ -2,11 +2,11 @@ import Stripe from "stripe";
 import jwt from "jsonwebtoken";
 import Cart from "../../models/Cart";
 import Order from "../../models/Order";
-
+import { addAddress } from "./account";
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async (req, res) => {
-  const { paymentIntentId, savePaymentMethod = false, cartItems } = req.body;
+  const { paymentIntentId, saveEmail = false, cartItems } = req.body;
   const { authorization = null } = req.headers;
   try {
     const [paymentIntent, cart] = await Promise.all([
@@ -74,10 +74,9 @@ export default async (req, res) => {
         },
         products: productsMetadata,
       }).save(),
-      saveCard(user, savePaymentMethod, payment_method, card),
+      updateUser(req, user, payment_method, card),
       updateCart(user, cart, productsMetadata),
     ]);
-
     const { name, surname, email, stripePaymentMethods, address } = user || {};
 
     res.status(200).json({
@@ -89,6 +88,7 @@ export default async (req, res) => {
           }
         : {}),
     });
+    //here we trigger webhook to send emails etc...Leaving empty for now.
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error processing charge" });
@@ -104,25 +104,6 @@ async function retrieveCart(authorization) {
       .populate("user");
   }
   return cart;
-}
-
-async function saveCard(user, savePaymentMethod, payment_method, card) {
-  const { brand, exp_month, exp_year, last4 } = card;
-  if (user && savePaymentMethod) {
-    const exist = user.stripePaymentMethods.find(
-      (method) => method.payment_method === payment_method
-    );
-    if (!exist) {
-      user.stripePaymentMethods.push({
-        payment_method,
-        brand,
-        exp_month,
-        exp_year,
-        last4,
-      });
-    }
-    await user.save();
-  }
 }
 
 async function updateCart(user, cart, productsMetadata) {
@@ -141,3 +122,52 @@ async function updateCart(user, cart, productsMetadata) {
     await cart.save();
   }
 }
+
+const updateUser = async (req, user, payment_method, card) => {
+  const { savePaymentMethod = false, saveShipping = false } = req.body;
+  if (savePaymentMethod) {
+    saveCard(user, savePaymentMethod, payment_method, card);
+  }
+  if (saveShipping) {
+    trySaveAddress(req, user);
+  }
+  if (savePaymentMethod || saveShipping) {
+    await user.save();
+  }
+};
+
+async function saveCard(user, savePaymentMethod, payment_method, card) {
+  const { brand, exp_month, exp_year, last4 } = card;
+
+  if (user && savePaymentMethod) {
+    const exist = user.stripePaymentMethods.find(
+      (method) => method.payment_method === payment_method
+    );
+
+    if (!exist) {
+      user.stripePaymentMethods.push({
+        payment_method,
+        brand,
+        exp_month,
+        exp_year,
+        last4,
+      });
+    }
+  }
+}
+
+const trySaveAddress = (req, user) => {
+  //do not want to throw an error and interrupt checkout process, a customer can be notified later
+  const resMock = {
+    status: () => ({
+      json: (res) => {
+        console.log("error", res);
+      },
+    }),
+  };
+  try {
+    addAddress(req, resMock, user);
+  } catch (error) {
+    console.log("Failed saving address: ", error);
+  }
+};

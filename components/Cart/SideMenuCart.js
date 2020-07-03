@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 const SideMenuCart = () => {
   const [store, dispatch] = useStore();
   const sideMenuCart = useRef(null);
-  const [products] = useDeliverCart();
+  const [products, loading] = useDeliverCart();
   const router = useRouter();
 
   useEffect(() => {
@@ -47,6 +47,7 @@ const SideMenuCart = () => {
   const { cartTotal } = useMemo(() => calculateCartTotal(products, 0), [
     products,
   ]);
+  console.log("loading cart", loading);
   return (
     <>
       <$.SideMenuCart ref={sideMenuCart}>
@@ -197,6 +198,8 @@ const SideMenuCart = () => {
           </$.Row>
           <small>Shipping & taxes calculated at checkout</small>
           <SubmitButton
+            loading={loading}
+            disabled={products.length === 0}
             onClick={() => router.push("/checkout")}
             css={`
               width: 100%;

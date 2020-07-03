@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, { useEffect, useRef } from "react";
 import $ from "./_SideMenu";
 import Link from "next/link";
 import CrossIcon from "../Icons/Cross";
@@ -70,16 +70,26 @@ const SideMenu = () => {
               <$.MainLink>Contact</$.MainLink>
             </Link>
           </li>
-          <li>
-            <Link href="/login">
-              <a>Log in</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/register">
-              <a>Create account</a>
-            </Link>
-          </li>
+          {store.user ? (
+            <li>
+              <Link href="/account">
+                <a>Account</a>
+              </Link>
+            </li>
+          ) : (
+            <>
+              <li>
+                <Link href="/login">
+                  <a>Log in</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/register">
+                  <a>Create account</a>
+                </Link>
+              </li>
+            </>
+          )}
           <li>
             <button onClick={() => document.getElementById("search").click()}>
               Search

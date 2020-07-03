@@ -133,6 +133,17 @@ const Payment = ({ products }) => {
         data: {
           cartItems: store.cart,
           paymentIntentId: payload.paymentIntent.id,
+          savePaymentMethod: store.checkout.savePaymentMethod,
+          ...(store.checkout.saveShipping
+            ? {
+                saveShipping: true,
+                shipAddress: Object.entries(store.checkout.details).reduce(
+                  (acc, [key, { value }]) => ((acc[key] = value), acc),
+                  {}
+                ),
+              }
+            : {}),
+          saveEmail: store.checkout.saveEmail,
         },
       });
 
@@ -143,7 +154,11 @@ const Payment = ({ products }) => {
       } = store.checkout;
       const shippingDays = selectedShipping.time.match(/\d+/g);
       const boughtItems = products.map((ele) => ele.name).join(", ");
-      dispatch({ type: "WIPE_CHECKOUT", user, cart });
+      dispatch({
+        type: "WIPE_CHECKOUT",
+        user,
+        cart: cart,
+      });
       router.push({
         pathname: "/thankyou",
         query: {

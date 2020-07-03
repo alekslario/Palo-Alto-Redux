@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { SubmitButton as DefaultButton } from "../../styles/reusable";
 import { loadingPlaceHolderCss } from "../_App/LoadingPlaceholder";
 const SubmitButton = styled(DefaultButton)`
@@ -12,9 +12,15 @@ const SubmitButton = styled(DefaultButton)`
   svg {
     position: absolute;
   }
+  ${({ isLoading }) =>
+    isLoading
+      ? css`
+          ${loadingPlaceHolderCss}
+          color: #00000000;
+        `
+      : ""};
   &:disabled {
-    ${loadingPlaceHolderCss}
-    color: #00000000;
+   background-color: ${({ theme }) => theme.colors.delta};
   }
   @media (max-width: 480px) {
     width: 100%;

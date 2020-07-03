@@ -76,15 +76,7 @@ const reducer = (state, action) => {
     case "DELIVER_CART":
       return {
         ...state,
-        cart: {
-          ...action.items.reduce((acc, product) => {
-            acc[product.productId] = {
-              contentId: product.contentId,
-              quantity: product.quantity,
-            };
-            return acc;
-          }, {}),
-        },
+        cart: action.items,
         ...(action.user ? { user: action.user } : {}),
       };
 

@@ -205,12 +205,10 @@ const Maestro = (
   </svg>
 );
 
-export default [
-  Visa,
-  MasterCard,
-  AmericanExpress,
-  PayPal,
-  DinersClub,
-  Discover,
-  Maestro,
-];
+export const logoStripeMap = {
+  visa: Visa,
+  mastercard: MasterCard,
+  amex: AmericanExpress,
+};
+
+export default [Visa, MasterCard, AmericanExpress];

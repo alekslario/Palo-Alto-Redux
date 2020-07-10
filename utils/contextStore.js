@@ -26,6 +26,7 @@ const applyMiddleware = (dispatch, getState) => (action) => {
 const defaultCheckout = {
   step: "information",
   stepsLocked: { information: false, payment: true, shipping: true },
+  paymentMethod: null,
   details: {
     email: { value: "", error: "" },
     name: { value: "", error: "" },
@@ -45,6 +46,8 @@ const defaultCheckout = {
 };
 const defaultState = {
   orders: [],
+  ordersCache: {},
+  totalOrderNumber: 0,
   cart: {},
   cache: {},
   menuOpen: false,
@@ -152,6 +155,11 @@ const reducer = (state, action) => {
       return { ...state, menuOpen: true, cartOpen: false };
     case "CLOSE_MENU":
       return { ...state, menuOpen: false };
+    case "ADD_CHECKOUT_PAYMENT_METHOD":
+      return {
+        ...state,
+        checkout: { ...state.checkout, paymentMethod: action.paymentMethod },
+      };
     case "CHECKOUT_TAKE_A_STEP":
       return {
         ...state,
@@ -248,6 +256,8 @@ const reducer = (state, action) => {
         ...state,
         user: null,
         orders: [],
+        ordersCache: {},
+        totalOrderNumber: 0,
         checkout: defaultCheckout,
       };
     case "LOGOUT":
@@ -255,6 +265,8 @@ const reducer = (state, action) => {
         ...state,
         cart: {},
         orders: [],
+        ordersCache: {},
+        totalOrderNumber: 0,
         user: null,
         checkout: defaultCheckout,
       };
@@ -262,8 +274,35 @@ const reducer = (state, action) => {
       return {
         ...state,
         user: action.user,
-        cart: action.cart,
+        ...(action.cart ? { cart: action.cart } : {}),
+        ...(action.orders ? { orders: action.orders } : {}),
+        ...(action.totalOrderNumber
+          ? { totalOrderNumber: action.totalOrderNumber }
+          : {}),
+        ...(typeof action.skip !== "undefined" && action.orders
+          ? {
+              ordersCache: {
+                ...state.ordersCache,
+                [action.skip]: action.orders,
+              },
+            }
+          : {}),
+      };
+    case "SET_ORDERS":
+      return {
+        ...state,
+        ...(typeof action.skip !== "undefined"
+          ? {
+              ordersCache: {
+                ...state.ordersCache,
+                [action.skip]: action.orders,
+              },
+            }
+          : {}),
         orders: action.orders,
+        ...(action.totalOrderNumber
+          ? { totalOrderNumber: action.totalOrderNumber }
+          : {}),
       };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);

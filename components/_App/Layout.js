@@ -13,13 +13,12 @@ import contactServer from "../../utils/contactServer";
 import { useRouter } from "next/router";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-
+import smoothScroll from "../../utils/smoothScroll";
 const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY);
 
 const Layout = ({ children, user }) => {
   const [store, dispatch] = useStore();
   const router = useRouter();
-
   useEffect(() => {
     if (router.route === "/account") return;
     const checkCartProduct = async () => {
@@ -65,6 +64,11 @@ const Layout = ({ children, user }) => {
     router.events.on("routeChangeComplete", handler);
     return () => router.events.off("routeChangeComplete", handler);
   }, [store.cartOpen, store.menuOpen]);
+
+  useEffect(() => {
+    router.events.on("routeChangeComplete", () => window.scrollTo(0, 0));
+    return () => router.events.off("routeChangeComplete", handler);
+  }, []);
 
   return (
     <>

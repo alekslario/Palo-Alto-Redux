@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { redirectUser, handleLogout } from "../utils/auth";
 import { parseCookies, destroyCookie } from "nookies";
 import { useRouter } from "next/router";
@@ -9,18 +9,30 @@ import AddressList from "../components/Account/AddressList";
 import cookie from "js-cookie";
 import contactServer from "../utils/contactServer";
 import DeleteAccount from "../components/Account/PopUp";
-import Order from "../components/Account/Order";
 import { useFetchEntries } from "../utils/useFetchEntries";
-function Account({ user, cart, orders = [] }) {
+import smoothScroll from "../utils/smoothScroll";
+import CardsList from "../components/Account/CardsList";
+import Orders from "../components/Account/Orders";
+function Account({ user, cart, orders = [], totalOrderNumber }) {
   const [store, dispatch] = useStore();
   const [addressOverview, setAddressOverview] = useState(false);
+  const [cardsOverview, setCardsOverview] = useState(false);
   const router = useRouter();
+
   useEffect(() => {
-    dispatch({ type: "SET_USER", user, cart, orders });
+    dispatch({
+      type: "SET_USER",
+      user,
+      cart,
+      orders,
+      totalOrderNumber,
+      skip: 0,
+    });
   }, []);
+  //to review it later
 
   const [] = useFetchEntries({
-    "sys.id[in]": orders
+    "sys.id[in]": store.orders
       .reduce(
         (acc, ele) => [...acc, ...ele.products.map((prod) => prod.contentId)],
         []
@@ -28,6 +40,7 @@ function Account({ user, cart, orders = [] }) {
       .join(),
     content_type: "paloAltoProduct",
     order: "sys.createdAt",
+    dependency: [store.orders],
   });
 
   useEffect(() => {
@@ -59,7 +72,7 @@ function Account({ user, cart, orders = [] }) {
         auth: token,
         method: "POST",
       });
-      if (response?.status === 200) {
+      if (response?.status === 200 && !didCancel) {
         localStorage.removeItem("cart");
         dispatch({ type: "DELIVER_CART", items: response.data.cart });
       }
@@ -82,10 +95,20 @@ function Account({ user, cart, orders = [] }) {
     return () => window.removeEventListener("storage", handler);
   }, []);
 
-  const handleManageAddress = () => setAddressOverview((prev) => !prev);
+  const handleManageAddress = () => {
+    setAddressOverview((prev) => !prev);
+    const node = document.getElementById("menu");
+    smoothScroll(node);
+  };
+  const handleManageCards = () => {
+    setCardsOverview((prev) => !prev);
+    const node = document.getElementById("menu");
+    smoothScroll(node);
+  };
+
   return (
     <$.PageWrapper>
-      {!addressOverview ? (
+      {!addressOverview && !cardsOverview && (
         <>
           <div>
             <$.Row>
@@ -121,6 +144,9 @@ function Account({ user, cart, orders = [] }) {
           <$.Row
             css={`
               justify-content: space-between;
+              @media (max-width: 767px) {
+                flex-direction: column-reverse;
+              }
             `}
           >
             <div
@@ -136,17 +162,24 @@ function Account({ user, cart, orders = [] }) {
                 Order history
               </$.SubTitle>
               {store.orders.length > 0 ? (
-                store.orders.map((ele, index) => (
-                  <Order order={ele} key={index} />
-                ))
+                <Orders />
               ) : (
                 <p>You haven't placed any orders yet.</p>
               )}
             </div>
-            <div>
+            <div
+              css={`
+                margin-bottom: 50px;
+                white-space: nowrap;
+              `}
+            >
               <$.SubTitle>Account details</$.SubTitle>
               {store.user?.address.length > 0 && (
-                <p>
+                <p
+                  css={`
+                    white-space: normal;
+                  `}
+                >
                   {Object.entries(store.user.address[0])
                     .filter(([key, val]) => key !== "_id" && val)
                     .map(([key, val], index) => (
@@ -164,15 +197,35 @@ function Account({ user, cart, orders = [] }) {
                     letter-spacing: 1.3px;
                   `}
                 >
-                  ({store.user?.address.length})
+                  ({store.user?.address.length || 0})
+                </span>
+              </button>
+              <button
+                css={`
+                  display: block;
+                  margin-top: 5px;
+                `}
+                onClick={handleManageCards}
+              >
+                Manage Cards{" "}
+                <span
+                  css={`
+                    letter-spacing: 1.3px;
+                  `}
+                >
+                  ({store.user?.stripePaymentMethods.length || 0})
                 </span>
               </button>
             </div>
           </$.Row>
         </>
-      ) : store.user ? (
+      )}
+      {addressOverview && store.user && (
         <AddressList handleReturn={handleManageAddress} />
-      ) : null}
+      )}
+      {cardsOverview && store.user && (
+        <CardsList handleReturn={handleManageCards} />
+      )}
     </$.PageWrapper>
   );
 }
@@ -196,7 +249,11 @@ export async function getServerSideProps(ctx) {
           auth: token,
           method: "GET",
         });
-        if (response.status === 404) {
+        if (
+          response.status === 404 ||
+          response.status === 403 ||
+          response.status === 401
+        ) {
           throw "Error getting current user";
         } else {
           cache = { ...response.data };

@@ -83,7 +83,12 @@ export default async (req, res) => {
       orderId: order.id,
       ...(user
         ? {
-            cart: cart.products,
+            cart: cart.products.reduce(
+              (acc, { productId, quantity, contentId }) => (
+                (acc[productId] = { quantity, contentId }), acc
+              ),
+              {}
+            ),
             user: { name, surname, email, stripePaymentMethods, address },
           }
         : {}),

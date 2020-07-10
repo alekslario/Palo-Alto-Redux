@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Row, Column, CheckoutClickMe } from "../../styles/reusable";
 
 const Table = styled(Column)`
@@ -12,7 +12,24 @@ const Table = styled(Column)`
   }
 `;
 
-const FieldName = styled.div`
+export const TableRow = styled(Row)`
+  ${({ theme, index }) =>
+    index > 0
+      ? css`
+          margin-top: 0.85714em;
+          padding-top: 0.85714em;
+          border-top: 1px solid ${theme.checkout.sideColors.gamma};
+        `
+      : ""};
+`;
+
+export const TableColumn = styled(Column)`
+  flex: 1;
+  @media (min-width: 750px) {
+    flex-direction: row;
+  }
+`;
+export const FieldName = styled.div`
   color: ${({ theme }) => theme.checkout.colors.smallText};
   padding-right: 1.14286em;
   padding-bottom: 0.28571em;
@@ -24,7 +41,7 @@ const FieldName = styled.div`
   }
 `;
 
-const Record = styled.div`
+export const Record = styled.div`
   width: 100%;
   padding-right: 1.14286em;
 `;
@@ -43,5 +60,7 @@ export default {
   Column,
   FieldName,
   Record,
-  Action
+  Action,
+  TableRow,
+  TableColumn,
 };

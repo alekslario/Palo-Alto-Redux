@@ -5,9 +5,12 @@ import Cart from "../../models/Cart";
 import connectDb from "../../utils/connectDb";
 import withAuth from "../../utils/withAuth";
 import isLength from "validator/lib/isLength";
+import { itemsPerOrderPage } from "../../utils/variables";
 const { getName } = require("country-list");
 connectDb();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+let orderCountCache = null;
 
 export default withAuth(async (req, res) => {
   switch (req.method) {
@@ -28,24 +31,28 @@ export default withAuth(async (req, res) => {
 
 async function handleGetRequest(req, res) {
   const { userId } = req.user;
-  const { includeOrders } = req.query;
+  const {
+    includeOrders,
+    justOrders,
+    skip = 0,
+    limit = itemsPerOrderPage,
+  } = req.query;
   try {
-    //fetching up to 6 month old orders
-    const [orders, user, cart] = await Promise.all([
-      includeOrders
-        ? Order.find(
-            {
-              user: userId,
-              createdAt: { $gt: new Date(Date.now() - 86400000 * 30 * 6) },
-            },
-            { user: 0, stripeIntentId: 0, "products._id": 0 }
-          ).lean()
-        : [],
+    //trying to squeeze in Vercel 12 functions free tier, ideally orders should have its own endpoint
+    if (justOrders) {
+      const [orders, totalOrderNumber] = await Promise.all([
+        ...queryOrders(userId, skip, limit),
+      ]);
+      return res.status(200).json({ orders, totalOrderNumber });
+    }
+
+    const [user, cart, orders, totalOrderNumber] = await Promise.all([
       User.findOne({ _id: userId }).lean(),
       Cart.findOne(
         { user: userId },
         { "products._id": 0, user: 0, _id: 0 }
       ).lean(),
+      ...(includeOrders ? queryOrders(userId, skip, limit) : []),
     ]);
     if (user) {
       const { name, surname, email, stripePaymentMethods, address } = user;
@@ -58,6 +65,7 @@ async function handleGetRequest(req, res) {
           address,
         },
         orders,
+        totalOrderNumber,
         cart: cart.products.reduce(
           (acc, { productId, quantity, contentId }) => (
             (acc[productId] = { quantity, contentId }), acc
@@ -95,7 +103,8 @@ async function handlePostRequest(req, res) {
 
 async function handleDeleteRequest(req, res) {
   const { userId } = req.user;
-  const { addressId } = req.body;
+  const { addressId = null, stripePaymentMethodsIds = null } = req.body;
+
   try {
     if (addressId) {
       const { address } = await User.findOneAndUpdate(
@@ -104,6 +113,32 @@ async function handleDeleteRequest(req, res) {
         { new: true }
       );
       res.status(200).json({ address });
+    } else if (
+      typeof stripePaymentMethodsIds === "object" &&
+      stripePaymentMethodsIds.length > 0
+    ) {
+      if (stripePaymentMethodsIds.length > 10) {
+        res.status(500).json({
+          message: "Can't delete more than 10 cards at the same time.",
+        });
+      }
+      const [user] = await Promise.all([
+        User.findByIdAndUpdate(
+          { _id: userId },
+          {
+            $pull: {
+              stripePaymentMethods: {
+                payment_method: { $in: stripePaymentMethodsIds },
+              },
+            },
+          },
+          { new: true }
+        ),
+        ...stripePaymentMethodsIds.map((id) =>
+          stripe.paymentMethods.detach(id)
+        ),
+      ]);
+      res.status(200).json({ user });
     } else {
       // usually better to set status active without deleting in production
       // but for debugging purposes we delete all traces here apart from Orders
@@ -198,4 +233,17 @@ export function addAddress(req, res, user) {
   } else {
     return user;
   }
+}
+
+function queryOrders(userId, skip, limit) {
+  return [
+    Order.find(
+      {
+        user: userId,
+      },
+      { user: 0, stripeIntentId: 0, "products._id": 0 },
+      { limit: parseInt(limit), skip: parseInt(skip), sort: { createdAt: -1 } }
+    ).lean(),
+    Order.countDocuments({ user: userId }),
+  ];
 }

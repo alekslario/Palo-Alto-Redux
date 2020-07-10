@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Row, Column, centerImg } from "../../styles/reusable";
-
+import { ButtonForth } from "./_Navigation";
 export const ImageWrapper = styled.div`
   width: 4.6em;
   height: 4.6em;
@@ -92,4 +92,5 @@ export default {
   Money,
   Name,
   ShowMoreButton,
+  ButtonForth,
 };

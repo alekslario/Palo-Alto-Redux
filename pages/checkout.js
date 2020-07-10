@@ -42,7 +42,6 @@ const Checkout = () => {
     if (!stripeTotal) return;
     let didCancel = false;
     const getStripeIntent = async () => {
-      console.log("fetching intent");
       const token = cookie.get("token");
       const payload = {
         clientSecret: store.checkout.clientSecret,

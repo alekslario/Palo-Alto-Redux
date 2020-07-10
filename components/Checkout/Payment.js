@@ -13,6 +13,7 @@ import Navigation from "./Navigation";
 import contactServer from "../../utils/contactServer";
 import cookie from "js-cookie";
 import { useRouter } from "next/router";
+import PaymentMethods from "./PaymentMethods";
 
 const options = {
   style: {
@@ -113,18 +114,21 @@ const Payment = ({ products }) => {
         setup_future_usage: store.checkout.savePaymentMethod
           ? "on_session"
           : null,
-        payment_method: {
-          card: elements.getElement(CardElement),
-          billing_details: getAddress(billingAddress.sameAsShipping),
-        },
+        payment_method:
+          store.checkout.paymentMethod &&
+          store.checkout.paymentMethod !== "another"
+            ? store.checkout.paymentMethod
+            : {
+                card: elements.getElement(CardElement),
+                billing_details: getAddress(billingAddress.sameAsShipping),
+              },
         shipping: getAddress(),
       }
     );
     if (payload.error) {
-      setStripeError(`Payment failed ${payload.error.message}`);
+      setStripeError(`Payment failed. ${payload.error.message}`);
       setProcessing(false);
     } else if (payload.paymentIntent.status === "succeeded") {
-      console.log(payload.paymentIntent.id, payload);
       const token = cookie.get("token");
       const response = await contactServer({
         method: "POST",
@@ -154,12 +158,7 @@ const Payment = ({ products }) => {
       } = store.checkout;
       const shippingDays = selectedShipping.time.match(/\d+/g);
       const boughtItems = products.map((ele) => ele.name).join(", ");
-      dispatch({
-        type: "WIPE_CHECKOUT",
-        user,
-        cart: cart,
-      });
-      router.push({
+      await router.push({
         pathname: "/thankyou",
         query: {
           orderId,
@@ -181,6 +180,11 @@ const Payment = ({ products }) => {
               24 *
               Math.max(...(shippingDays ? shippingDays : [1])),
         },
+      });
+      dispatch({
+        type: "WIPE_CHECKOUT",
+        user,
+        cart: cart,
       });
     }
   };
@@ -215,66 +219,70 @@ const Payment = ({ products }) => {
             </span>
             This store can't accept real orders or real payments.
           </$.Warning>
-          {/* <$.Table>{store.map()}</$.Table> */}
-          <form
-            css={`
-              position: relative;
-            `}
-          >
-            {!loaded && (
-              <LoadingPlaceholder
-                css={`
-                  width: 100%;
-                  height: 44.77px;
-                  border-radius: 5px;
-                  margin: 0.42857em 0;
-                  position: absolute;
-                  top: 0;
-                  z-index: 10;
-                `}
-              />
-            )}
-            <label>
-              <$.LabelText>Card details</$.LabelText>
-              <StripeInput focus={focus} error={error}>
-                <CardElement
-                  options={options}
-                  onReady={() => {
-                    setLoaded(true);
-                  }}
-                  onChange={({ complete, error }) => {
-                    setInputState((prevState) => ({
-                      ...prevState,
-                      complete,
-                      error,
-                    }));
-                  }}
-                  onBlur={() => {
-                    setInputState((prevState) => ({
-                      ...prevState,
-                      focus: false,
-                    }));
-                  }}
-                  onFocus={() =>
-                    setInputState((prevState) => ({
-                      ...prevState,
-                      focus: true,
-                    }))
-                  }
+          <PaymentMethods>
+            <form
+              css={`
+                position: relative;
+              `}
+            >
+              {!loaded && (
+                <LoadingPlaceholder
+                  css={`
+                    width: 100%;
+                    height: 44.77px;
+                    border-radius: 5px;
+                    margin: 0.42857em 0;
+                    position: absolute;
+                    top: 0;
+                    z-index: 10;
+                  `}
                 />
-              </StripeInput>
-            </label>
-          </form>
-          <$.CheckBoxWrapper>
-            <CheckBox
-              id="checkout_remember_me"
-              checked={store.checkout.savePaymentMethod}
-              onChange={() => dispatch({ type: "TOGGLE_SAVE_PAYMENT_METHOD" })}
-            />
-            <label htmlFor="checkout_remember_me">
-              Save this card for next time
-            </label>
-          </$.CheckBoxWrapper>
+              )}
+              <label>
+                <$.LabelText>Card details</$.LabelText>
+                <StripeInput focus={focus} error={error}>
+                  <CardElement
+                    options={options}
+                    onReady={() => {
+                      setLoaded(true);
+                    }}
+                    onChange={({ complete, error }) => {
+                      setInputState((prevState) => ({
+                        ...prevState,
+                        complete,
+                        error,
+                      }));
+                    }}
+                    onBlur={() => {
+                      setInputState((prevState) => ({
+                        ...prevState,
+                        focus: false,
+                      }));
+                    }}
+                    onFocus={() =>
+                      setInputState((prevState) => ({
+                        ...prevState,
+                        focus: true,
+                      }))
+                    }
+                  />
+                </StripeInput>
+              </label>
+            </form>
+
+            <$.CheckBoxWrapper>
+              <CheckBox
+                id="checkout_remember_me"
+                checked={store.checkout.savePaymentMethod}
+                onChange={() =>
+                  dispatch({ type: "TOGGLE_SAVE_PAYMENT_METHOD" })
+                }
+              />
+              <label htmlFor="checkout_remember_me">
+                Save this card for next time
+              </label>
+            </$.CheckBoxWrapper>
+          </PaymentMethods>
           {stripeError && <$.Error>{stripeError}</$.Error>}
         </$.Payment>
         <BillingAddress
@@ -287,7 +295,7 @@ const Payment = ({ products }) => {
         toPay={handleSubmit}
         processing={processing}
         stripeLoaded={
-          loaded &&
+          (store.checkout.paymentMethod === "another" ? loaded : true) &&
           store.checkout.clientSecret &&
           !!store.checkout.selectedShipping.price
         }

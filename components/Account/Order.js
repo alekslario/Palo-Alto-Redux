@@ -170,6 +170,7 @@ const OrderProduct = ({ contentId, productId, quantity, price }) => {
   );
 };
 
+const tableFields = ["Order", "Order placed", "Total", "Status", "Deliver to"];
 const Order = ({
   order: {
     _id,
@@ -182,45 +183,55 @@ const Order = ({
     shipping: { name, ...rest } = {},
   },
 }) => {
-  return (
-    <$.Wrapper>
-      <div>
-        <span>ORDER </span># {_id}
-      </div>
-      <div>
-        <span>ORDER PLACED </span>
-
-        {new Date(createdAt).toLocaleDateString("en-US", {
+  const orderContent = (field) => {
+    switch (field) {
+      case "Order":
+        return `# ${_id}`;
+      case "Order placed":
+        return `${new Date(createdAt).toLocaleDateString("en-US", {
           day: "numeric",
           month: "long",
           year: "numeric",
-        })}
-      </div>
-      <div>
-        <span>TOTAL </span>
-        {formatMoney(total)}
-      </div>
-      <div
-        css={`
-          text-transform: uppercase;
-        `}
-      >
-        <span>STATUS </span>
-        {status}
-      </div>
-      <div>
-        <span>DELIVER TO </span>
-        <$.Name
-          data-shipment={Object.values(rest)
-            .filter((x) => x)
-            .join(", ")}
-        >
-          {name}
-        </$.Name>
-      </div>
+        })}`;
+      case "Total":
+        return `${formatMoney(total)}`;
+      case "Status":
+        return `${status.toUpperCase()}`;
+      case "Deliver to":
+        return (
+          <span>
+            <$.Name
+              data-shipment={Object.values(rest)
+                .filter((x) => x)
+                .join(", ")}
+            >
+              {name}
+            </$.Name>
+          </span>
+        );
+    }
+  };
+  return (
+    <$.Wrapper>
+      {tableFields.map((el, index) => (
+        <$.TableRow index={index} key={index}>
+          <$.TableColumn>
+            <$.FieldName
+              css={`
+                min-width: 150px;
+              `}
+            >
+              {el}
+            </$.FieldName>
+            <$.Record>{orderContent(el)}</$.Record>
+          </$.TableColumn>
+        </$.TableRow>
+      ))}
+
       <div
         css={`
           margin-top: 15px;
+          white-space: normal;
         `}
       >
         {products.map((product, index) => (

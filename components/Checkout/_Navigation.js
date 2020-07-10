@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import {
   Row,
   Column,
@@ -34,7 +34,7 @@ const ButtonBack = styled.button`
     padding-top: 0;
   }
 `;
-const ButtonForth = styled.button`
+export const ButtonForth = styled.button`
   background-color: ${({ theme }) => theme.checkout.colors.attention};
   background-clip: border-box;
   border: 1px transparent solid;
@@ -54,9 +54,17 @@ const ButtonForth = styled.button`
     width: initial;
     padding: 1.4em 1.7em;
   }
+  ${({ isLoading }) =>
+    isLoading
+      ? css`
+          ${loadingPlaceHolderCss}
+          color: #00000000;
+          cursor: wait;
+        `
+      : ""};
   &:disabled {
-    ${loadingPlaceHolderCss}
-    color: #00000000;
+    background-color: ${({ theme }) => theme.colors.delta};
+    cursor: not-allowed;
   }
 `;
 export default {

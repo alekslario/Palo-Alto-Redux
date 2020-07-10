@@ -6,29 +6,11 @@ import { useStore } from "../../utils/contextStore";
 const Row = ({ label, text, index }) => {
   const [_, dispatch] = useStore();
   return (
-    <$.Row
-      css={`
-        ${index > 0
-          ? css`
-              margin-top: 0.85714em;
-              padding-top: 0.85714em;
-              border-top: 1px solid
-                ${({ theme }) => theme.checkout.sideColors.gamma};
-            `
-          : ""}
-      `}
-    >
-      <$.Column
-        css={`
-          flex: 1;
-          @media (min-width: 750px) {
-            flex-direction: row;
-          }
-        `}
-      >
+    <$.TableRow index={index}>
+      <$.TableColumn>
         <$.FieldName>{label}</$.FieldName>
         <$.Record>{text}</$.Record>
-      </$.Column>
+      </$.TableColumn>
       {index < 2 && (
         <$.Action>
           <button
@@ -40,7 +22,7 @@ const Row = ({ label, text, index }) => {
           </button>
         </$.Action>
       )}
-    </$.Row>
+    </$.TableRow>
   );
 };
 const Table = ({ details, shipping }) => {

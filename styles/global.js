@@ -9,19 +9,25 @@ export default createGlobalStyle`
       height: 100%;
       width:100%;
   }
+
   .swiper-container, .swiper-wrapper {
     width:100%;
   }
+  html{
+    overflow-x: hidden;
+  }
+
   #__next{
     position:relative;
   }
   body {
+    overflow-y: scroll;
+    overflow-x: hidden;
     font-size: 14px;
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.alpha};
     font-family: ${({ theme }) => theme.font_family.primary};
-    font-weight: 400;
-    overflow-x: hidden;   
+    font-weight: 400;   
     background-color: ${({ theme }) => theme.colors.primary};
     -webkit-font-smoothing: antialiased;
   }

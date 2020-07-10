@@ -7,6 +7,7 @@ import CheckBox from "../Checkout/CheckBox";
 import contactServer from "../../utils/contactServer";
 import cookie from "js-cookie";
 import { useStore } from "../../utils/contextStore";
+import { css } from "styled-components";
 
 const defaultAddress = {
   _id: "",
@@ -20,6 +21,19 @@ const defaultAddress = {
   province: { value: "", error: "" },
   phone: { value: "", error: "" },
 };
+
+export const blackCheckBoxStyle = css`
+  &:focus-within {
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.alpha};
+  }
+  &:focus-within input {
+    border: 2px solid ${({ theme }) => theme.checkout.colors.secondary};
+  }
+  input[type="checkbox"]:checked + div {
+    box-shadow: 0 0 0 10px ${({ theme }) => theme.checkout.colors.secondary}
+      inset;
+  }
+`;
 
 const AddressForm = ({
   handleDismiss,
@@ -122,8 +136,7 @@ const AddressForm = ({
         <CheckBox
           id="as_default_address"
           ref={setDefault}
-          color="#000"
-          shadow="#666"
+          style={blackCheckBoxStyle}
         />{" "}
         <label htmlFor="as_default_address">Set as default address</label>
       </$.Row>

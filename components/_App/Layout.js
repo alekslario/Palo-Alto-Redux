@@ -13,7 +13,6 @@ import contactServer from "../../utils/contactServer";
 import { useRouter } from "next/router";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import smoothScroll from "../../utils/smoothScroll";
 const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY);
 
 const Layout = ({ children, user }) => {
@@ -66,7 +65,7 @@ const Layout = ({ children, user }) => {
   }, [store.cartOpen, store.menuOpen]);
 
   useEffect(() => {
-    router.events.on("routeChangeComplete", () => window.scrollTo(0, 0));
+    router.events.on("routeChangeComplete", () => document.body.scrollTo(0, 0));
     return () => router.events.off("routeChangeComplete", handler);
   }, []);
 

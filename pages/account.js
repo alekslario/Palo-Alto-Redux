@@ -97,13 +97,11 @@ function Account({ user, cart, orders = [], totalOrderNumber }) {
 
   const handleManageAddress = () => {
     setAddressOverview((prev) => !prev);
-    const node = document.getElementById("menu");
-    smoothScroll(node);
+    smoothScroll({ scrollParent: document.body });
   };
   const handleManageCards = () => {
     setCardsOverview((prev) => !prev);
-    const node = document.getElementById("menu");
-    smoothScroll(node);
+    smoothScroll({ scrollParent: document.body });
   };
 
   return (

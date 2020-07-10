@@ -39,16 +39,16 @@ const Home = () => {
     return () => io_observer.unobserve(target);
   }, []);
 
-  useEffect(() => {
-    async function getPics() {
-      const url =
-        "https://api.instagram.com/v1/users/self/media/recent/?access_token=2610950468.48132c5.6d6d2912a3a94a87a107236920f02063&count=12";
-      return await axios.get(url);
-    }
-    // return response data as an object
-    const response = getPics();
-    setInstagram(response.data);
-  }, []);
+  // useEffect(() => {
+  //   async function getPics() {
+  //     const url =
+  //       "https://api.instagram.com/v1/users/self/media/recent/?access_token=2610950468.48132c5.6d6d2912a3a94a87a107236920f02063&count=12";
+  //     return await axios.get(url);
+  //   }
+  //   // return response data as an object
+  //   const response = getPics();
+  //   setInstagram(response.data);
+  // }, []);
 
   return (
     <>

@@ -109,17 +109,33 @@ function Account({ user, cart, orders = [], totalOrderNumber }) {
       {!addressOverview && !cardsOverview && (
         <>
           <div>
-            <$.Row>
+            <$.Column
+              css={`
+                @media (min-width: 768px) {
+                  flex-direction: row;
+                }
+              `}
+            >
               <$.Title>My Account</$.Title>
               <$.Row
                 css={`
                   justify-content: space-between;
                   width: 100%;
+                  flex-wrap: wrap;
+                  button {
+                    margin-bottom: 25px;
+                  }
+                  @media (min-width: 768px) {
+                    button {
+                      margin-bottom: 0;
+                    }
+                  }
                 `}
               >
                 <button
                   css={`
                     color: ${({ theme }) => theme.colors.secondary};
+                    margin-right: 50px;
                   `}
                   onClick={() => dispatch({ type: "LOGOUT" })}
                 >
@@ -127,16 +143,19 @@ function Account({ user, cart, orders = [], totalOrderNumber }) {
                 </button>
                 <DeleteAccount />
               </$.Row>
-            </$.Row>
+            </$.Column>
           </div>
 
           <hr
             css={`
-              margin: 25px 0;
+              margin: 0 0 25px 0;
               clear: both;
               border-top: solid #d3d3d3;
               border-width: 2px 0 0;
               height: 0;
+              @media (min-width: 768px) {
+                margin: 25px 0;
+              }
             `}
           />
           <$.Row

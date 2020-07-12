@@ -4,7 +4,8 @@ import {
   textCenter,
   title,
   flexCenter,
-  IconButton
+  IconButton,
+  Row,
 } from "../../styles/reusable";
 
 const fadeIn = keyframes`
@@ -63,7 +64,8 @@ const Wrapper = styled.div`
   animation: ${fadeIn} 0.3s forwards;
 `;
 
-const Links = styled.div`
+const Links = styled(Row)`
+  flex-wrap: wrap;
   & a,
   span {
     color: ${({ theme }) => theme.colors.secondary};

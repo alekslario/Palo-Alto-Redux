@@ -122,9 +122,6 @@ const CardsList = ({ handleReturn }) => {
                 <$.TableRow
                   css={`
                     align-items: center;
-                    & span {
-                      white-space: nowrap;
-                    }
                   `}
                 >
                   <CheckBox

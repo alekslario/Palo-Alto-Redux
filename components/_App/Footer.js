@@ -18,13 +18,17 @@ const Footer = () => (
           <Link href="/">
             <a>Home</a>
           </Link>
-          <Link href="/Search">
-            <a>Search</a>
+          <Link href="contact">
+            <a>Contact</a>
           </Link>
-          <Link href="/About">
+          <button onClick={() => document.getElementById("search").click()}>
+            Search
+          </button>
+
+          <Link href="/about">
             <a>About</a>
           </Link>
-          <Link href="/Blog">
+          <Link href="/blog/news">
             <a>Blog</a>
           </Link>
         </LinksAccordion>

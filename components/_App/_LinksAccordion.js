@@ -12,9 +12,14 @@ const List = styled.div`
     collapsed ? "0" : `${maxheight}px`};
   overflow: hidden;
   transition: max-height 0.2s ease-out;
-  a {
+  a,
+  button {
     margin-bottom: 9px;
     color: ${({ theme }) => theme.colors.gamma};
+    text-align: start;
+  }
+  button:hover {
+    opacity: 1;
   }
   & > ul,
   p:last-child {

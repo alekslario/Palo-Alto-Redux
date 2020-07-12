@@ -89,7 +89,7 @@ const reducer = (state, action) => {
         state.cart[action.productId].quantity + action.modifier === 0
       ) {
         delete state.cart[action.productId];
-        return { ...state };
+        return { ...state, cart: { ...state.cart } };
       }
       return {
         ...state,
@@ -104,8 +104,10 @@ const reducer = (state, action) => {
       };
     case "REMOVE_FROM_CART":
       delete state.cart[action.productId];
+
       return {
         ...state,
+        cart: { ...state.cart },
       };
     case "ADD_TO_CACHE":
       return {

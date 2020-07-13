@@ -19,7 +19,8 @@ const MainHeader = styled.h1`
     margin: 0 0 24px 0;
     padding-bottom: 0;
   }
-  @media (max-width: 481px) {
+  @media (max-width: 767px) {
+    text-align: center;
   }
 `;
 
@@ -120,6 +121,10 @@ const TableRow = styled(Row)`
       position: absolute;
       left: 0;
     }
+  }
+  @media (max-width: 767px) {
+    width: fit-content;
+    margin: 0 auto;
   }
 `;
 

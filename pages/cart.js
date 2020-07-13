@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import $ from "../components/Cart/_Cart";
 import { useStore } from "../utils/contextStore";
 import { useRouter } from "next/router";
@@ -14,6 +14,13 @@ import calculateCartTotal from "../utils/calculateCartTotal";
 const Cart = () => {
   const [store, dispatch] = useStore();
   const [products, loading, timestamp] = useDeliverCart();
+  //since the page is not server rendered when need this trick
+  //to prevent it showing EMPTY CART on first load while redux store is empty
+  const [delayedLoader, showDelayedLoader] = useState(true);
+  useEffect(() => {
+    const loadingHandler = setTimeout(() => showDelayedLoader(false), 2000);
+    return () => clearTimeout(loadingHandler);
+  }, []);
   const router = useRouter();
 
   const handleDelete = (productId) =>
@@ -32,7 +39,7 @@ const Cart = () => {
 
   return (
     <$.PageWrapper>
-      {loading && products.length === 0 && (
+      {((delayedLoader && Object.keys(store.cart).length === 0) || loading) && (
         <div
           css={`
             display: flex;
@@ -45,7 +52,7 @@ const Cart = () => {
           <LoaderIcon fill="#000" />
         </div>
       )}
-      {!loading && products.length === 0 && (
+      {!delayedLoader && Object.keys(store.cart).length === 0 && (
         <$.Column
           css={`
             display: flex;
@@ -184,9 +191,7 @@ const Cart = () => {
           )}
           <$.Column
             css={`
-              @media (min-width: 768px) {
-                align-items: center;
-              }
+              align-items: center;
             `}
           >
             <p

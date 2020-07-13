@@ -7,7 +7,7 @@ import Logo from "../Icons/Logo";
 import AccountIcon from "../Icons/Account";
 import Search from "./Search";
 import { useStore } from "../../utils/contextStore";
-import { handleLogout } from "../../utils/auth";
+
 import $ from "./_Menu";
 const Menu = ({ user }) => {
   const { pathname } = useRouter();

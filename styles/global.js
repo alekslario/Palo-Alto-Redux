@@ -21,8 +21,6 @@ export default createGlobalStyle`
     position:relative;
   }
   body {
-    overflow-y: scroll;
-    overflow-x: hidden;
     font-size: 14px;
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.alpha};

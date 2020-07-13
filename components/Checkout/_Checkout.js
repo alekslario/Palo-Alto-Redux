@@ -31,6 +31,7 @@ const ContentMobileOnly = styled.div`
 `;
 
 const Content = styled.div`
+  overflow: hidden;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -113,5 +114,5 @@ export default {
   Main,
   Footer,
   contentCss,
-  H2
+  H2,
 };

@@ -102,6 +102,7 @@ const overlay = css`
 `;
 
 const HeroTextBlock = styled.div`
+  z-index: 1;
   width: 100%;
   color: ${({ theme }) => theme.colors.primary};
   ${absoluteCenter};

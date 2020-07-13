@@ -54,7 +54,7 @@ const Wrapper = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.colors.primary};
   overflow-y: auto;
-  z-index: 100;
+  z-index: 999999999;
   top: 0;
   padding: 72px 50px 50px 50px;
   ${flexCenter}

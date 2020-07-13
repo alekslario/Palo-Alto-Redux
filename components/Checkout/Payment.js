@@ -158,29 +158,32 @@ const Payment = ({ products }) => {
       } = store.checkout;
       const shippingDays = selectedShipping.time.match(/\d+/g);
       const boughtItems = products.map((ele) => ele.name).join(", ");
-      await router.push({
-        pathname: "/thankyou",
-        query: {
-          orderId,
-          name: `${name.value} ${surname.value}`,
-          email: email.value,
-          boughtItems:
-            boughtItems.length > 30
-              ? boughtItems.substring(0, 26) + " ..."
-              : boughtItems,
-          shippingAddress: Object.values(rest)
-            .map((ele) => ele.value)
-            .filter((x) => x)
-            .join(", "),
-          delivery_date:
-            Date.now() +
-            1000 *
-              60 *
-              60 *
-              24 *
-              Math.max(...(shippingDays ? shippingDays : [1])),
+      await router.push(
+        {
+          pathname: "/thankyou",
+          query: {
+            orderId,
+            name: `${name.value} ${surname.value}`,
+            email: email.value,
+            boughtItems:
+              boughtItems.length > 30
+                ? boughtItems.substring(0, 26) + " ..."
+                : boughtItems,
+            shippingAddress: Object.values(rest)
+              .map((ele) => ele.value)
+              .filter((x) => x)
+              .join(", "),
+            delivery_date:
+              Date.now() +
+              1000 *
+                60 *
+                60 *
+                24 *
+                Math.max(...(shippingDays ? shippingDays : [1])),
+          },
         },
-      });
+        "/thankyou"
+      );
       dispatch({
         type: "WIPE_CHECKOUT",
         user,

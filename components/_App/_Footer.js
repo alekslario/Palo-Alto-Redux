@@ -41,7 +41,8 @@ const SocialIcons = styled.div`
   font-size: 25px;
   color: ${({ theme }) => theme.colors.secondary};
   ${textStart};
-  svg {
+  a {
+    color: ${({ theme }) => theme.colors.secondary};
     display: inline-block;
     margin: 0 8px;
     &:first-child {
@@ -50,6 +51,9 @@ const SocialIcons = styled.div`
     &:last-child {
       margin-right: 0;
     }
+  }
+  svg {
+    pointer-events: none;
   }
   @media (min-width: 768px) {
     ${textCenter};
@@ -100,5 +104,5 @@ export default {
   Copyright,
   PaymentIcons,
   Column,
-  About
+  About,
 };

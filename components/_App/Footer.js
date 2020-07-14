@@ -48,10 +48,26 @@ const Footer = () => (
     </$.Grid>
     <$.Bottom>
       <$.SocialIcons>
-        <FontAwesomeIcon icon={["fab", "facebook-square"]} />
-        <FontAwesomeIcon icon={["fab", "twitter"]} />
-        <FontAwesomeIcon icon={["fab", "pinterest"]} />
-        <FontAwesomeIcon icon={["fab", "instagram"]} />
+        <Link href="/">
+          <a>
+            <FontAwesomeIcon icon={["fab", "facebook-square"]} />
+          </a>
+        </Link>
+        <Link href="/">
+          <a>
+            <FontAwesomeIcon icon={["fab", "twitter"]} />
+          </a>
+        </Link>
+        <Link href="/">
+          <a>
+            <FontAwesomeIcon icon={["fab", "pinterest"]} />
+          </a>
+        </Link>
+        <Link href="/">
+          <a>
+            <FontAwesomeIcon icon={["fab", "instagram"]} />
+          </a>
+        </Link>
       </$.SocialIcons>
       <$.Copyright>
         © 2020,{" "}

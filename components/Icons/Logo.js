@@ -5,6 +5,7 @@ const Logo = React.memo(({ sizes = "30px" }) => (
       css={`
         width: ${sizes};
         cursor: pointer;
+        display: block;
         img {
           display: block;
           width: 100%;

@@ -1,13 +1,11 @@
 import React from "react";
 import Link from "next/link";
 import createContentfulSrc from "../../utils/createContentfulSrc";
-import { useStore } from "../../utils/contextStore";
 import $ from "./_Product";
 import Image from "../_App/Image";
 const Product = React.forwardRef(({ product }, ref) => {
   // styles[0].fields.reducedPrice
   // styles[0].fields.reducedPriceExpiration
-  const [_, dispatch] = useStore();
 
   const {
     sys: { id },
@@ -19,12 +17,10 @@ const Product = React.forwardRef(({ product }, ref) => {
       ? styles[1].fields.images[0].fields.file.url
       : styles[0].fields.images[1].fields.file.url,
   ];
-
-  const saveProduct = () => dispatch({ type: "ADD_PRODUCT", product });
   //fix link down //todo
   return (
     <Link href={"/products/[id]"} as={`/products/${id}`}>
-      <a onClick={saveProduct} ref={ref}>
+      <a ref={ref}>
         <$.Wrapper>
           <div
             className="lazyload blur-up"

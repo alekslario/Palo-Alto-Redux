@@ -13,14 +13,14 @@ const Products = ({
   limitProducts,
   suggestID,
   padding,
-  inputDependency
+  inputDependency,
 }) => {
   const [store] = useStore();
-  const limitDefault = limitProducts || 4;
+  const limitDefault = limitProducts || 20;
   const contentHeight = useRef(null);
   const [{ limit, skip }, setLimits] = useState({
     limit: limitDefault,
-    skip: 0
+    skip: 0,
   });
   const [fetchedProducts, setFetchedProducts] = useState([]);
   const [showNotFound, setShowNotFound] = useState(false);
@@ -33,8 +33,8 @@ const Products = ({
   const checkedFilters = useMemo(() => {
     return filterOn
       ? Object.keys(store.filter[gender])
-          .map(ele => (store.filter[gender][ele] ? ele.toLowerCase() : ""))
-          .filter(ele => ele)
+          .map((ele) => (store.filter[gender][ele] ? ele.toLowerCase() : ""))
+          .filter((ele) => ele)
           .join(",")
       : "";
   }, [store.filter[gender]]);
@@ -44,7 +44,7 @@ const Products = ({
     ...(gender ? { "fields.type": gender } : {}),
     ...(inputDependency
       ? {
-          "fields.name[match]": inputDependency[0]
+          "fields.name[match]": inputDependency[0],
         }
       : {}),
     skip,
@@ -52,14 +52,14 @@ const Products = ({
     dependency: [
       skip,
       ...(filterOn ? [store.filter[gender]] : []),
-      ...(inputDependency ? inputDependency : [])
+      ...(inputDependency ? inputDependency : []),
     ],
     content_type: "paloAltoProduct",
-    order: "sys.createdAt"
+    order: "sys.createdAt",
   });
 
   useEffect(() => {
-    setFetchedProducts(prevState => [...prevState, ...products]);
+    setFetchedProducts((prevState) => [...prevState, ...products]);
   }, [products]);
 
   const [observeRef] = useLazyLoading({
@@ -68,7 +68,7 @@ const Products = ({
     limitDefault,
     setLimits,
     disable: limitProducts,
-    scrollingNode: () => document.getElementById("portal") || window
+    scrollingNode: () => document.getElementById("portal") || window,
   });
 
   const [showLoader] = useDelayedLoader(loading);

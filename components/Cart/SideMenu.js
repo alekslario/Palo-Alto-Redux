@@ -71,11 +71,20 @@ const SideMenu = () => {
             </Link>
           </li>
           {store.user ? (
-            <li>
-              <Link href="/account">
-                <a>Account</a>
-              </Link>
-            </li>
+            <>
+              <li>
+                <Link href="/account">
+                  <a>Account</a>
+                </Link>
+              </li>
+              <li>
+                <button
+                  onClick={() => dispatch({ type: "LOGOUT_WITHOUT_REDIRECT" })}
+                >
+                  Log out
+                </button>
+              </li>
+            </>
           ) : (
             <>
               <li>

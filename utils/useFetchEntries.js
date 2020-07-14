@@ -29,7 +29,7 @@ export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
 
     const defaultState = { inStore: [], toQuery: [], makeQuery: true, idQuery };
 
-    if (cacheName && store.cache[cacheName]) {
+    if (!idQuery && cacheName && store.cache[cacheName]) {
       return {
         ...defaultState,
         makeQuery: false,

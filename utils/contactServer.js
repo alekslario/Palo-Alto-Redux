@@ -16,18 +16,20 @@ export default async ({
     switch (method) {
       case "GET":
         response = await axios.get(url, {
-          ...authentication,
+          ...(auth ? authentication : {}),
           params: {
             ...data,
           },
         });
         break;
       case "POST":
-        response = await axios.post(url, data, authentication);
+        response = await (auth
+          ? axios.post(url, data, authentication)
+          : axios.post(url, data));
         break;
       case "DELETE":
         response = await axios.delete(url, {
-          ...authentication,
+          ...(auth ? authentication : {}),
           data,
         });
         break;

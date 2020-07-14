@@ -88,6 +88,7 @@ const ProductSummary = ({ inStock = true }) => {
   );
   // fix buttons without click animation //todo
   const productID = product[0]?.sys?.id;
+  console.log("productID,id", productID, id, product);
 
   return (
     <$.Wrapper>

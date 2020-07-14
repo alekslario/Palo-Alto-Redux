@@ -111,16 +111,18 @@ const Information = () => {
             details={store.checkout.details}
             handleChange={handleChange}
           />
-          <$.CheckBoxWrapper>
-            <CheckBox
-              id="checkout_remember_me"
-              checked={store.checkout.saveShipping}
-              onChange={() => dispatch({ type: "TOGGLE_SAVE_SHIPPING" })}
-            />
-            <label htmlFor="checkout_remember_me">
-              Save this information for next time
-            </label>
-          </$.CheckBoxWrapper>
+          {store.user && (
+            <$.CheckBoxWrapper>
+              <CheckBox
+                id="checkout_remember_me"
+                checked={store.checkout.saveShipping}
+                onChange={() => dispatch({ type: "TOGGLE_SAVE_SHIPPING" })}
+              />
+              <label htmlFor="checkout_remember_me">
+                Save this information for next time
+              </label>
+            </$.CheckBoxWrapper>
+          )}
         </$.ShippingAddress>
       </$.Form>
       <Navigation />

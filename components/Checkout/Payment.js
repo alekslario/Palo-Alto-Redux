@@ -272,19 +272,20 @@ const Payment = ({ products }) => {
                 </StripeInput>
               </label>
             </form>
-
-            <$.CheckBoxWrapper>
-              <CheckBox
-                id="checkout_remember_me"
-                checked={store.checkout.savePaymentMethod}
-                onChange={() =>
-                  dispatch({ type: "TOGGLE_SAVE_PAYMENT_METHOD" })
-                }
-              />
-              <label htmlFor="checkout_remember_me">
-                Save this card for next time
-              </label>
-            </$.CheckBoxWrapper>
+            {store.user && (
+              <$.CheckBoxWrapper>
+                <CheckBox
+                  id="checkout_remember_me"
+                  checked={store.checkout.savePaymentMethod}
+                  onChange={() =>
+                    dispatch({ type: "TOGGLE_SAVE_PAYMENT_METHOD" })
+                  }
+                />
+                <label htmlFor="checkout_remember_me">
+                  Save this card for next time
+                </label>
+              </$.CheckBoxWrapper>
+            )}
           </PaymentMethods>
           {stripeError && <$.Error>{stripeError}</$.Error>}
         </$.Payment>

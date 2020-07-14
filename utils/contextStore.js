@@ -19,6 +19,9 @@ const applyMiddleware = (dispatch, getState) => (action) => {
     case "LOGOUT":
       handleLogout();
       break;
+    case "WIPE_CHECKOUT":
+      window.localStorage.removeItem("cart");
+      break;
   }
   dispatch(action);
 };
@@ -78,7 +81,14 @@ const reducer = (state, action) => {
     case "DELIVER_CART":
       return {
         ...state,
-        cart: action.items,
+        cart: Array.isArray(action.items)
+          ? action.items.reduce(
+              (acc, { productId, quantity, contentId }) => (
+                (acc[productId] = { quantity, contentId }), acc
+              ),
+              {}
+            )
+          : action.items,
         ...(action.user ? { user: action.user } : {}),
       };
 
@@ -253,10 +263,11 @@ const reducer = (state, action) => {
     case "LOGOUT_WITHOUT_REDIRECT":
       return {
         ...state,
-        user: null,
+        cart: {},
         orders: [],
         ordersCache: {},
         totalOrderNumber: 0,
+        user: null,
         checkout: defaultCheckout,
       };
     case "LOGOUT":
@@ -273,7 +284,16 @@ const reducer = (state, action) => {
       return {
         ...state,
         user: action.user,
-        ...(action.cart ? { cart: action.cart } : {}),
+        ...(action.cart
+          ? Array.isArray(action.cart)
+            ? action.cart.reduce(
+                (acc, { productId, quantity, contentId }) => (
+                  (acc[productId] = { quantity, contentId }), acc
+                ),
+                {}
+              )
+            : { cart: action.cart }
+          : {}),
         ...(action.orders ? { orders: action.orders } : {}),
         ...(action.totalOrderNumber
           ? { totalOrderNumber: action.totalOrderNumber }

@@ -65,7 +65,7 @@ const Layout = ({ children, user }) => {
   }, [store.cartOpen, store.menuOpen]);
 
   useEffect(() => {
-    const scrollTo = () => document.body.scrollTo(0, 0);
+    const scrollTo = () => window.scrollTo(0, 0);
     router.events.on("routeChangeComplete", scrollTo);
     return () => router.events.off("routeChangeComplete", scrollTo);
   }, []);

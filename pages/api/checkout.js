@@ -8,10 +8,11 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 export default async (req, res) => {
   const { paymentIntentId, saveEmail = false, cartItems } = req.body;
   const { authorization = null } = req.headers;
+
   try {
     const [paymentIntent, cart] = await Promise.all([
       stripe.paymentIntents.retrieve(paymentIntentId),
-      retrieveCart(authorization),
+      authorization ? retrieveCart(authorization) : {},
     ]);
     const {
       metadata: { shippingCost, ...metadata },
@@ -55,12 +56,12 @@ export default async (req, res) => {
         return acc;
       }, []);
 
-    const { user } = cart;
+    const { user = null } = cart;
 
     const [order] = await Promise.all([
       new Order({
         stripeIntentId: paymentIntentId,
-        user: user ? user._id : "",
+        ...(user ? { user: user._id } : {}),
         email: receipt_email,
         total: amount,
         shippingCost,
@@ -74,8 +75,12 @@ export default async (req, res) => {
         },
         products: productsMetadata,
       }).save(),
-      updateUser(req, user, payment_method, card),
-      updateCart(user, cart, productsMetadata),
+      ...(user
+        ? [
+            updateUser(req, user, payment_method, card),
+            updateCart(user, cart, productsMetadata),
+          ]
+        : []),
     ]);
     const { name, surname, email, stripePaymentMethods, address } = user || {};
 
@@ -101,13 +106,10 @@ export default async (req, res) => {
 };
 
 async function retrieveCart(authorization) {
-  let cart = {};
-  if (authorization) {
-    const { userId } = jwt.verify(authorization, process.env.JWT_SECRET);
-    cart = await Cart.findOne({ user: userId })
-      .populate("cartProducts")
-      .populate("user");
-  }
+  const { userId } = jwt.verify(authorization, process.env.JWT_SECRET);
+  const cart = await Cart.findOne({ user: userId })
+    .populate("cartProducts")
+    .populate("user");
   return cart;
 }
 

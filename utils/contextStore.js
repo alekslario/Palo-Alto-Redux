@@ -53,7 +53,6 @@ const defaultState = {
   menuOpen: false,
   activeModal: null,
   cartOpen: false,
-  product: {},
   filter: {
     men: {
       Jacket: false,
@@ -118,6 +117,7 @@ const reducer = (state, action) => {
             acc[ele.sys.id] = ele;
             return acc;
           }, {}),
+          ...(action.cacheName ? { [action.cacheName]: action.items } : {}),
         },
       };
     case "ADD_FILTER":
@@ -143,9 +143,6 @@ const reducer = (state, action) => {
       return { ...state, filter: defaultState.filter };
     case "SET_ACTIVE_MODAL":
       return { ...state, activeModal: action.id };
-    case "ADD_PRODUCT":
-      return { ...state, product: action.product };
-
     case "OPEN_CART":
       return { ...state, cartOpen: true, menuOpen: false };
     case "CLOSE_SIDEBAR":

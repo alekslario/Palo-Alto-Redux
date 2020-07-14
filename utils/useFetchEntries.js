@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useStore } from "./contextStore";
 const client = require("contentful").createClient({
   space: process.env.CONTENTFUL_SPACE_ID,
@@ -13,11 +13,29 @@ export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
     timeStamp: 0,
   });
 
-  const { inStore, toQuery, idQuery } = useMemo(() => {
+  const cacheName =
+    searchParameters["fields.tags[in]"] ||
+    searchParameters["fields.name[match]"]
+      ? null
+      : searchParameters.content_type +
+        searchParameters["fields.type"] +
+        searchParameters.skip +
+        searchParameters.limit;
+
+  const { inStore, toQuery, makeQuery, idQuery } = useMemo(() => {
     const idQuery =
       typeof searchParameters["sys.id"] === "string" ||
       typeof searchParameters["sys.id[in]"] === "string";
-    const defaultState = { inStore: [], toQuery: [], idQuery };
+
+    const defaultState = { inStore: [], toQuery: [], makeQuery: true, idQuery };
+
+    if (cacheName && store.cache[cacheName]) {
+      return {
+        ...defaultState,
+        makeQuery: false,
+        inStore: store.cache[cacheName],
+      };
+    }
     if (!idQuery) return defaultState;
     const result = (
       searchParameters["sys.id"] || searchParameters["sys.id[in]"]
@@ -32,8 +50,11 @@ export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
         }
         return acc;
       }, defaultState);
-    return result;
-  }, [dependency]);
+
+    return result.toQuery.length === 0
+      ? { ...result, makeQuery: false }
+      : result;
+  }, [...dependency]);
 
   const fetchEntries = async () => {
     const data = await client.getEntries({
@@ -51,8 +72,7 @@ export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
   };
 
   useEffect(() => {
-    if (idQuery && toQuery.length === 0) return;
-
+    if (!makeQuery) return;
     let didCancel = false;
     async function getEntries() {
       const items = await fetchEntries();
@@ -62,7 +82,11 @@ export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
           loading: false,
           timeStamp: Date.now(),
         });
-        dispatch({ type: "ADD_TO_CACHE", items });
+        dispatch({
+          type: "ADD_TO_CACHE",
+          items,
+          ...(cacheName ? { cacheName } : {}),
+        });
       }
     }
     if (!didCancel)
@@ -75,9 +99,5 @@ export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
       didCancel = true;
     };
   }, [...dependency]);
-  return idQuery && toQuery.length === 0
-    ? (searchParameters["sys.id"] || searchParameters["sys.id[in]"]).length > 0
-      ? [inStore, false, 0]
-      : [[], false, 0]
-    : [entries, loading, timeStamp];
+  return makeQuery ? [entries, loading, timeStamp] : [inStore, false, 0];
 };

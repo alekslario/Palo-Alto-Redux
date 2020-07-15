@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import { PortalWithState } from "react-portal";
-import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
+// import {
+//   disablePageScroll,
+//   enablePageScroll,
+//   addFillGapTarget,
+//   addFillGapSelector,
+// } from "scroll-lock";
+import {
+  disableBodyScroll,
+  clearAllBodyScrollLocks,
+} from "../../utils/page-scroll-disable";
 import Router from "next/router";
 import Link from "next/link";
 import SearchIcon from "../Icons/Search";
@@ -14,13 +23,22 @@ const Modal = ({ closePortal }) => {
   const [store, dispatch] = useStore();
   const [debouncedInput, setDebouncedInput] = useState(input);
 
-  useEffect(() => {
-    const body = document.querySelector("body");
-    disableBodyScroll(body, {
-      reserveScrollBarGap: true,
-    });
-    return () => clearAllBodyScrollLocks();
-  }, []);
+  // useEffect(() => {
+  //   const html = document.querySelector("html");
+  //   disablePageScroll(html);
+  //   return () => {
+  //     // html.style.paddingRight = "0";
+  //     // html.style.overflow = "auto";
+  //     enablePageScroll(html);
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   disableBodyScroll(document.body, {
+  //     reserveScrollBarGap: true,
+  //   });
+  //   return () => clearAllBodyScrollLocks();
+  // }, []);
 
   useEffect(() => {
     Router.events.on("routeChangeComplete", closePortal);

@@ -65,7 +65,7 @@ const Layout = ({ children, user }) => {
   }, [store.cartOpen, store.menuOpen]);
 
   useEffect(() => {
-    const scrollTo = () => window.scrollTo(0, 0);
+    const scrollTo = () => document.body.scrollTo(0, 0);
     router.events.on("routeChangeComplete", scrollTo);
     return () => router.events.off("routeChangeComplete", scrollTo);
   }, []);
@@ -94,7 +94,7 @@ const Layout = ({ children, user }) => {
                 width: 100%;
                 position: relative;
                 ${store.menuOpen || store.cartOpen
-                  ? "transform: translateX(-300px);"
+                  ? `transform: translateX(-300px);`
                   : ""}
                 transition: transform 0.4s cubic-bezier(0.46, 0.01, 0.32, 1);
               `}

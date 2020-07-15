@@ -7,7 +7,7 @@ import Logo from "../Icons/Logo";
 import AccountIcon from "../Icons/Account";
 import Search from "./Search";
 import { useStore } from "../../utils/contextStore";
-
+// style={{ position: pathname === "/" ? "fixed" : "absolute" }}
 import $ from "./_Menu";
 const Menu = ({ user }) => {
   const { pathname } = useRouter();

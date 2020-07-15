@@ -2,8 +2,8 @@ import React from "react";
 import CustomSwiper from "react-id-swiper/lib/ReactIdSwiper.custom";
 import { Swiper, Navigation, Pagination } from "swiper/js/swiper.esm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import PlayIcon from "../Icons/Play";
 import $ from "./_Carousel";
+// import Video from "./Video";
 const params = {
   Swiper,
   modules: [Navigation, Pagination],
@@ -12,12 +12,12 @@ const params = {
   loop: true,
   pagination: {
     el: ".swiper-pagination",
-    clickable: true
+    clickable: true,
   },
   navigation: {
     nextEl: ".swiper-button-next",
-    prevEl: ".swiper-button-prev"
-  }
+    prevEl: ".swiper-button-prev",
+  },
 };
 
 const Carousel = () => {
@@ -38,10 +38,7 @@ const Carousel = () => {
             <h2>Premium outdoorwear with a modern twist</h2>
             <$.CallToAction>
               <button>SHOP NOW</button>
-              <div>
-                <PlayIcon />
-                <span>WATCH THE VIDEO</span>
-              </div>
+              {/* <Video /> */}
             </$.CallToAction>
           </$.HeroTextBlock>
         </$.Wrapper>

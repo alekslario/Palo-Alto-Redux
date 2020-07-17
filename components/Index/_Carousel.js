@@ -37,6 +37,17 @@ const CallToAction = styled.div`
       margin: 0;
     }
   }
+  #play_video {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    padding: 0;
+    justify-content: center;
+    margin-top: 20px;
+    @media (min-width: 481px) {
+      margin-top: 0;
+    }
+  }
 `;
 
 export default { Wrapper, HeroTextBlock, CallToAction };

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Row, Column, IconButton } from "../../styles/reusable";
 
 const SideMenuCart = styled(Column)`
+  will-change: transform;
   height: 100%;
   width: 300px;
   background: ${({ theme }) => theme.colors.primary};

@@ -23,22 +23,6 @@ const Home = () => {
     }
   }, []);
 
-  //sticky menu
-  useEffect(() => {
-    const target = document.querySelector("#header-observer");
-    const menu = document.querySelector("#menu");
-    const io_callback = (entries) => {
-      if (!entries[0].isIntersecting) {
-        menu.classList.add("scrolled-menu");
-      } else {
-        menu.classList.remove("scrolled-menu");
-      }
-    };
-    const io_observer = new IntersectionObserver(io_callback);
-    io_observer.observe(target);
-    return () => io_observer.unobserve(target);
-  }, []);
-
   // useEffect(() => {
   //   async function getPics() {
   //     const url =

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import {
   inlineFlexCenter,
   textCenter,
@@ -41,6 +41,9 @@ const MobileLinks = styled(Wrapper)`
 
 const Menu = styled.div`
   position: ${({ position }) => position};
+  transform: ${({ transform }) => transform};
+  transition: transform 0.4s cubic-bezier(0.46, 0.01, 0.32, 1);
+  will-change: transform;
   width: 100%;
   display: flex;
   direction: row;
@@ -60,6 +63,33 @@ const Menu = styled.div`
       display: none;
     }
   }
+  ${({ scrolled }) =>
+    scrolled
+      ? css`
+          box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28);
+          background-color: ${({ theme }) => theme.colors.primary};
+          color: ${({ theme }) => theme.colors.secondary};
+          a {
+            color: ${({ theme }) => theme.colors.secondary};
+          }
+          button {
+            color: ${({ theme }) => theme.colors.secondary};
+          }
+          .searchSvg {
+            stroke: ${({ theme }) => theme.colors.secondary};
+          }
+          .bagSvg {
+            fill: ${({ theme }) => theme.colors.secondary};
+          }
+          #account-svg {
+            fill: ${({ theme, loggedIn }) =>
+              loggedIn ? theme.colors.secondary : "none"};
+          }
+          #account-svg-g {
+            stroke: ${({ theme }) => theme.colors.secondary};
+          }
+        `
+      : ""};
 `;
 
 const CartButton = styled.button`

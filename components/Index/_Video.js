@@ -4,7 +4,8 @@ import {
   textCenter,
   title,
   flexCenter,
-  IconButton,
+  Column,
+  IconButton as DefaultIconButton,
   Row,
 } from "../../styles/reusable";
 
@@ -18,33 +19,46 @@ const fadeIn = keyframes`
   }
 `;
 
-const Nav = styled.div`
-  ${inlineFlexCenter}
+const IconButton = styled(DefaultIconButton)`
+  position: absolute;
+  z-index: 999;
+  background-color: #272424;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 7px;
+  width: 17px;
+  height: 17px;
+  top: 8px;
+  right: 8px;
+  border: 5px solid #272424;
+  box-sizing: content-box;
+  svg {
+    fill: #fff;
+  }
+  &:hover {
+    opacity: 1;
+    background-color: #484343;
+    border: 5px solid #484343;
+  }
+`;
+const Wrapper = styled(Column)`
+  overscroll-behavior: contain;
   position: fixed;
+  width: 100%;
+  height: 100%;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 72px;
-  padding: 28px 67px 0 0;
-  z-index: 2;
-  justify-content: flex-end;
-  background-color: white;
-`;
-
-const Wrapper = styled.div`
-  position: fixed;
-  height: 100vh;
-  width: 100%;
-  background-color: ${({ theme }) => theme.colors.primary};
-  overflow-y: auto;
-  z-index: 999999999;
-  top: 0;
-  padding: 72px 50px 50px 50px;
-  ${flexCenter}
-  justify-content:flex-start;
-  flex-direction: column;
-  overflow-y: scroll;
+  background-color: #00000040;
+  z-index: 1000;
+  justify-content: center;
   animation: ${fadeIn} 0.3s forwards;
 `;
 
-export default { IconButton, Wrapper, Nav };
+const VideoContainer = styled.div`
+  position: relative;
+  margin: 0 auto;
+  width: 80%;
+  max-width: 1000px;
+`;
+
+export default { IconButton, Wrapper, VideoContainer };

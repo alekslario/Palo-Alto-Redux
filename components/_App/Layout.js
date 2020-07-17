@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import cookie from "js-cookie";
 import Head from "next/head";
 import Menu from "./Menu";
@@ -88,19 +88,19 @@ const Layout = ({ children, user }) => {
               flex-direction: row;
             `}
           >
+            <Menu user={user} />
             <div
               css={`
                 height: 100%;
                 width: 100%;
                 position: relative;
+                will-change: transform;
                 ${store.menuOpen || store.cartOpen
                   ? `transform: translateX(-300px);`
                   : ""}
                 transition: transform 0.4s cubic-bezier(0.46, 0.01, 0.32, 1);
               `}
             >
-              <Menu user={user} />
-              <div id="header-observer" />
               <div id="main" role="main">
                 {children}
               </div>

@@ -100,28 +100,4 @@ export default createGlobalStyle`
     display:none;
   
   }
-
-  .scrolled-menu{
-    background-color:${({ theme }) => theme.colors.primary};
-    color: ${({ theme }) => theme.colors.secondary};
-    a{
-      color: ${({ theme }) => theme.colors.secondary};
-    }
-    button{
-      color:${({ theme }) => theme.colors.secondary};
-    }
-    .searchSvg{
-      stroke:${({ theme }) => theme.colors.secondary};
-    }
-    .bagSvg{
-      fill:${({ theme }) => theme.colors.secondary};
-    }
-    #account-svg{
-      fill:${({ theme, loggedIn }) =>
-        loggedIn ? theme.colors.secondary : "none"};
-    }
-    #account-svg-g{
-      stroke:${({ theme }) => theme.colors.secondary};
-    }
-  }
 `;

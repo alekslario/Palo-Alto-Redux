@@ -49,6 +49,7 @@ const InputWrapper = styled.div`
   margin-bottom:35px;
 `;
 const Wrapper = styled.div`
+  overscroll-behavior: contain;
   position: fixed;
   height: 100vh;
   width: 100%;

@@ -2,8 +2,9 @@ import React from "react";
 import CustomSwiper from "react-id-swiper/lib/ReactIdSwiper.custom";
 import { Swiper, Navigation, Pagination } from "swiper/js/swiper.esm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import PlayIcon from "../Icons/Play";
 import $ from "./_Carousel";
-// import Video from "./Video";
+import Video from "./Video";
 const params = {
   Swiper,
   modules: [Navigation, Pagination],
@@ -38,7 +39,7 @@ const Carousel = () => {
             <h2>Premium outdoorwear with a modern twist</h2>
             <$.CallToAction>
               <button>SHOP NOW</button>
-              {/* <Video /> */}
+              <Video />
             </$.CallToAction>
           </$.HeroTextBlock>
         </$.Wrapper>

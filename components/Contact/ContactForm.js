@@ -2,20 +2,30 @@ import { useState } from "react";
 import contactServer from "../../utils/contactServer";
 import $ from "./_ContactForm";
 import Input from "../_App/Input";
+import HoneyPot, { useHoneyRef } from "../_App/HoneyPot";
 
 const ContactForm = () => {
   const [{ name, email, message }, setState] = useState({
     name: "",
     email: "",
-    message: ""
+    message: "",
   });
+  const [honeyRef, isBot] = useHoneyRef();
   const [status, setStatus] = useState("");
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    contactServer({
+
+    if (isBot()) {
+      return setStatus({
+        text: "Message sent successfully.",
+        status: "200",
+      });
+    }
+
+    await contactServer({
       data: { name, email, message },
       route: "contact",
-      setStatus
+      setStatus,
     });
   };
 
@@ -23,15 +33,15 @@ const ContactForm = () => {
     let accepted = false;
     switch (name) {
       case "name":
-        accepted = /^[a-zA-Z0-9_\-]{0,45}$/gi.test(value);
+        accepted = /^[a-zA-Z0-9_\s\-]{0,45}$/gi.test(value);
         break;
       case "email":
         accepted = /^[a-zA-Z0-9@\.\-_]{0,75}$/gi.test(value);
         break;
       case "message":
-        accepted = /^.{0,300}$/gi.test(value);
+        accepted = /^[a-zA-Z0-9_\s\-\.,!?]{0,300}$/gi.test(value);
     }
-    if (accepted) setState(prevState => ({ ...prevState, [name]: value }));
+    if (accepted) setState((prevState) => ({ ...prevState, [name]: value }));
   };
   return (
     <$.PageWrapper>
@@ -51,6 +61,7 @@ const ContactForm = () => {
               placeholder="Name"
               id="contactAuthor"
               name="name"
+              autoComplete="given-name"
               value={name}
               onChange={handleChange}
               labelText="Name"
@@ -58,12 +69,13 @@ const ContactForm = () => {
             <Input
               id="contactEmail"
               name="email"
+              autoComplete="email"
               placeholder="Email"
               value={email}
               onChange={handleChange}
               labelText="Email"
             />
-
+            <HoneyPot ref={honeyRef} id="contact_page" />
             <$.HiddenLabel htmlFor="contactBody">Message</$.HiddenLabel>
             <$.TextArea
               id="contactBody"

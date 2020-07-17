@@ -4,16 +4,18 @@ import Comments from "./Comments";
 import baseUrl from "../../utils/baseUrl";
 import axios from "axios";
 import catchErrors from "../../utils/catchErrors";
+import HoneyPot, { useHoneyRef } from "../_App/HoneyPot";
 const CommentSubmit = ({ id, tags, comments }) => {
   const [{ name, email, message }, setState] = useState({
     name: "",
     email: "",
     message: "",
   });
-
+  const [honeyRef, isBot] = useHoneyRef();
   const [extraComment, setExtraComment] = useState([]);
   const [error, setError] = useState("");
   const handleSubmit = async (e) => {
+    if (isBot()) return;
     e.preventDefault();
     try {
       setError("");
@@ -78,6 +80,7 @@ const CommentSubmit = ({ id, tags, comments }) => {
             value={message}
             onChange={handleChange}
           />
+          <HoneyPot ref={honeyRef} id="commentSubmit" />
         </$.Wrapper>
         <$.CommentSubmit type="submit">POST COMMENT</$.CommentSubmit>
       </form>

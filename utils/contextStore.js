@@ -29,6 +29,7 @@ const applyMiddleware = (dispatch, getState) => (action) => {
 const defaultCheckout = {
   step: "information",
   stepsLocked: { information: false, payment: true, shipping: true },
+  fetchingIntent: false,
   paymentMethod: null,
   details: {
     email: { value: "", error: "" },
@@ -164,6 +165,14 @@ const reducer = (state, action) => {
       return { ...state, menuOpen: true, cartOpen: false };
     case "CLOSE_MENU":
       return { ...state, menuOpen: false };
+    case "SET_FETCHING_INTENT":
+      return {
+        ...state,
+        checkout: {
+          ...state.checkout,
+          fetchingIntent: true,
+        },
+      };
     case "ADD_CHECKOUT_PAYMENT_METHOD":
       return {
         ...state,
@@ -216,6 +225,7 @@ const reducer = (state, action) => {
         checkout: {
           ...state.checkout,
           clientSecret: action.clientSecret,
+          fetchingIntent: false,
         },
       };
     case "CHECKOUT_ADD_SHIPPING_FARES":

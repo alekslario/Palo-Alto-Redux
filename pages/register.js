@@ -5,6 +5,7 @@ import $ from "../components/Account/_Account";
 import Input from "../components/_App/Input";
 import SubmitButton from "../components/_App/SubmitButton";
 import { handleLogin } from "../utils/auth";
+import HoneyPot, { useHoneyRef } from "../components/_App/HoneyPot";
 const Register = () => {
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState("");
@@ -12,9 +13,10 @@ const Register = () => {
   const passwordRef = useRef(null);
   const nameRef = useRef(null);
   const surnameRef = useRef(null);
-
+  const [honeyRef, isBot] = useHoneyRef(1000);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isBot()) return;
     setLoading(true);
     const response = await contactServer({
       data: {
@@ -83,7 +85,7 @@ const Register = () => {
             labelText="Password"
             ref={passwordRef}
           />
-
+          <HoneyPot ref={honeyRef} id="register_page" />
           <SubmitButton type="submit" loading={loading}>
             CREATE
           </SubmitButton>

@@ -1,13 +1,12 @@
 import { useEffect, useMemo } from "react";
-import cookie from "js-cookie";
-import baseUrl from "../utils/baseUrl";
-import axios from "axios";
 import { useStore } from "../utils/contextStore";
+import contactServer from "../utils/contactServer";
+import cookie from "js-cookie";
 import $ from "../components/Checkout/_Checkout";
 import calculateCartTotal from "../utils/calculateCartTotal";
 import useDeliverCart from "../utils/useDeliverCart";
 import BreadCrumbs from "../components/Checkout/BreadCrumbs";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import Summary from "../components/Checkout/Summary";
 import Header from "../components/Checkout/Header";
 import Shipping from "../components/Checkout/Shipping";
@@ -40,11 +39,12 @@ const Checkout = () => {
   );
 
   useEffect(() => {
-    if (!stripeTotal) return;
+    if (!stripeTotal || !store.checkout.selectedShipping.price) return;
     let didCancel = false;
     const getStripeIntent = async () => {
+      dispatch({ type: "SET_FETCHING_INTENT" });
       const token = cookie.get("token");
-      const payload = {
+      const data = {
         clientSecret: store.checkout.clientSecret,
         cart: store.cart,
         total: stripeTotal,
@@ -57,15 +57,19 @@ const Checkout = () => {
             }
           : {}),
       };
-      console.log(payload);
-      const url = `${baseUrl}/api/payment_intent`;
-      const response = await axios.post(url, payload, {
-        ...(token ? { headers: { Authorization: token } } : {}),
+      console.log(data);
+
+      const response = await contactServer({
+        method: "POST",
+        auth: token,
+        route: "payment_intent",
+        data,
       });
 
       console.log(response.data);
-      if (!didCancel)
+      if (!didCancel) {
         dispatch({ type: "UPDATE_CLIENT_SECRET", clientSecret: response.data });
+      }
     };
     getStripeIntent();
     return () => {

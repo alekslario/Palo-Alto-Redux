@@ -70,7 +70,11 @@ const Navigation = ({ toPay, stripeLoaded, processing }) => {
       <$.ButtonForth
         name="submit"
         onClick={goForth}
-        isLoading={stripeLoaded === false || processing}
+        isLoading={
+          stripeLoaded === false ||
+          processing ||
+          (store.checkout.fetchingIntent && store.checkout.step === "payment")
+        }
         disabled={Object.keys(store.cart).length === 0}
       >
         {store.checkout.step === "payment"

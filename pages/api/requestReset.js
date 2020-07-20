@@ -2,7 +2,7 @@ import User from "../../models/User";
 import connectDb from "../../utils/connectDb";
 import axios from "axios";
 import baseUrl from "../../utils/baseUrl";
-import resetEmail from "../../static/resetEmail";
+import resetEmail from "../../utils/resetEmail";
 connectDb();
 
 export default async (req, res) => {
@@ -35,8 +35,8 @@ export default async (req, res) => {
           service: "gmail",
           auth: {
             user: `${process.env.SENDGRID_TO_EMAIL}`,
-            pass: `${process.env.GMAIL_PASSWORD}`
-          }
+            pass: `${process.env.GMAIL_PASSWORD}`,
+          },
         });
         const mailOptions = {
           from: `${process.env.SENDGRID_TO_EMAIL}`,
@@ -45,7 +45,7 @@ export default async (req, res) => {
           html: resetEmail(
             baseUrl,
             `${baseUrl}/reset/${user.resetPasswordToken}`
-          )
+          ),
         };
 
         transporter.sendMail(mailOptions, (err, response) => {

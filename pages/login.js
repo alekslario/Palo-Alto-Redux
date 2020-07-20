@@ -89,6 +89,7 @@ const Login = () => {
                 id="formEmail"
                 type="email"
                 required
+                autoComplete="email"
                 labelText="Email"
                 ref={emailRef}
               />
@@ -98,6 +99,7 @@ const Login = () => {
                 type="password"
                 minLength="6"
                 maxLength="60"
+                autoComplete="current-password"
                 required
                 labelText="Password"
                 ref={passwordRef}

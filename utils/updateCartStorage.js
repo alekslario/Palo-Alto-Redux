@@ -11,6 +11,7 @@ export const updateCartStorage = ({ productId, contentId, modifier }) => {
   const sendToServer = async () => {
     const payloadProducts = { ...data };
     data = {};
+
     let token = cookie.get("token");
     if (token) {
       const response = await contactServer({
@@ -30,24 +31,33 @@ export const updateCartStorage = ({ productId, contentId, modifier }) => {
       try {
         // find more efficient wat to do it //todo
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        let productFound = false;
         let updatedCart = [];
         for (let x = 0; x < cart.length; x++) {
-          if (cart[x].productId === productId) {
-            if (cart[x].quantity + modifier === 0) {
-              productFound = true;
+          ///
+          const payloadProduct = payloadProducts[cart[x].productId];
+          if (payloadProduct) {
+            if (cart[x].quantity + payloadProduct.quantity <= 0) {
+              delete payloadProducts[cart[x].productId];
               continue;
             }
-            cart[x].quantity += modifier;
+            cart[x].quantity += payloadProduct.quantity;
+            delete payloadProducts[cart[x].productId];
             updatedCart.push(cart[x]);
-            productFound = true;
           } else {
             updatedCart.push(cart[x]);
           }
         }
-        if (!productFound) {
-          updatedCart.push({ productId, contentId, quantity: 1 });
-        }
+
+        updatedCart = [
+          ...updatedCart,
+          ...Object.entries(payloadProducts).map(
+            ([productId, { contentId, quantity }]) => ({
+              productId,
+              contentId,
+              quantity,
+            })
+          ),
+        ];
         if (updatedCart.length > 0) {
           localStorage.setItem("cart", JSON.stringify(updatedCart));
         } else {

@@ -7,12 +7,13 @@ import CrossIcon from "../Icons/Cross";
 import Products from "../Product/Products";
 import $ from "./_Search";
 import { useStore } from "../../utils/contextStore";
+import { useCloseModals } from "../../utils/useCloseModals";
 
 const Modal = ({ closePortal }) => {
   const [input, setInput] = useState("");
   const [store, dispatch] = useStore();
   const [debouncedInput, setDebouncedInput] = useState(input);
-
+  useCloseModals(closePortal);
   useEffect(() => {
     Router.events.on("routeChangeComplete", closePortal);
     return () => Router.events.off("routeChangeComplete", closePortal);

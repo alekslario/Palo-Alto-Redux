@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import cookie from "js-cookie";
-import Head from "next/head";
 import Menu from "./Menu";
-import HeadContent from "./HeadContent";
 import Footer from "./Footer";
 import SideMenuCart from "../Cart/SideMenuCart";
 import SideMenu from "../Cart/SideMenu";
@@ -72,11 +70,6 @@ const Layout = ({ children, user }) => {
 
   return (
     <>
-      <Head>
-        <HeadContent />
-        <title>Polo Alto Redux</title>
-        <script type="text/javascript" src="/static/ie.js"></script>
-      </Head>
       <Elements stripe={stripePromise}>
         {router.route !== "/checkout" ? (
           <div

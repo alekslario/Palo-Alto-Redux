@@ -15,7 +15,8 @@ function MyApp({ Component, pageProps }) {
         <meta charSet="utf-8" />
         <link
           href="https://fonts.googleapis.com/css?family=Open+Sans|Playfair+Display:700&display=swap"
-          rel="stylesheet"
+          as="style"
+          rel="preload"
         />
         <link
           rel="icon"
@@ -23,7 +24,7 @@ function MyApp({ Component, pageProps }) {
           href="https://cdn.shopify.com/s/files/1/1149/2354/files/logo_16x.png"
         />
         <title>Polo Alto Redux</title>
-        <script type="text/javascript" src="/ie.js"></script>
+        <script type="text/javascript" src="/ie.js" async></script>
       </Head>
       <ThemeProvider theme={theme}>
         <StoreProvider>

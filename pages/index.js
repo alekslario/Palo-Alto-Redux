@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Carousel from "../components/Index/Carousel";
-import Products from "../components/Product/Products";
+// import Products from "../components/Product/Products";
 import Parallax from "../components/Index/Parallax";
 import InstagramFeed from "../components/Index/InstagramFeed";
+import dynamic from "next/dynamic";
+const Products = dynamic(() => import("../components/Product/Products"));
 import $ from "../components/_App/_Statement";
 
 const Home = () => {

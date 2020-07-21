@@ -5,7 +5,11 @@ const client = require("contentful").createClient({
   accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
 });
 
-export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
+export const useFetchEntries = ({
+  dependency = [],
+  typeOfQuery = null,
+  ...searchParameters
+}) => {
   const [store, dispatch] = useStore();
   const [{ entries, loading, timeStamp }, setEntries] = useState({
     entries: [],
@@ -26,8 +30,11 @@ export const useFetchEntries = ({ dependency = [], ...searchParameters }) => {
     const idQuery =
       typeof searchParameters["sys.id"] === "string" ||
       typeof searchParameters["sys.id[in]"] === "string";
-
     const defaultState = { inStore: [], toQuery: [], makeQuery: true, idQuery };
+
+    if (!idQuery && typeOfQuery === "id") {
+      return { ...defaultState, makeQuery: false };
+    }
 
     if (!idQuery && cacheName && store.cache[cacheName]) {
       return {

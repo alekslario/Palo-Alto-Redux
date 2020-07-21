@@ -19,7 +19,7 @@ const CommentSubmit = ({ id, tags, comments }) => {
     e.preventDefault();
     try {
       setError("");
-      const url = `${baseUrl}/api/comments`;
+      const url = `${baseUrl()}/api/comments`;
       const payload = { name, email, message, id, tags };
       const response = await axios.post(url, payload);
       setExtraComment((prevState) => [

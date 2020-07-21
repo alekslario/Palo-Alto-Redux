@@ -265,6 +265,7 @@ export async function getServerSideProps(ctx) {
           auth: token,
           method: "GET",
         });
+        console.log("response", response);
         if (
           response.status === 404 ||
           response.status === 403 ||

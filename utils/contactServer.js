@@ -10,7 +10,7 @@ export default async ({
 }) => {
   try {
     setStatus("");
-    const url = `${baseUrl}/api/${route}`;
+    const url = `${baseUrl()}/api/${route}`;
     const authentication = { headers: { Authorization: auth } };
     let response;
     switch (method) {

@@ -3,12 +3,12 @@ import Link from "next/link";
 import CustomSwiper from "react-id-swiper/lib/ReactIdSwiper.custom";
 import { Swiper, Navigation, Pagination } from "swiper/js/swiper.esm";
 import $ from "./_CollectionList";
-import baseUrl from "../../utils/baseUrl";
+
 import {
   lowResMen,
   lowResWomen,
   srcSetMen,
-  srcSetWomen
+  srcSetWomen,
 } from "../../utils/heroSrcSet";
 
 const params = {
@@ -20,17 +20,17 @@ const params = {
   breakpoints: {
     480: {
       slidesPerView: 2,
-      spaceBetween: 20
+      spaceBetween: 20,
     },
     1024: {
       slidesPerView: 2,
-      spaceBetween: 40
-    }
+      spaceBetween: 40,
+    },
   },
   navigation: {
     nextEl: ".swiper-button-next.collections",
-    prevEl: ".swiper-button-prev.collections"
-  }
+    prevEl: ".swiper-button-prev.collections",
+  },
 };
 
 const CollectionList = () => {
@@ -46,7 +46,7 @@ const CollectionList = () => {
             data-sizes="auto"
             alt="Men's collection"
             style={{
-              backgroundImage: `${lowResMen}`
+              backgroundImage: `${lowResMen}`,
             }}
             data-bgset={srcSetMen}
           >
@@ -66,7 +66,7 @@ const CollectionList = () => {
             // data-sizes="auto"
             alt="Women's collection"
             style={{
-              backgroundImage: `${lowResWomen}`
+              backgroundImage: `${lowResWomen}`,
             }}
             data-bgset={srcSetWomen}
           >

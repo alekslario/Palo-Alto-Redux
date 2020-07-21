@@ -37,6 +37,7 @@
     "lodash.debounce": "^4.0.8",
     "mongoose": "^5.7.13",
     "next": "^9.4.4",
+    "next-absolute-url": "^1.2.2",
     "next-transpile-modules": "^3.0.2",
     "nodemailer": "^6.4.5",
     "nookies": "^2.0.8",

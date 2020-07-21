@@ -43,8 +43,8 @@ export default async (req, res) => {
           to: `${email}`,
           subject: "Link To Reset Password",
           html: resetEmail(
-            baseUrl,
-            `${baseUrl}/reset/${user.resetPasswordToken}`
+            baseUrl(req),
+            `${baseUrl(req)}/reset/${user.resetPasswordToken}`
           ),
         };
 

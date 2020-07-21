@@ -20,20 +20,22 @@ export default async (req, res) => {
 
 async function handleGetRequest(req, res) {
   const { skips = 0, id, tag } = req.query;
-  let comments = [];
+  let posts = [];
   try {
     if (id) {
       const post = await Post.findOne({ postId: id });
-      comments.push(post);
+      if (post) {
+        posts.push(post);
+      }
     } else if (tag) {
-      comments = await Post.find({ tags: [tag] })
+      posts = await Post.find({ tags: [tag] })
         .sort({ _id: -1 })
         .skip(skips)
         .limit(10);
     } else {
-      comments = await Post.find().sort({ _id: -1 }).skip(skips).limit(10);
+      posts = await Post.find().sort({ _id: -1 }).skip(skips).limit(10);
     }
-    res.status(200).json({ comments });
+    res.status(200).json({ posts });
   } catch (error) {
     console.log(error);
   }

@@ -16,7 +16,9 @@ function MyApp({ Component, pageProps }) {
         <link
           href="https://fonts.googleapis.com/css?family=Open+Sans|Playfair+Display:700&display=swap"
           as="style"
-          rel="preload"
+          rel="stylesheet preload prefetch"
+          type="text/css"
+          crossOrigin="anonymous"
         />
         <link
           rel="icon"

@@ -23,6 +23,7 @@ const ProductSummary = ({ inStock = true }) => {
     content_type: "paloAltoProduct",
     "sys.id": id,
     limit: 1,
+    typeOfQuery: "id",
     dependency: [id],
   });
 

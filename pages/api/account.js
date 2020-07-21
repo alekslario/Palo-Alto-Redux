@@ -30,6 +30,7 @@ export default withAuth(async (req, res) => {
 });
 
 async function handleGetRequest(req, res) {
+  console.log("res", res);
   const { userId } = req.user;
   const {
     includeOrders,

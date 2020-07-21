@@ -8,9 +8,12 @@ import CommentSubmit from "./CommentSubmit";
 import createSrcSet from "../../utils/createContentfulSrc";
 import { useFetchEntries } from "../../utils/useFetchEntries";
 const BlogPost = ({ comments = {}, blogId }) => {
+  console.log(" blogId", blogId);
   const [blogPost, loading] = useFetchEntries({
     content_type: "blogPost",
     "sys.id": blogId,
+    typeOfQuery: "id",
+    dependency: [blogId],
   });
   return (
     <$.PageWrapper>

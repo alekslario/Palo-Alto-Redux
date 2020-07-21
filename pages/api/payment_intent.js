@@ -31,7 +31,7 @@ export default async (req, res) => {
       ]);
       const amount = itemsCost + shippingCost;
       if (total !== amount) {
-        console.log("amount doesnt match", total, amount);
+        console.log("amount doesn't match", total, amount);
         return res
           .status(500)
           .json({ statusCode: 500, message: "Error processing charge" });
@@ -124,7 +124,7 @@ async function updatePaymentIntent(amount, intentId, metadata) {
 }
 
 async function handleAnonymousCustomer(amount, metadata) {
-  console.log("anonimous customer");
+  console.log("anonymous customer");
   return await stripe.paymentIntents.create({
     amount,
     metadata,

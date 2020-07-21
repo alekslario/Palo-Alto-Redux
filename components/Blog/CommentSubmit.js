@@ -22,7 +22,6 @@ const CommentSubmit = ({ id, tags, comments }) => {
       const url = `${baseUrl}/api/comments`;
       const payload = { name, email, message, id, tags };
       const response = await axios.post(url, payload);
-      console.log(response);
       setExtraComment((prevState) => [
         ...prevState,
         { name, email, message, time: Date.now() },

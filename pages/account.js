@@ -254,7 +254,6 @@ export async function getServerSideProps(ctx) {
     redirectUser(ctx, "/login");
   } else {
     if (cache["user"]) {
-      console.log("returning cache");
       return { props: { ...cache } };
     } else {
       try {

@@ -1,9 +1,10 @@
 node_modules/
 mongodump.txt
-now.json
+vercel.json
 next.config.js
 .next/
 .vscode/
 .env
 .serverless
 .serverless_nextjs
+.vercel

@@ -47,7 +47,6 @@ const SideMenuCart = () => {
   const { cartTotal } = useMemo(() => calculateCartTotal(products, 0), [
     products,
   ]);
-  console.log("loading cart", loading);
   return (
     <>
       <$.SideMenuCart ref={sideMenuCart}>

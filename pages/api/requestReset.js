@@ -58,8 +58,6 @@ export default async (req, res) => {
                 "There was an error while sending your email...Please try again later."
               );
           } else {
-            console.log(response);
-
             res
               .status(200)
               .send(`Your password reset email has been sent to ${email}.`);

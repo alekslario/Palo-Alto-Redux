@@ -57,7 +57,6 @@ const Checkout = () => {
             }
           : {}),
       };
-      console.log(data);
 
       const response = await contactServer({
         method: "POST",
@@ -66,7 +65,6 @@ const Checkout = () => {
         data,
       });
 
-      console.log(response.data);
       if (!didCancel) {
         dispatch({ type: "UPDATE_CLIENT_SECRET", clientSecret: response.data });
       }

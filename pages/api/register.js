@@ -42,7 +42,6 @@ export default async (req, res) => {
       password: hash,
       stripeId: customer.id,
     }).save();
-    console.log({ newUser });
     // 5) create cart for new user
     await new Cart({ user: newUser._id }).save();
     // 6) create token for the new user

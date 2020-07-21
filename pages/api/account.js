@@ -183,7 +183,6 @@ export function addAddress(req, res, user) {
     ].forEach(([val, { min = 0, max }]) => {
       const [key, value] = Object.entries(val)[0];
       if (!isLength(value, { min, max })) {
-        console.log(key, value, min, max, val);
         const name = key.charAt(0).toUpperCase() + key.substring(1);
         errors.push({
           [key]:

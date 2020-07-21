@@ -29,7 +29,6 @@ const Layout = ({ children, user }) => {
           method: "GET",
         });
         //handle errors better
-        console.log("response", response);
 
         if (response?.response?.status === 403) {
           dispatch({ type: "LOGOUT_WITHOUT_REDIRECT" });

@@ -71,7 +71,7 @@ export const updateCartStorage = ({ productId, contentId, modifier }) => {
   if (handler) clearTimeout(handler);
   handler = setTimeout(() => {
     sendToServer();
-  }, 300);
+  }, 100);
 };
 
 export const removeFromCartStorage = async ({ productId }) => {

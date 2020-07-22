@@ -18,7 +18,7 @@ const Footer = () => (
           <Link href="/">
             <a>Home</a>
           </Link>
-          <Link href="contact">
+          <Link href="/contact">
             <a>Contact</a>
           </Link>
           <button onClick={() => document.getElementById("search").click()}>

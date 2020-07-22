@@ -249,14 +249,20 @@ function Account({ user, cart, orders = [], totalOrderNumber }) {
 
 let cache = {};
 export async function getServerSideProps(ctx) {
-  const { token } = parseCookies(ctx);
+  const cookies = parseCookies(ctx);
+  console.log("cookies", cookies);
+  const { token } = cookies;
+  console.log("about to load account");
   if (!token) {
+    console.log("about to load account, no token?", token);
     redirectUser(ctx, "/login");
   } else {
     if (cache["user"]) {
+      console.log("sending cache");
       return { props: { ...cache } };
     } else {
       try {
+        console.log("about to make a request");
         const response = await contactServer({
           data: {
             includeOrders: true,
@@ -264,6 +270,7 @@ export async function getServerSideProps(ctx) {
           route: "account",
           auth: token,
           method: "GET",
+          req: ctx.req,
         });
         console.log("response", response);
         if (

@@ -40,7 +40,7 @@
     "next-absolute-url": "^1.2.2",
     "next-transpile-modules": "^3.0.2",
     "nodemailer": "^6.4.5",
-    "nookies": "^2.0.8",
+    "nookies": "^2.3.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-google-recaptcha": "^2.0.1",

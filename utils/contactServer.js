@@ -7,10 +7,12 @@ export default async ({
   setStatus = () => {},
   auth,
   method = "POST",
+  req = null,
 }) => {
   try {
     setStatus("");
-    const url = `${baseUrl()}/api/${route}`;
+    const url = `${baseUrl(req)}/api/${route}`;
+    console.log("after getting base url", url);
     const authentication = { headers: { Authorization: auth } };
     let response;
     switch (method) {
@@ -36,13 +38,14 @@ export default async ({
       default:
         throw `${method} method is not supported`;
     }
-
+    console.log("inside CS res", response);
     setStatus({
       text: response?.data?.message,
       status: response?.data?.status,
     });
     return response;
   } catch (error) {
+    console.log("inside CS res errr", error);
     catchErrors(error, setStatus);
     return error.response;
   }

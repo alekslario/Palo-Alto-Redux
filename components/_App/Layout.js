@@ -8,6 +8,7 @@ import GlobalStyle from "../../styles/global";
 import { useStore } from "../../utils/contextStore";
 import { CSSTransition } from "react-transition-group";
 import contactServer from "../../utils/contactServer";
+import useScrollRestoration from "../../utils/useScrollRestoration";
 import { useRouter } from "next/router";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
@@ -61,12 +62,21 @@ const Layout = ({ children, user }) => {
     return () => router.events.off("routeChangeComplete", handler);
   }, [store.cartOpen, store.menuOpen]);
 
-  useEffect(() => {
-    const scrollTo = () => document.body.scrollTo(0, 0);
-    router.events.on("routeChangeComplete", scrollTo);
-    return () => router.events.off("routeChangeComplete", scrollTo);
-  }, []);
+  // useEffect(() => {
+  //   const html = document.querySelector("html");
+  //   const scrollTo = () => html.scrollTo(0, 0);
+  //   router.events.on("routeChangeComplete", scrollTo);
+  //   return () => router.events.off("routeChangeComplete", scrollTo);
+  // }, []);
 
+  // useEffect(() => {
+  //   const manualScroll = () => {
+  //     window.history.scrollRestoration = "manual";
+  //   };
+  //   router.events.on("routeChangeStart", manualScroll);
+  //   return () => router.events.off("routeChangeStart", manualScroll);
+  // }, []);
+  useScrollRestoration();
   return (
     <>
       <Elements stripe={stripePromise}>

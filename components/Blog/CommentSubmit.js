@@ -46,10 +46,11 @@ const CommentSubmit = ({ id, tags, comments }) => {
     }
     if (accepted) setState((prevState) => ({ ...prevState, [name]: value }));
   };
+
   return (
     <>
       <Comments comments={comments.concat(extraComment)} />
-      {error && <$.Error>{error}</$.Error>}
+      {error && <$.Error>{error.text}</$.Error>}
       <form onSubmit={handleSubmit}>
         <$.Notice>Leave a comment</$.Notice>
         <$.Wrapper>

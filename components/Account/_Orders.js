@@ -7,6 +7,7 @@ const PaginationButton = styled.div`
   position: relative;
   width: 30px;
   height: 30px;
+  margin:5px;
   input {
     ${hidden}
   }
@@ -41,6 +42,8 @@ const Pagination = styled(Row)`
   position: sticky;
   z-index: 19;
   top: 20px;
+  width: fit-content;
+  flex-wrap: wrap;
 `;
 export default {
   Wrapper,

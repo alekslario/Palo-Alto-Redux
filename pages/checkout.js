@@ -86,6 +86,7 @@ const Checkout = () => {
         products={products}
         shipping={store.checkout.selectedShipping.price || 0}
       />
+      <$.ColoredMargin />
       <$.Content>
         <$.Main>
           <Header desktop={true} />
@@ -104,6 +105,11 @@ const Checkout = () => {
           />
         </$.Side>
       </$.Content>
+      <$.ColoredMargin
+        css={`
+          background: #fafafa;
+        `}
+      />
     </$.Wrapper>
   );
 };

@@ -1,6 +1,17 @@
 import styled, { css } from "styled-components";
 import { title, Column, mobileOrDesktop } from "../../styles/reusable";
 
+const ColoredMargin = styled.div`
+  min-height: 100%;
+  width: 100%;
+  background: #fff;
+  flex-grow: 1;
+  flex-basis: 0;
+  display: none;
+  @media (min-width: 1000px) {
+    display: initial;
+  }
+`;
 const Wrapper = styled(Column)`
   min-height: 100%;
   width: 100%;
@@ -14,6 +25,9 @@ const Wrapper = styled(Column)`
     sans-serif;
   display: flex;
   flex-direction: column;
+  @media (min-width: 1000px) {
+    flex-direction: row;
+  }
 `;
 
 const contentCss = css`
@@ -41,6 +55,7 @@ const Content = styled.div`
     flex-direction: row;
     padding: 0 5%;
     max-width: 103em;
+    flex-basis: 103em;
   }
 `;
 
@@ -115,4 +130,5 @@ export default {
   Footer,
   contentCss,
   H2,
+  ColoredMargin,
 };

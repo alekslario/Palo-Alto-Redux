@@ -51,7 +51,7 @@
     "stripe": "^8.49.0",
     "styled-components": "^5.0.1",
     "styled-normalize": "^8.0.6",
-    "swiper": "^5.2.1",
+    "swiper": "^6.5.1",
     "validator": "^11.1.0"
   },
   "devDependencies": {

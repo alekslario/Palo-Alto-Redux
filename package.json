@@ -39,7 +39,7 @@
     "next": "^9.4.4",
     "next-absolute-url": "^1.2.2",
     "next-transpile-modules": "^3.0.2",
-    "nodemailer": "^6.4.5",
+    "nodemailer": "^6.4.16",
     "nookies": "^2.3.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

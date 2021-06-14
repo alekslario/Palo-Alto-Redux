@@ -45,13 +45,6 @@ const ContactForm = () => {
   };
   return (
     <$.PageWrapper>
-      <iframe
-        width="100%"
-        height="450"
-        src={`https://www.google.com/maps/embed/v1/place?key=${process.env.GOOGLE_MAP}
-    &q=566+Emerson+Street,Palo+Alto,California&zoom=9`}
-        frameBorder="0"
-      ></iframe>
       <$.ContactPage>
         {status && status.text && <$.Error>{status.text}</$.Error>}
         <form onSubmit={handleSubmit}>

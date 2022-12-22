@@ -32,7 +32,7 @@
     "contentful-management": "^5.26.1",
     "country-list": "^2.2.0",
     "js-cookie": "^2.2.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "lazysizes": "^5.2.2",
     "lodash.debounce": "^4.0.8",
     "mongoose": "^5.7.13",
